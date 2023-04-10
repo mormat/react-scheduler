@@ -1,0 +1,18 @@
+
+.mormat-scheduler-EventsManager {
+    
+    overflow: auto;
+    
+    & > div {
+        float: left;
+        width: 48%;
+        padding: 1%;
+    }
+    
+    hr {
+        position: absolute;
+        left: 48%;
+        top:  2%;
+        height: 96%;
+    }
+}
