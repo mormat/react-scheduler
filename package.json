@@ -1,6 +1,6 @@
 {
   "name": "@mormat/react-scheduler",
-  "version": "0.2.3",
+  "version": "0.0.1",
   "description": "React scheduler component with draggable events",
   "author": "Mathieu Morel",
   "license": "GPL v2",
@@ -11,7 +11,8 @@
     "scheduler",
     "ui",
     "planner",
-    "agenda"
+    "agenda",
+    "beta"
   ],
   "main": "include/components.js",
   "files": [
