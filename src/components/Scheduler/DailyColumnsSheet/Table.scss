@@ -1,0 +1,66 @@
+$cell-border: 1px solid lightgray;
+
+.mormat-scheduler-Scheduler-DailyColumnsSheet-Table {
+    
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    
+    font:  caption;
+    color: rgba(0, 0, 0, 0.54);
+    border-spacing: 0;
+    border-bottom: $cell-border;
+
+    thead tr {
+        height: 38px;
+    }
+
+    tbody:nth-child(2) {
+
+        th {
+            border-top: $cell-border;
+            border-left: $cell-border;
+            border-right: $cell-border;
+        }
+
+        td {
+            border-top: $cell-border;
+            border-right: $cell-border;
+        }
+
+    }
+
+    tbody:nth-child(3) {
+
+        th {
+            /* border-bottom: $cell-border; */
+            border-left: $cell-border;
+            border-right: $cell-border;
+        }
+
+        td {
+            /* border-bottom: $cell-border; */
+            border-right: $cell-border;
+        }
+
+
+        tr:first-child {
+            th {
+                border-top: $cell-border;
+            }
+
+            td {
+                border-top: $cell-border;
+            }
+        }
+
+        tr:last-child {
+            th {
+                border-bottom: none;
+            }
+        }
+
+    }
+    
+}

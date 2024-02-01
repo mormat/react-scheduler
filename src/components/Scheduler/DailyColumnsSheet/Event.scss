@@ -1,0 +1,40 @@
+.mormat-scheduler-Scheduler-DailyColumnsSheet-Event {
+    
+    font: caption;
+    font-size: 14px;
+    border: 1px solid white;
+    background-color: white;
+    position: absolute;
+    top:  0;
+    width: 100%;
+    padding-top: 5px;
+    
+    
+    & > div[data-role] {
+        margin:   1px 3px 0 3px;
+        
+        &[data-role=content] {
+            font-weight: bold;
+        }
+    }
+    
+    [data-action="resize"] {
+        height: 5px;
+        border: 0px;
+        position: absolute;
+        width: 100%;
+        bottom: 0px;
+        cursor: ns-resize;
+    }
+    
+    [data-action="edit"] {
+        float: right;
+        margin-right: 2px;
+        opacity: 0;
+    }
+    
+    &:hover [data-action="edit"]  {
+        opacity: 1;
+    }
+    
+}

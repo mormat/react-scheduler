@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="./vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>react-scheduler</title>
+    <style>
+    </style>
+    
+    
+  </head>
+  <body>
+      
+      <div id="main">
+          test page
+      </div>
+    
+      <script src="./externals/react/react.development.js"></script>
+      <script src="./externals/react-dom/react-dom.development.js"></script>
+      <script src="./mormat_react_scheduler.js"></script>
+      <script>
+        renderComponent = function(component, props = {}) {
+            ReactDOM.render(
+                React.createElement(component, props, null), 
+                document.getElementById('main')
+            );
+        }
+      </script>
+  </body>
+</html>

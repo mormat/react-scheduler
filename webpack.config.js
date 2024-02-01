@@ -4,22 +4,34 @@ const CopyPlugin = require("copy-webpack-plugin");
 
 module.exports = {
     entry: {
-        'index':  ['./src/index.jsx'],
-        'styles': ['./src/styles.js'],
+        'mormat_react_scheduler':  ['./src/index.tsx'],
     },
     output: {
         path: path.resolve(__dirname, 'dist'),
         filename: ( { chunk } ) => {
             if (chunk.name === 'styles') {
-                return '../include/[name].js';
+                return './include/[name].js';
             }
             return '[name].js';
         },
+        library: 'mormat_react_scheduler',
+        libraryTarget: 'umd'
     },
     devServer: {
-        static: {
-            directory: path.join(__dirname, 'public'),
-        },
+        static: [
+            { 
+                directory: path.join(__dirname, 'public'),
+                publicPath: '.'
+            },
+            {
+                directory: path.join(__dirname, './node_modules/react/umd'),
+                publicPath: './externals/react'
+            },
+            {
+                directory: path.join(__dirname, './node_modules/react-dom/umd'),
+                publicPath: './externals/react-dom'
+            }
+        ],
         compress: true,
         port: 9000,
     },
@@ -53,8 +65,22 @@ module.exports = {
     plugins: [
         new CopyPlugin({
             patterns: [
-                { from: './public', to: '.' }
+                { from: './public', to: '.' },
+                { from: './node_modules/react/umd',     to: './externals/react' },
+                { from: './node_modules/react-dom/umd', to: './externals/react-dom' }
             ]
         }),
-    ]
+    ],
+    externals: {
+        'react': {
+            'commonjs': 'react',
+            'commonjs2': 'react',
+            'root': 'React'
+        },
+        'react-dom': {
+            'commonjs': 'react-dom',
+            'commonjs2': 'react-dom',
+            'root': 'ReactDOM'
+        },
+    },
 }

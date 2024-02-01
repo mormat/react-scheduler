@@ -40,7 +40,7 @@ function serializeConfig(config) {
     
     const items = Object.keys(config).map(key => {
         let value;
-        if (key.startsWith('on')) {
+        if (key.startsWith('on') || (config[key] || '').includes('function(')) {
             value = config[key];
         } else if (['true', 'false'].includes(config[key])) {
             value = config[key];
@@ -58,13 +58,11 @@ function getSchedulerScripts()
 {
     const scripts = [...preScripts];
     
-    const serializedConfig = serializeConfig(config);
+    const serializedConfig = serializeConfig(config) || '{}';
     
-    if (serializedConfig) {
-        scripts.push(`mormat_scheduler.bindScheduler(document.getElementById('root'),${serializedConfig})`);
-    } else {
-        scripts.push("mormat_scheduler.bindScheduler(document.getElementById('root'))");
-    }
+    scripts.push(
+        `renderComponent(mormat_react_scheduler.Scheduler,${serializedConfig})`
+    );
     
     return scripts;
 }
@@ -73,13 +71,18 @@ function getEventsManagerScripts()
 {
     const scripts = [...preScripts];
     
-    const serializedConfig = serializeConfig(config);
+    const serializedConfig = serializeConfig(config) || '{}';
     
+    scripts.push(
+        `renderComponent(mormat_react_scheduler.EventsList,${serializedConfig})`
+    );
+    
+    /*
     if (serializedConfig) {
-        scripts.push(`mormat_scheduler.bindEventsManager(document.getElementById('root'),${serializedConfig})`);
+        scripts.push(`mormat_scheduler.bindEventsList(document.getElementById('main'),${serializedConfig})`);
     } else {
-        scripts.push("mormat_scheduler.bindEventsManager(document.getElementById('root'))");
-    }
+        scripts.push("mormat_scheduler.bindEventsList(document.getElementById('main'))");
+    }*/
     
     return scripts;
 }

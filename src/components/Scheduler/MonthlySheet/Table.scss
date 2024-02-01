@@ -1,0 +1,60 @@
+
+$cell-border: 1px dotted gray;
+
+.mormat-scheduler-Scheduler-MonthlySheet-Table {
+    
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+
+    border-spacing: 0;
+
+    tbody  {
+        tr {
+            td {
+                margin: 0;
+                padding: 0;
+                border-top: $cell-border;
+
+                &:first-child {
+                    border-left: $cell-border;
+                }
+
+                &:last-child {
+                    border-right: $cell-border;
+                }
+            }
+
+            &:last-child td {
+                border-bottom: $cell-border;
+            }
+        }
+    }
+
+    td[data-role="header"] {
+        text-align: right;
+        border-bottom: none;
+        color: lightgray;
+        
+        &[data-current-month=true] { 
+            color: black;
+        }
+    }
+    
+    td[data-role="content"] {
+        border-top: none;
+        vertical-align: top;
+    }
+    
+    td[colspan] {
+        border-top:none;
+    }
+    
+    .disabled .day_of_month {
+        color: gray;
+    }
+    
+    
+}
+

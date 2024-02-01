@@ -1,20 +1,35 @@
+interface ISchedulerOptions {
 
-interface IDateRange {
-    start: Date;
-    end:   Date;
-}
+    initialDate: date|number|string;
 
-interface ICoordinate {
-    clientX: number
-    clientY: number,
-}
+    viewMode: string;
 
-interface ISchedulerEvent extends IDateRange
-{
-    id?: any,
-    label: string;
-    color?: string,
-    bgColor?: string
+    onEventCreate: any;
+
+    onEventUpdate: any;
+
+    onEventDelete: any;
+
+    defaultEventColor: string;
+
+    defaultEventBgColor: string;
+
+    locale: string;
+
+    width: number;
+
+    height: number;
+
+    spannedEventHeight: number;
+
+    minHour: number;
+
+    maxHour: number;
+
+    draggable: boolean;
+    
+    // enableOverlapping: boolean;
+
 }
 
 interface ISchedulerConfig {
@@ -31,28 +46,6 @@ interface ISchedulerConfig {
 
 }
 
-interface ILayout<V = any> {
 
-    element: Element
 
-    getValueAtCoord(pos: ICoordinate): Nullable<V>
-
-    children: ILayout<V>[]
-
-}
-
-interface IDragHandler<K>  {
-
-    press(coord: Coordinate, subject: K, data: Dictionary<any>): void
-
-    move(coord: Coordinate, subject: K, data: Dictionary<any>): void
-
-    release(coord: Coordinate, subject: K, options: Dictionary<any>): void
-}
-
-interface IEventOffset {
-    current: number;
-    length:  number;
-}
-
-export { ISchedulerEvent, ISchedulerConfig, ILayout, IDragHandler, ICoordinate, IEventOffset, IDateRange }
+export { ISchedulerOptions, ISchedulerConfig }

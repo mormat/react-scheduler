@@ -1,0 +1,47 @@
+
+.mormat-scheduler-Scheduler-withLayout {
+
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    
+    & > [data-role="header"] {
+        
+        overflow: auto;
+        height: 80px;
+        line-height: 40px;
+        
+        & > h2 {
+            text-align: center;
+            padding: 0;
+            margin: 0;
+        }
+
+        & > div {
+            position: absolute;
+            top: 0;
+            border:  0px;
+            padding: 0;
+            margin:  0;
+
+            &:nth-child(2) {
+                left: 0;
+            }
+                        
+            &:nth-child(3) {
+                right: 0;
+                text-align: right;
+            }
+
+        }
+        
+    }
+    
+}
+
+
+
+
+    

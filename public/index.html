@@ -9,55 +9,89 @@
     <style>
         h3 small { font-weight: normal }
         
-        #root {
+        #main {
             position: absolute;
             top: 10%;
             left: 5%;
             width: 90%;
+            /* padding-bottom: 100px; */
+            height: 80%;
+            /* border: 2px dashed red; */
         }
+        
     </style>
-    <script crossorigin src="./index.js"></script>
   </head>
   <body>
       <h3>react-scheduler <small>(github : <a href="https://github.com/mormat/react-scheduler">https://github.com/mormat/react-scheduler</a>)</small></h3>
-      <div id="root">
+      <div id="main">
           If nothing appeared here then maybe something went wrong
       </div>
-      <button onclick="onReady()">reset</button>
+      
+      <script src="./externals/react/react.development.js"></script>
+      <script src="./externals/react-dom/react-dom.development.js"></script>
+      <script src="./mormat_react_scheduler.js"></script>
       <script>
           
-        function onReady() {
+        function renderComponent(component, props = {}) {
             
-            console.log("reset");
+            
+            ReactDOM.render(
+                React.createElement(
+                    React.StrictMode, 
+                    {},
+                    React.createElement(component, props)
+                ), 
+                document.getElementById('main')
+            );
+        }
+          
+        function test()
+        {
+            document.dispatchEvent(new MouseEvent("mousedown", {
+                clientX: 77,
+                clientY: 166
+            }));
+
+                document.dispatchEvent(new MouseEvent("mousedown", {
+                clientX: 204,
+                clientY: 166
+            }));            
+        }
+          
+        
+          
+        function onReady() {
             
             var urlParams = new URLSearchParams(window.location.search);
 
             switch (urlParams.get('action') || 'show_scheduler') {
 
-                case 'admin':
-
-                    mormat_scheduler.bindEventsManager(
-                        document.getElementById('root'), 
+                case 'list':
+                    
+                    renderComponent(
+                        mormat_react_scheduler.EventsList,
                         {
                             events: buildSomeEvents(),
                             onEventCreate: function() {},
                             onEventUpdate: function() {},
                             onEventDelete: function() {}
                         }
-                    );
-
+                    )
+                    
                     break;
 
                 case 'show_scheduler':
 
-                    mormat_scheduler.bindScheduler(
-                        document.getElementById('root'), 
+                    renderComponent(
+                        mormat_react_scheduler.Scheduler, 
                         {
-                            enableOverlapping: true,
                             minHour: 8,
                             maxHour: 20,
-                            defaultViewMode: 'week', 
-                            events: buildSomeEvents()
+                            viewMode: 'week', 
+                            draggable: false,
+                            events: buildSomeEvents(),
+                            width: 'auto',
+                            height: 'auto',
                         }
                     );
 
@@ -86,7 +120,7 @@
                 {
                     label: "Conference",
                     start: days[1] + ' 14:00',
-                    end:   days[1] + ' 18:00',
+                    end:   days[1] + ' 16:00',
                 },
                 {
                     label: "Meeting",
@@ -109,13 +143,14 @@
                     color: "white",
                     bgColor: "#0fc4a7"
                 },
+                /*
                 {
                     label: "Training course (2)",
                     start: days[2] + " 10:00",
                     end:    "2023-11-28 18:00",
                     color: "white",
                     bgColor: "#0fc4a7"
-                },
+                },*/
                 {   label: "Next month event",
                     start: days[17] + " 10:00",
                     end:   days[17] + " 10:00",
@@ -123,7 +158,7 @@
                     backgroundColor: "#0fc4a7"
                 }   
             ]
-
+            
         }
           
       </script>

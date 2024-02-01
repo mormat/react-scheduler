@@ -1,11 +1,85 @@
 
-import { getDateRangeOfMonth, getDateRangeOfWeek } from '../src/utils/date'
+import { getDaysBetween } from '../src/utils/date'
 
-import { getDaysBetween, getHoursBetween } from '../src/utils/date'
+import { getFirstDayOfWeek, getLastDayOfWeek } from '../src/utils/date';
 
-import { dateToString, hourToString } from '../src/utils/date';
+import { formatters, date_add } from '../src/utils/date';
 
 require('jest-mock-now')(new Date('2023-04-20'));
+
+test("Date increment", () => {
+    
+    expect( date_add("2024-01-01", 1, 'day') ).toStrictEqual(
+        new Date("2024-01-02")
+    );
+
+    expect( date_add(new Date("2024-01-01"), 1, 'day') ).toStrictEqual(
+        new Date("2024-01-02")
+    );
+
+    expect( date_add(new Date("2024-01-01"), -1, 'day') ).toStrictEqual(
+        new Date("2023-12-31")
+    );
+
+    expect( date_add(new Date("2024-01-01"), 2, 'week') ).toStrictEqual(
+        new Date("2024-01-15")
+    );
+
+    expect( date_add(new Date("2024-01-01"), 1, 'week') ).toStrictEqual(
+        new Date("2024-01-08")
+    );
+
+    expect( date_add(new Date("2024-01-10"), 1, 'month') ).toStrictEqual(
+        new Date("2024-02-10")
+    );
+
+    expect( date_add(new Date("2024-01-10"), -1, 'month') ).toStrictEqual(
+        new Date("2023-12-10")
+    );
+
+    expect( date_add(new Date("2024-01-31"), 1, 'month') ).toStrictEqual(
+        new Date("2024-02-29")
+    );
+
+    expect( date_add(new Date("2024-03-31"), -1, 'month') ).toStrictEqual(
+        new Date("2024-02-29")
+    );
+
+});
+
+test("Date formatters", () => {
+
+    const d1 = new Date("2020-11-28 10:35")
+    const d2 = new Date("2020-2-5 9:7");
+
+    expect( formatters['yyyy'](d1) ).toBe('2020');
+
+    expect( formatters['mm'](d1) ).toBe('11');
+    expect( formatters['mm'](d2) ).toBe('02');
+
+    expect( formatters['dd'](d1) ).toBe('28');
+    expect( formatters['dd'](d2) ).toBe('05');
+
+    expect( formatters['yyyy-mm'](d1) ).toBe('2020-11');
+    expect( formatters['yyyy-mm'](d2) ).toBe('2020-02');
+
+    expect( formatters['yyyy-mm-dd'](d1) ).toBe('2020-11-28');
+    expect( formatters['yyyy-mm-dd'](d2) ).toBe('2020-02-05');
+
+    expect( formatters['hh'](d1) ).toBe('10');
+    expect( formatters['hh'](d2) ).toBe('09');
+
+    expect( formatters['ii'](d1) ).toBe('35');
+    expect( formatters['ii'](d2) ).toBe('07');
+
+    expect( formatters['hh:ii'](d1) ).toBe('10:35');
+    expect( formatters['hh:ii'](d2) ).toBe('09:07');
+
+    expect( formatters['yyyy-mm-dd hh:ii'](d1) ).toBe('2020-11-28 10:35');
+    expect( formatters['yyyy-mm-dd hh:ii'](d2) ).toBe('2020-02-05 09:07');
+
+});
+
 
 describe("Date utils", () => {
 
@@ -22,75 +96,21 @@ describe("Date utils", () => {
         expect(days).toStrictEqual(expected);
     });
 
-    test.each([
-        ['2023-12-10', '12/1/2023', '12/31/2023'],
-        ['2024-02-10', '2/1/2024' , '2/29/2024'],
-    ])('getDateRangeOfMonth(%s)', (month, expectedStart, expectedEnd) => {
+    test('getFirstDayOfWeek()', () => {
 
-        const {start, end} = getDateRangeOfMonth(
-            new Date(month + ' 00:00')
-        );
-        
-        expect(start.toLocaleDateString('en')).toBe(expectedStart);
+        expect(getFirstDayOfWeek(new Date('2023-05-24'))).toBe('2023-05-22');
 
-        expect(end.toLocaleDateString('en')).toBe(expectedEnd);
+        expect(getFirstDayOfWeek(new Date('2023-05-28'))).toBe('2023-05-22');
 
-    });
+        expect(getFirstDayOfWeek(new Date('2023-05-22'))).toBe('2023-05-22');
 
-    test.each([
-        ['2023-05-24', '5/22/2023', '5/28/2023'],
-        ['2023-05-28', '5/22/2023', '5/28/2023'],
-        ['2023-05-22', '5/22/2023', '5/28/2023']
-    ])("getDateRangeOfWeek(%s)", (day, expectedStart, expectedEnd) => {
+        expect(getLastDayOfWeek(new Date('2023-05-24'))).toBe('2023-05-28');
 
-        const {start, end} = getDateRangeOfWeek(
-            new Date(day + ' 00:00')
-        );
+        expect(getLastDayOfWeek(new Date('2023-05-28'))).toBe('2023-05-28');
 
-        expect(start.toLocaleDateString('en')).toBe(expectedStart);
-        
-        expect(end.toLocaleDateString('en')).toBe(expectedEnd);
+        expect(getLastDayOfWeek(new Date('2023-05-22'))).toBe('2023-05-28');
 
-    });
 
-    test.each([
-        [
-            0, 24, [
-                '00:00', '01:00', '02:00', '03:00', '04:00', '05:00', '06:00', 
-                '07:00', '08:00', '09:00', '10:00', '11:00', '12:00', '13:00', 
-                '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00',
-                '21:00', '22:00', '23:00', '24:00'
-            ],
-            8, 20, [
-                '08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', 
-                '15:00', '16:00', '17:00', '18:00', '19:00', '20:00'
-            ]
-        ]
-    ])("getHoursBetween(min=%s,max=%s)", (minHour, maxHour, hours) => {
-
-        const min = "1970-01-01 " + minHour + ':00';
-        const max = "1970-01-01 " + maxHour + ':00';
-
-        const expected = hours.map(h => new Date("1970-01-01 " + h));
-
-        expect(getHoursBetween(min, max)).toStrictEqual(expected);
-        expect(getHoursBetween(new Date(min), new Date(max)))
-            .toStrictEqual(expected);
-
-    });
-
-    test.each([
-        ['2023-11-15 00:00', '2023-11-15'],
-        ['2023-01-01 00:00', '2023-01-01'],
-    ])("dateAsString(%s) -> %s", (d, string) => {    
-        expect(dateToString(new Date(d))).toBe(string);
-    });
-    
-    test.each([
-        ["2023-11-15 15:20", "15:20"],
-        ["2023-11-15 8:5",   "08:05"],
-    ])("hourToString(%s) -> %s", (h, string) => {
-        expect(hourToString(new Date(h))).toBe(string);
     });
 
 });

@@ -1,22 +1,24 @@
 const { Given, When, Then } = require('@cucumber/cucumber');
 const { expect } = require('expect');
 
-const { Rectangle } = require('../../include/utils/geom.js');
+const { Rectangle } = require('../../dist/utils/geom.js');
 
 const { getSchedulerScripts } = require('./config');
 
 const { driver, findElementByCss, findElementsByCss, getPageText } = require('./webdriver');
 
+const { clickOn } = require('./webdriver');
+
 const base_url  = 'http://localhost:9000';
 
 const css_selectors = {
-    'view_buttons': '.mormat-scheduler-Scheduler-Header-ViewModeSelector label',
-    'events':       '.mormat-scheduler-event'
+    'view_buttons': '.mormat-scheduler-Widget-ToggleButtonGroup button',
+    'events':       '[class*="-Event"]'
 };
 
 async function openScheduler() {
     
-    driver.get(base_url + '?action=test');
+    driver.get(base_url + '/test.html');
     
     const scripts = getSchedulerScripts();
     for (let script of scripts) {
@@ -38,7 +40,7 @@ async function setViewMode(viewMode) {
 async function getViewMode() {
     
     const element = await findElementByCss(
-        css_selectors['view_buttons'] + ':has(input:checked)'
+        css_selectors['view_buttons'] + '[data-checked="true"]'
     );
     
     return await element.getText();
@@ -57,14 +59,39 @@ When('I open the scheduler in {string} view', async (string) => {
     
 });
 
-When('I move the {string} event to {string}', async function (caption, datetime) {
+When('I move the {string} event to {string}', async function (caption, date) {
     
-    const [date, time] = datetime.split(' ');
+    const selectors = {    
+        'subject': css_selectors['events'] + `:contains("${caption}") [data-role="header"]`,
+        'day':     `[data-day="${date}"]`
+    }
+    
+    const rects = {}, elements = {};
+    for (const k in selectors) {
+        elements[k] = await findElementByCss(selectors[k]);
+        rects[k]    = new Rectangle(await elements[k].getRect());
+    }
+    
+    const target = rects['day'].getCenter();
+    
+    const offset = {
+        x: Math.round(target.x - rects['subject'].x),
+        y: Math.round(target.y - rects['subject'].y),
+    }
+    
+    const actions = driver.actions({async: true});
+    const draggable = elements['subject'];
+    await actions.dragAndDrop(draggable, offset).perform();
+    
+});
+
+
+When('I move the {string} event to {string} at {string}', async function (caption, date, time) {
     
     const elements = {    
         'subject': css_selectors['events'] + `:contains("${caption}")`,
         'hour':    `[data-hour="${time}"]`,
-        'day':     `[rowspan][data-datemin^="${date} "]`
+        'day':     `[rowspan][data-day="${date}"]`
     }
     
     const rects = {};
@@ -73,14 +100,16 @@ When('I move the {string} event to {string}', async function (caption, datetime)
         rects[k]    = await elements[k].getRect();
     }
     
-    const actions = driver.actions({async: true});
+    // border size of hour is 1px
+    rects['hour'].y += 1;
     
     const offset = {
-        x: Math.floor(rects['day'].x  - rects['subject'].x),
-        y: Math.floor(rects['hour'].y - rects['subject'].y)
+        x: Math.round(rects['day'].x  - rects['subject'].x),
+        y: Math.round(rects['hour'].y - rects['subject'].y)
     }
         
     const draggable = elements['subject'];
+    const actions = driver.actions({async: true});
     await actions.dragAndDrop(draggable, offset).perform();
     
 });
@@ -98,7 +127,7 @@ Then('the {string} event should be at {string} from {string} to {string}', async
     
     const elements = {
         'subject': css_selectors['events'] + `:contains("${caption}")`,
-        'day':     `[rowspan][data-datemin^="${day} "]`,
+        'day':     `[rowspan][data-day="${day}"]`,
         'from':    `[data-hour="${from}"]`,
         'to':      `[data-hour="${to}"]` 
     }
@@ -112,8 +141,8 @@ Then('the {string} event should be at {string} from {string} to {string}', async
     const parentRect = new Rectangle({
         x:      rects['day'].x,
         y:      rects['from'].y,
-        width:  rects['day'].width + 1,
-        height: rects['to'].y - rects['from'].y + 1,
+        width:  rects['day'].width + 2,
+        height: rects['to'].y - rects['from'].y + 2,
     });
     
     if (!parentRect.contains(rects['subject'])) {
@@ -143,7 +172,7 @@ Then('hours from {string} to {string} should be displayed', async function (min,
 // I should see the events below only in the corresponding day
 Then('the events below should be displayed only in the corresponding day', async (dataTable) => {
     
-    const headers = await findElementsByCss('.day_header');
+    const headers = await findElementsByCss('[data-day][data-role="header"]');
 
     const daysRects = {}
     for (const header of headers) {
@@ -157,6 +186,11 @@ Then('the events below should be displayed only in the corresponding day', async
     for (const [label, daysAsString] of Object.entries(dataTable.rowsHash())) {
         
         const expectedDays = daysAsString.split(',');
+        for (let expectedDay of expectedDays) {
+            if (!(expectedDay in daysRects)) {
+                throw `Day ${expectedDay} is not displayed`;
+            }
+        }
         
         const selector = css_selectors['events'] + `:contains("${label}")`;
         const subjects = await findElementsByCss(selector);
@@ -169,10 +203,11 @@ Then('the events below should be displayed only in the corresponding day', async
                 const subjectRect = await subject.getRect();
             
                 // attempt to ignore border when computing intersection
-                subjectRect.x += 1;
-                subjectRect.y += 1;
-                subjectRect.width  -= 2;
-                subjectRect.height -= 2;
+                const padding = 4;
+                subjectRect.x += padding;
+                subjectRect.y += padding;
+                subjectRect.width  -= 2 * padding;
+                subjectRect.height -= 2 * padding;
             
                 if (daysRects[day].intersectsWith(subjectRect)) {
                     displayed = true;
@@ -219,3 +254,8 @@ Then('the {string} event should be rendered with', async function (label, dataTa
     
 });
 
+When('I click on {string} in {string} event', async function (text, eventLabel) {
+    const root = css_selectors['events'] + `:contains("${eventLabel}")`;
+    
+    await clickOn(text, root);
+});

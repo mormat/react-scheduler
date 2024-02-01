@@ -1,33 +1,67 @@
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Fragment } from 'react';
 
+import ColorSelect   from '../Widget/ColorSelect';
+import Message       from '../Widget/Message';
 import DateTimeInput from '../Widget/DateTimeInput';
+import Button        from '../Widget/Button';
 
-function EventForm( { schedulerEvent, onConfirm } ) {
+const colors = ['#0288d1', '#9575cd', '#0fc4a7', '#721c24', '#856404', '#383d41'];
+
+function EventForm( { schedulerEvent, onConfirm, onDelete } ) {
     
-    const [label,   setLabel]   = useState('');
-    const [start,   setStart]   = useState(new Date());
-    const [end,     setEnd]     = useState(new Date());
-    // const [bgColor, setBgColor] = useState('');
+    const [label,   setLabel]   = useState(schedulerEvent.label);
+    const [start,   setStart]   = useState(schedulerEvent.start);
+    const [end,     setEnd]     = useState(schedulerEvent.end);
+    const [bgColor, setBgColor] = useState(colors.includes(schedulerEvent.bgColor) ? schedulerEvent.bgColor : colors.at(0));
     
-    useEffect( () => {
+    const [errors,  setErrors]  = useState([]);
+    
+    const validate = () => {
+        const errors = [];
+
+        if (!label.trim()) {            
+            errors.push({'name': 'label', 'text': 'description required'})
+        }
         
-        setLabel(schedulerEvent.label || '');
-        setStart(schedulerEvent.start || new Date());
-        setEnd(schedulerEvent.end     || new Date());
-        // setBgColor(schedulerEvent.bgColor || '');
+        if (start > end) {
+            errors.push({'name': 'start', 'text': 'invalid date range'})
+        }
         
-    }, [schedulerEvent]);
+        setErrors(errors);
+        return errors;
+    }
     
     const handleConfirm = (e) => {
         e.preventDefault();
         
-        const newValues = {
-            ...schedulerEvent, label, start, end //, bgColor
-        }
+        const errors = validate();
+        if (errors.length === 0) {
+            const newValues = {
+                ...schedulerEvent, label, start, end, bgColor
+            }
         
-        onConfirm(newValues, schedulerEvent);
+            onConfirm(newValues, schedulerEvent);
+        }
     }
+    
+    const handleDelete = (e) => {
+        e.preventDefault();
+        
+        if (confirm("Deleting event ?")) {
+            onDelete(schedulerEvent);
+        }
+    }
+    
+    const renderErrors = (name) => (
+        <Fragment>
+            { errors.filter( e => e.name === name).map( (e, k) => (
+                <Message type="error" key = { k }>
+                    { e.text }
+                </Message>
+            )) }
+        </Fragment>
+    )
     
     return (
         <form className="mormat-scheduler-EventsManager-EventForm" >
@@ -35,6 +69,7 @@ function EventForm( { schedulerEvent, onConfirm } ) {
                 <label>
                     Description
                     <br/>
+                    { renderErrors('label') }
                     <input 
                         name     = "label"
                         type     = "text" 
@@ -45,8 +80,9 @@ function EventForm( { schedulerEvent, onConfirm } ) {
             </p>
             <p> 
                 <label>
-                    From
+                    <span>From</span>
                     <br/>
+                    { renderErrors('start') }
                     <DateTimeInput 
                         name     = "start"
                         value    = { start } 
@@ -56,7 +92,7 @@ function EventForm( { schedulerEvent, onConfirm } ) {
             </p>
             <p> 
                 <label>
-                    To
+                    <span>To</span>
                     <br/>
                     <DateTimeInput 
                         name     = "end"
@@ -65,23 +101,33 @@ function EventForm( { schedulerEvent, onConfirm } ) {
                     />
                 </label>
             </p>
-            { /*
-            <p> 
+            <p>
                 <label>
                     Color
                     <br/>
-                    <input 
-                        name = "bgColor"
-                        type = "text" 
+                    <ColorSelect
+                        value    = { bgColor }
+                        setValue = { setBgColor }
+                        colors = { colors }
                     />
+    
                 </label>
             </p>
-            */ }
-            <p>
-                <button onClick = { handleConfirm } >
-                    Ok
-                </button>
-            </p>
+            <div style= { { overflow: 'auto', paddingTop: "5px", paddingBottom: "5px" } }>
+                <span style={ { float: 'left' } }>
+                    { onDelete && (
+                        <Button onClick = { handleDelete } variant = "warning" type="button">
+                            Delete
+                        </Button>
+                    )}
+                    
+                </span>
+                <span style={ { float: 'right' } }>
+                    <Button onClick = { handleConfirm } type = "submit" variant = "primary">
+                        Ok
+                    </Button>
+                </span>
+            </div>
         </form>
     )
     

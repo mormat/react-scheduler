@@ -37,7 +37,9 @@ async function logsShouldContainInfos(expectedInfos) {
 }
 
 Then('the logs should contain the info:', async function (docString) {
+    
     await logsShouldContainInfos([docString]);
+    
 });
 
 Then('the logs should contain the infos:', async function (dataTable) {

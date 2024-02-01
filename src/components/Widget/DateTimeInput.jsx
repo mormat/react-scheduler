@@ -1,29 +1,25 @@
 
 import { useState, useEffect } from 'react';
 
-const today   = new Date(Date.now());
+import { formatters } from '../../utils/date'
 
 const MINUTES_STEP = 5;
 
-function DateTimeInput( { value, onChange, name = '', minHour = 7, maxHour = 21, ...otherProps } ) {
+function DateTimeInput( { value, onChange, minHour = 7, maxHour = 21, ...otherProps } ) {
     
     const options = buildOptions(minHour, maxHour);
-
-    const [day,   setDay]   = useState(1);
-    const [month, setMonth] = useState(1);
-    const [year,  setYear]  = useState(1970);
-    const [time,  setTime]  = useState('00:00');
-    
-    useEffect(() => {
-        setDay(value.getDate());
-        setMonth(value.getMonth());
-        setYear(value.getFullYear());
-        setTime(calcTime(value));
-    }, [value]);
+        
+    const [day,   setDay]   = useState(value.getDate());
+    const [month, setMonth] = useState(value.getMonth());
+    const [year,  setYear]  = useState(value.getFullYear());
+    const [time,  setTime]  = useState(() => {
+        const  time   = formatters['hh:ii'](value);
+        const  values = Object.values(options['times']);
+        return values.filter(v => v <= time).at(-1);
+    });
     
     useEffect(() => {
         const [hour, minute] = time ? time.split(':') : [0, 0];
-        // const date = new Date(year, month, day, hour, minute);
         
         const newDate = new Date(value);
         newDate.setYear(year);
@@ -32,7 +28,8 @@ function DateTimeInput( { value, onChange, name = '', minHour = 7, maxHour = 21,
         newDate.setHours(hour);
         newDate.setMinutes(minute);
         
-        if (newDate.toISOString() !== value.toISOString()) {
+        const values = [newDate, value].map(formatters['yyyy-mm-dd hh:ii']);
+        if (values[0] !== values[1]) {
             onChange(newDate);
         }
     }, [day, month, year, time]);
@@ -47,7 +44,7 @@ function DateTimeInput( { value, onChange, name = '', minHour = 7, maxHour = 21,
                 id = { otherProps.id }
                 value    = { time } 
                 onChange = { e => setTime(e.target.value)} 
-                name     = { name + '-time'}
+                title     = "time"
             >
 
                 { Object.entries(options['times']).map(([value, label]) => (
@@ -65,7 +62,7 @@ function DateTimeInput( { value, onChange, name = '', minHour = 7, maxHour = 21,
             <select
                 value    = { day } 
                 onChange = { e => setDay(e.target.value)} 
-                name     = { name + '-day'}
+                title     = "day"
             >
             
                 { Object.entries(options['days']).map(([value, label]) => (
@@ -83,7 +80,7 @@ function DateTimeInput( { value, onChange, name = '', minHour = 7, maxHour = 21,
             <select
                 value    = { month } 
                 onChange = { e => setMonth(e.target.value)} 
-                name     = { name + '-month'}
+                title     = "month"
             >
             
                 { Object.entries(options['months']).map(([value, label]) => (
@@ -101,7 +98,7 @@ function DateTimeInput( { value, onChange, name = '', minHour = 7, maxHour = 21,
             <select
                 value    = { year } 
                 onChange = { e => setYear(e.target.value)} 
-                name     = { name + '-year'}
+                title = "year"
             >
             
                 { Object.entries(options['years']).map(([value, label]) => (
@@ -123,8 +120,8 @@ function DateTimeInput( { value, onChange, name = '', minHour = 7, maxHour = 21,
 
 const buildOptions = (minHour, maxHour) => {
 
-    // const days   = Array.from({length: 31}, (_, i) => i + 1); 
-    
+    const today   = new Date(Date.now());
+
     const days = {}
     for (let i = 1; i <= 31; i++) {
         days[i] = i;
@@ -146,23 +143,13 @@ const buildOptions = (minHour, maxHour) => {
     const times = {};
     for (let hour = minHour; hour < maxHour; hour++) {
         for (let minute = 0; minute < 60; minute = minute + MINUTES_STEP) {
-            const time = formatTime(hour, minute);
+            const d = new Date(`1970-01-01 ${hour}:${minute}`);
+            const time = formatters['hh:ii'](d);
             times[time] = time;
         }
     }
     
     return { days, months, years, times }
-}
-
-const calcTime = (date) => {
-    const hours   = date.getHours();
-    const minutes = date.getMinutes() - (date.getMinutes() % MINUTES_STEP);
-    
-    return formatTime(hours, minutes)
-}
-
-const formatTime = (hours, minutes) => {
-    return [hours, minutes].map(v => String(v).padStart(2, '0')).join(':');
 }
 
 export default DateTimeInput

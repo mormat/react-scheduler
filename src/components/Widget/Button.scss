@@ -1,0 +1,41 @@
+
+.mormat-scheduler-Widget-Button {
+    
+    color: #0288d1;
+    border: 1px solid transparent;
+    background-color: inherit;
+    font-size: 1em;
+    text-transform: uppercase;
+    padding: 0 10px 0 10px;
+    cursor: pointer;
+    height: 30px;
+    line-height: 30px;
+    
+    &[data-variant="primary"] {
+        opacity: 0.75;
+        
+        border-color: #0288d1;
+        background-color: #0288d1;
+        color: white;
+        
+        &:hover {
+           opacity: 1;
+       }   
+    }
+    
+    &[data-variant="warning"] {
+        color: #721c24;
+        background-color: white;
+        
+        &:hover {
+            background-color: #f8d7da;
+        }
+    }
+    
+    &[data-variant="outline"] {
+       &:hover {
+           background-color: lightgray;
+       }   
+    }
+    
+}

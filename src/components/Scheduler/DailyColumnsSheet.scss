@@ -1,64 +1,6 @@
 
 .mormat-scheduler-Scheduler-DailyColumnsSheet {
     
-    table {
-
-        font:  caption;
-        color: rgba(0, 0, 0, 0.54);
-        border-spacing: 0;
-
-        thead tr {
-            height: 38px;
-        }
-
-        tbody:nth-child(2) {
-            
-            th {
-                border-top: 1px solid lightgray;
-                border-left: 1px solid lightgray;
-                border-right: 1px solid lightgray;
-            }
-            
-            td {
-                border-top: 1px solid lightgray;
-                border-right: 1px solid lightgray;
-            }
-            
-        }
-        
-        tbody:nth-child(3) {
-            
-            th {
-                border-bottom: 1px solid lightgray;
-                border-left: 1px solid lightgray;
-                border-right: 1px solid lightgray;
-            }
-            
-            td {
-                border-bottom: 1px solid lightgray;
-                border-right: 1px solid lightgray;
-            }
-            
-            tr:first-child {
-                th {
-                    border-top: 1px solid lightgray;
-                }
-                
-                td {
-                    border-top: 1px solid lightgray;
-                }
-            }
-            
-            tr[data-hour]:not(:last-child) {
-                th {
-                    border-bottom: none;
-                }
-            }
-            
-        }
-        
-    }
-
     div[role="separator"] {
         & > div {
             border: 1px dashed lightgray

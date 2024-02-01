@@ -1,0 +1,32 @@
+.mormat-scheduler-Scheduler-MonthlySheet-Event {
+    position: relative;
+    overflow: auto;
+    
+    & > * {
+        float: left;
+    }
+    
+    & > [data-role="header"] {
+        position: absolute;
+        top: 0px;
+        left: 3px;
+        right: 0;
+        bottom: 0;
+    }
+    
+    & > [data-action="edit"] {
+        opacity: 0;
+        margin: 0;
+        padding: 0;
+        position: absolute;
+        top: 2px;
+        right: 2px;
+        bottom: 0;
+        overflow: hidden;
+    }
+    
+    &:hover > [data-action="edit"] {
+        opacity: 1;
+    }    
+    
+}
