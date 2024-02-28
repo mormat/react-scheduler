@@ -3,7 +3,7 @@ import { Fragment } from 'react';
 
 import TimelineRow from '../TimelineSheet/Row';
 
-import Event from './Event';
+import EventContainer from './EventContainer';
 
 import Grille from '../../Widget/Grille';
 
@@ -95,8 +95,9 @@ function Table( { currentDate, dateRange, events, schedulerOptions } ) {
                                 <TimelineRow
                                     events    = { spannedEvents }
                                     dateRange = { { start: row[0], end: row.at(-1) } }
-                                    draggableAreaId = { tbodyUniqueId } 
-                                    schedulerOptions   = { schedulerOptions }
+                                    draggableAreaId  = { tbodyUniqueId } 
+                                    draggableType    = "monthly-sheet"
+                                    schedulerOptions = { schedulerOptions }
                                 />
 
                             </td>
@@ -110,7 +111,7 @@ function Table( { currentDate, dateRange, events, schedulerOptions } ) {
                                 >
                                     <div>
                                         { getDayEvents(d).map( (event, index) => (
-                                            <Event 
+                                            <EventContainer 
                                                 key = { index }
                                                 value = { event }
                                                 draggableAreaId = { tbodyUniqueId }

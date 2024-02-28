@@ -4,8 +4,6 @@ const { Key } = require('selenium-webdriver');
 const css2xpath = require('css2xpath');
 const { expect } = require('expect');
 const chrome = require("selenium-webdriver/chrome");
-const { JSDOM } = require("jsdom");
-const formSerialize = require('form-serialize');
 
 const driver = (function() {
     setDefaultTimeout(60 * 1000);
@@ -108,6 +106,19 @@ Then('I should see {string} in {string}', async function (text, selector) {
     
 });
 
+Then('I should see the element {string}', async function (selector) {
+    const elements = await findElementsByCss(selector);
+    
+    expect(elements.length).toBeGreaterThanOrEqual(1);
+});
+
+Then('I should not see the element {string}', async function (selector) {
+    const elements = await findElementsByCss(selector);
+    
+    expect(elements.length).toBe(0);
+});
+
+
 async function getTextByCss(selector) {
     
     const elements = await findElementsByCss(selector);
@@ -116,12 +127,12 @@ async function getTextByCss(selector) {
         throw `No elements found matching '${selector}'`
     }
     
-    let text = '';
+    let texts = [];
     for (const element of elements) {
-        text += await element.getText();
+        texts.push(await element.getText());
     }
 
-    return text.replace(/\s+/g,' ');
+    return texts.join(' ').replace(/\s+/g,' ');
     
 }
 
@@ -140,33 +151,6 @@ async function getHtmlByCss(selector)
     
     return html;
 }
-
-Then('the value {string} of the {string} form should equals:', async function (valueName, formSelector, dataTable) {
-    
-    const expected = dataTable.hashes();
-    
-    const header = dataTable.raw().at(0);
-    
-    let html = await getHtmlByCss(formSelector + ` [name^="${valueName}["]`);
-    
-    html = html.replaceAll(` name="${valueName}[`, ' name="rows[');
-    
-    const { window } = new JSDOM(`<!DOCTYPE html><div>
-        <form id="form">${html}</form>
-        </div>`);
-    
-    const form = window.document.getElementById('form');
-    
-    const { rows } = formSerialize(form, true);
-        
-    const actual = rows.filter(t => t).map(e => {
-        const defaults = Object.fromEntries(header.map(k => [k, '']));
-        return {...defaults, ...e}
-    });
-        
-    expect(actual).toStrictEqual(expected);
-    
-});
 
 
 
@@ -254,6 +238,7 @@ module.exports = {
     findElementByCss, 
     findElementsByCss, 
     getPageText,
+    getTextByCss,
     selectTheValuesBelowIn,
     clickOn
 } 

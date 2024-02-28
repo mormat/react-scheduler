@@ -20,7 +20,7 @@ function withLayout( WrappedComponent, { currentDate, setCurrentDate, viewMode, 
 
                 <div data-role="header">
                 
-                    <h2>{ title || (<span>&nbsp;</span>) }</h2>
+                    <h3>{ title || (<span>&nbsp;</span>) }</h3>
 
                     <div>
                         <Button onClick = { () => setCurrentDate( date_add(currentDate, -1, viewMode) ) } 

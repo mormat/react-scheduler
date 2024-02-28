@@ -10,7 +10,7 @@ Feature: Configuring the scheduler
 
     Scenario: Configuring view mode
         Given the configuration contains:
-            | viewMode | month |
+            | viewMode | 'month' |
         When I open the scheduler
         Then the current view should be 'month'
         
@@ -21,7 +21,7 @@ Feature: Configuring the scheduler
 
     Scenario: Define initial date
         Given the configuration contains:
-            | initialDate | 2023-10-08 |
+            | initialDate | '2023-10-08' |
         When I open the scheduler in "week" view
         Then I should see "Oct 8, 2023"
 
@@ -32,14 +32,14 @@ Feature: Configuring the scheduler
 
     Scenario: Display hours from configuration
         Given the configuration contains:
-            | minHour | 08 |
-            | maxHour | 20 |
+            | minHour | '08' |
+            | maxHour | '20' |
         When I open the scheduler in "week" view
         Then hours from "08:00" to "19:00" should be displayed
 
     Scenario: i18n
         Given the configuration contains:
-            | locale | fr |
+            | locale | 'fr' |
         When I open the scheduler in "week" view
         Then I should see "lun. 1 mai"
 
@@ -60,20 +60,46 @@ Feature: Configuring the scheduler
             """
                 'Presentation' was moved
             """
+    
+    @crud
+    Scenario Outline: enable or disable create/update events
+        Given the configuration contains:
+            | editable | <value> |
+        And the date today is "2023-05-01"
+        And the configuration contains the following events:
+            | start            | end              | label         |
+            | 2023-05-01 10:00 | 2023-05-01 12:00 | Presentation  |
+            | 2023-05-01 10:00 | 2023-05-02 12:00 | Training      |
+        When I open the scheduler in "<view_mode>" view
+        Then I should <see_or_not> the element "[title='Add event']"
+        And I should <see_or_not> the element "[data-day] [title='Edit event']"
+        And I should <see_or_not> the element "[data-start] [title='Edit event']"
 
-    # @drag_and_drop
-    # Scenario Outline: 'enableOverlapping' property
-    #    Given the configuration contains the following events:
-    #        | start            | end              | label         |
-    #        | 2023-05-01 08:00 | 2023-05-01 09:00 | Meeting       |
-    #        | 2023-05-01 11:00 | 2023-05-01 12:00 | Presentation  |
-    #    And the configuration contains:
-    #        | enableOverlapping | <overlaps_enabled> |
-    #    When I open the scheduler in "week" view
-    #    And I move the "Meeting" event to "2023-05-01 11:00"
-    #    Then I should see "<expected_text>"
-    #
-    #    Examples:
-    #        | overlaps_enabled | expected_text         |
-    #        | false            | 08:00 - 09:00 Meeting |
-    #        | true             | 11:00 - 12:00 Meeting |
+        Examples:
+            | value     | view_mode | see_or_not |
+            | true      | week      | see        |
+            | false     | week      | not see    |
+            | true      | month     | see        |
+            | false     | month     | not see    |
+
+    @drag_and_drop
+    Scenario Outline: enable/disable drag and drop
+        Given the configuration contains: 
+            | draggable | <value> |
+        And the date today is "2023-05-01"
+        And the configuration contains the following events:
+            | start            | end              | label         |
+            | 2023-05-01 10:00 | 2023-05-01 12:00 | Presentation  |
+            | 2023-05-01 10:00 | 2023-05-02 12:00 | Training      |
+        When I open the scheduler in "<view_mode>" view
+        And I move the "<event_name>" event to <target>
+        Then I should <see_or_not> the "<event_name>" event in <target>
+
+        Examples:
+            | value | see_or_not | view_mode | event_name   | target                  |
+            | true  | see        | week      | Presentation | "2023-05-01" at "16:00" | 
+            | false | not see    | week      | Presentation | "2023-05-01" at "16:00" | 
+            | true  | see        | month     | Presentation | "2023-05-02"            | 
+            | false | not see    | month     | Presentation | "2023-05-02"            |
+            | true  | see        | month     | Training     | "2023-05-02"            |
+            | false | not see    | month     | Training     | "2023-05-02"            |

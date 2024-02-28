@@ -9,7 +9,7 @@ Feature: Displaying events in the scheduler
             | 2023-05-07  9:00 | 2023-05-07 10:00 | Medical checkup |
             | 2023-04-28  9:00 | 2023-04-28 18:00 | Training course |
             | 2023-05-09 11:00 | 2023-05-09 12:00 | Job Interview   |
-
+        
     Scenario: Displaying events for current week    
         When I open the scheduler in "week" view
         Then only the items checked below should be visible
@@ -41,7 +41,8 @@ Feature: Displaying events in the scheduler
 
     Scenario: Event should be displayed at the corresponding time range
         When I open the scheduler in "week" view
-        Then the "Presentation" event should be at "2023-05-01" from "10:00" to "12:00"
+        Then I should see the "Presentation" event in "2023-05-01"
+        And the "Presentation" event should be displayed from "10:00" to "12:00"
         And I should see "10:00 - 12:00 Presentation"
 
     @drag_and_drop
@@ -54,7 +55,8 @@ Feature: Displaying events in the scheduler
             """
         When I open the scheduler in "week" view
         And I move the "Presentation" event to "2023-05-02" at "08:00"
-        Then the "Presentation" event should be at "2023-05-02" from "08:00" to "10:00"
+        Then I should see the "Presentation" event in "2023-05-02"
+        And the "Presentation" event should be displayed from "08:00" to "10:00"
         And the logs should contain the info:
         """
             Presentation event was moved
@@ -213,7 +215,8 @@ Feature: Displaying events in the scheduler
             """
         When I open the scheduler in "<view_mode>" view
         And I move the "dynamically loaded" event to "2023-05-01" at "<start_hour>"
-        Then the "dynamically loaded" event should be at "2023-05-01" from "<start_hour>" to "<end_hour>"
+        Then I should see the "dynamically loaded" event in "2023-05-01"
+        And the "dynamically loaded" event should be displayed from "<start_hour>" to "<end_hour>"
         And the logs should contain the info:
         """
             dynamically loaded event was moved
@@ -226,3 +229,13 @@ Feature: Displaying events in the scheduler
         | week       |               | 08:00      | 10:00    |
         | week       | reload();     | 14:00      | 16:00    |
 
+    Scenario: Displaying valid events in csv format
+        Given "events" in configuration equals the csv below:
+            | start            | end              | label         | errors  |
+            | 2023-05-01 10:00 | 2023-05-01 12:00 | Presentation  |         |
+            | 2023-05-01 16:00 | 2023-05-01 18:00 | Conference    | invalid |
+            | 2023-05-05 14:00 | 2023-05-06 16:00 | Meeting       |         |
+        When I open the scheduler in "week" view
+        Then I should see "Presentation"
+        And I should see "Meeting"
+        And I should not see "Conference"

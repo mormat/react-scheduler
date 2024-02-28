@@ -1,9 +1,9 @@
 
-import Event from './Event';
+import EventContainer from './EventContainer';
 
 import { formatters } from '../../../utils/date';
 
-function Row( { events, dateRange, draggableAreaId, schedulerOptions }) {
+function Row( { events, dateRange, draggableAreaId, draggableType, schedulerOptions }) {
 
     const styles = {
         'height': schedulerOptions.spannedEventHeight * events.length,
@@ -18,12 +18,14 @@ function Row( { events, dateRange, draggableAreaId, schedulerOptions }) {
              data-end   = { formatters['yyyy-mm-dd hh:ii'](dateRange.end) }
         >
             { events.map((event, index) => (
-                <Event 
+                <EventContainer 
                     key           = { index }
                     event         = { event }
                     dateRange     = { dateRange }
-                    draggableAreaId = { draggableAreaId }
+                    draggableAreaId  = { draggableAreaId }
+                    draggableType    = { draggableType}
                     schedulerOptions = { schedulerOptions }
+                    
                 />                    
             )) }
         </div>

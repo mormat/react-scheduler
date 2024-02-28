@@ -1,51 +1,41 @@
 interface ISchedulerOptions {
 
-    initialDate: date|number|string;
+    initialDate: date|number|string; // if set, the scheduler will start at this date
 
-    viewMode: string;
+    viewMode: string;   // 'day', 'week' or 'month'
 
-    onEventCreate: any;
+    locale: string;     // i18n 
 
-    onEventUpdate: any;
+    width: number;      // width of the scheduler in pixel
 
-    onEventDelete: any;
-
-    defaultEventColor: string;
-
-    defaultEventBgColor: string;
-
-    locale: string;
-
-    width: number;
-
-    height: number;
-
-    spannedEventHeight: number;
+    height: number;     // height of the scheduler in pixel
 
     minHour: number;
 
     maxHour: number;
 
-    draggable: boolean;
-    
-    // enableOverlapping: boolean;
+    editable: boolean;  // if true, the user can create/update/delete events
+
+    draggable: boolean; // if true, the user can drag and drop events
+
+    onEventCreate: any; // triggered when the user create an event
+
+    onEventUpdate: any; // triggered when the user update an event
+
+    onEventDelete: any; // triggered when the user delete an event
+
+    defaultEventColor: string;
+
+    defaultEventBgColor: string;
+
+    spannedEventHeight: number;
 
 }
 
-interface ISchedulerConfig {
-
-    firstHour: number;
-
-    lastHour: number;
-
-    initialDate: date|number|string;
+interface ISchedulerConfig extends ISchedulerOptions {
 
     events: any[];
 
-    viewMode: string;
-
 }
-
-
 
 export { ISchedulerOptions, ISchedulerConfig }

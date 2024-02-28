@@ -1,0 +1,21 @@
+
+.mormat-scheduler-Scheduler-withEditEvent {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    
+    & > a {
+        position: absolute;
+        right: 0;
+        top: 0;
+        z-index: 9999;
+        opacity: 0;
+        cursor: pointer;
+    }
+    
+    &:hover > a {
+        opacity: 1;
+    }
+}

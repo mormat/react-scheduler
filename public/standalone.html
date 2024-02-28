@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<!--
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/ClientSide/html.html to edit this template
+-->
+<html>
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            #comments {
+                position: absolute;
+                left: 5px;
+                bottom: 5px;
+                right: 5px;
+                resize: none;
+                height: 50px;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="main">Standalone version</div>
+        <textarea id="comments"></textarea>
+        <script src="./mormat_standalone_scheduler.js"></script>
+        <script>
+            var urlParams = new URLSearchParams(window.location.search);
+            var action = urlParams.get('action') || 'render_scheduler_with_dom';
+            
+            if (action === 'render_scheduler') {
+                mormat_standalone_scheduler.renderScheduler(
+                    document.getElementById('main')
+                );
+            }
+            
+            if (action === 'render_events_list') {
+                mormat_standalone_scheduler.renderEventsList(
+                    document.getElementById('main'),
+                    { targetElement: '#comments' }
+                );
+            }
+        </script>
+    </body>
+</html>

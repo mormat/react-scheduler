@@ -7,7 +7,7 @@ import { formatters, dateRangeOverlapsAnother, dateRangeContainsAnother } from '
 
 import { calcEventsOffsets  } from '../../../models/events';
 
-import Event from './Event';
+import EventContainer from './EventContainer';
 import Grille from '../../Widget/Grille';
 import TimelineRow from '../TimelineSheet/Row';
 
@@ -126,7 +126,8 @@ function Table( { events, schedulerOptions, dateRange } ) {
                                 data-maxhour = { maxHour }
                             >
                                 { events.map((event, i) => (
-                                    <Event key        = { i }
+                                    <EventContainer
+                                           key        = { i }
                                            value      = { event }
                                            constraint = { constraint }
                                            schedulerOptions = { schedulerOptions }

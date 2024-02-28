@@ -5,7 +5,9 @@ const { Rectangle } = require('../../dist/utils/geom.js');
 
 const { getSchedulerScripts } = require('./config');
 
-const { driver, findElementByCss, findElementsByCss, getPageText } = require('./webdriver');
+const { driver, findElementByCss, findElementsByCss  } = require('./webdriver');
+
+const { getPageText, getTextByCss } = require('./webdriver');
 
 const { clickOn } = require('./webdriver');
 
@@ -122,32 +124,54 @@ Then('the current view should be {string}', async function (expected) {
     }
 });
 
+Then('I should see the {string} event in {string} at {string}', async function (eventName, day, hour) {
+    
+    const text = await getTextByCss(`[data-day=${day}]`);
+    
+    expect(text).toContain(eventName);
+    expect(text).toContain(hour);
+    
+});
 
-Then('the {string} event should be at {string} from {string} to {string}', async function (caption, day, from, to) {
+Then('I should not see the {string} event in {string} at {string}', async function (eventName, day, hour) {
+
+    const text = await getTextByCss(`[data-day=${day}]`);
     
-    const elements = {
-        'subject': css_selectors['events'] + `:contains("${caption}")`,
-        'day':     `[rowspan][data-day="${day}"]`,
-        'from':    `[data-hour="${from}"]`,
-        'to':      `[data-hour="${to}"]` 
+    if (text.includes(eventName)) {
+        expect(text).not.toContain(hour);
     }
+});
+
+Then('I should see the {string} event in {string}', async function (eventName, day) {
     
-    const rects = {};
-    for (const k in elements) {
-        elements[k] = await findElementByCss(elements[k]);
-        rects[k]    = await elements[k].getRect();
-    }
+    const text = await getTextByCss(`[data-day="${day}"],[data-event-from^="${day}"]`);
     
-    const parentRect = new Rectangle({
-        x:      rects['day'].x,
-        y:      rects['from'].y,
-        width:  rects['day'].width + 2,
-        height: rects['to'].y - rects['from'].y + 2,
-    });
+    expect(text).toContain(eventName);
+});
+
+Then('I should not see the {string} event in {string}', async function (eventName, day) {
     
-    if (!parentRect.contains(rects['subject'])) {
-        throw `"${caption}" event not displayed at "${day}" from "${from}" to "${to}"`;
-    }
+    const text = await getTextByCss(`[data-day="${day}"],[data-event-from^="${day}"]`);
+    
+    expect(text).not.toContain(eventName);
+    
+});
+
+Then('the {string} event should be displayed from {string} to {string}', async function  (eventName, from, to) {
+    
+    const subject = await findElementByCss(
+        css_selectors['events'] + `:contains("${eventName}")`
+    );
+    
+    const startLine = await findElementByCss(`[data-hour="${from}"]`);
+    const endLine   = await findElementByCss(`[data-hour="${to}"]`);
+    
+    const subjectRect = new Rectangle(await subject.getRect());
+    const startRect   = new Rectangle(await startLine.getRect());
+    const endRect     = new Rectangle(await endLine.getRect());
+    
+    expect(Math.abs(startRect.top - subjectRect.top)).toBeLessThan(1.5);
+    expect(Math.abs(endRect.top - subjectRect.bottom)).toBeLessThan(1.5);
     
 });
 

@@ -1,6 +1,4 @@
-.mormat-scheduler-Scheduler-MonthlySheet-Event {
-    position: relative;
-    overflow: auto;
+.mormat-scheduler-Scheduler-MonthlySheet-EventContent {
     
     & > * {
         float: left;
@@ -15,7 +13,6 @@
     }
     
     & > [data-action="edit"] {
-        opacity: 0;
         margin: 0;
         padding: 0;
         position: absolute;
@@ -24,9 +21,5 @@
         bottom: 0;
         overflow: hidden;
     }
-    
-    &:hover > [data-action="edit"] {
-        opacity: 1;
-    }    
     
 }

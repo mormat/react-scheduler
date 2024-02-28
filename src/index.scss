@@ -1,7 +1,4 @@
 
-
-@import './components/EventsManager/EditEventLink.scss';
-
 @import './components/EventsManager/EventForm.scss';
 
 @import './components/EventsManager/EventsList.scss';
@@ -10,21 +7,29 @@
 
 @import './components/Scheduler/DailyColumnsSheet.scss';
 
-@import './components/Scheduler/DailyColumnsSheet/Event.scss';
+@import './components/Scheduler/DailyColumnsSheet/EventContainer.scss';
 
 @import './components/Scheduler/DailyColumnsSheet/Table.scss';
 
-@import './components/Scheduler/TimelineSheet/Event.scss';
+@import './components/Scheduler/TimelineSheet/EventContainer.scss';
+
+@import './components/Scheduler/TimelineSheet/EventContent.scss';
 
 @import './components/Scheduler/TimelineSheet/Row.scss';
 
 @import './components/Scheduler/MonthlySheet.scss';
 
-@import './components/Scheduler/MonthlySheet/Event.scss';
+@import './components/Scheduler/MonthlySheet/EventContainer.scss';
+
+@import './components/Scheduler/MonthlySheet/EventContent.scss';
 
 @import './components/Scheduler/MonthlySheet/Table.scss';
 
 @import './components/Scheduler/withCreateEvent.scss';
+
+@import './components/Scheduler/withDraggableEvent.scss';
+
+@import './components/Scheduler/withEditEvent.scss';
 
 @import './components/Scheduler/withLayout.scss';
 

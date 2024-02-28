@@ -1,9 +1,7 @@
-import React         from 'react'
-import ReactDOM      from 'react-dom'
 
 import BaseScheduler from './components/Scheduler' ;
 
-import { SchedulerConfig } from './types';
+import { ISchedulerConfig } from './types';
 
 import withRootElement from './components/withRootElement';
 
@@ -13,11 +11,14 @@ import EventsList from './components/EventsManager/EventsList';
 
 import './index.scss';
 
+import { parseString } from './utils/csv';
+
 const _noop = () => {}
 
-const Scheduler = ( { events = [], ...other}: SchedulerConfig ) => {
+const Scheduler = ( props: ISchedulerConfig ) => {
 
-    const schedulerOptions = {
+    const schedulerConfig = {
+        events: [],
         initialDate: Date.now(),
         viewMode: 'week',
         defaultEventBgColor: '#0288d1',
@@ -28,11 +29,18 @@ const Scheduler = ( { events = [], ...other}: SchedulerConfig ) => {
         spannedEventHeight: 20,
         minHour: 6,
         maxHour: 22,
-        draggable: false,
+        draggable: true,
+        editable: true,
         onEventCreate: _noop,
         onEventUpdate: _noop,
         onEventDelete: _noop,
-        ...other
+        ...props
+    }
+
+    let { events, ...schedulerOptions } = schedulerConfig;
+
+    if (typeof events === 'string' || events instanceof String) {
+        events = parseString(events).filter(e => !e.errors);
     }
 
     let Scheduler = BaseScheduler;

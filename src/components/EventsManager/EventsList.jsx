@@ -6,11 +6,16 @@ import TrashIcon from '../Widget/TrashIcon';
 import Message   from '../Widget/Message';
 
 import { formatters } from '../../utils/date';
+import { parseString } from '../../utils/csv';
 import { cleanEvent } from '../../models/events';
 
-function EventsList( { events = [], name = 'events' } ) {
+function EventsList( { targetElement } ) {
     
-    const [rows, setRows] = useState(events.map(cleanEvent));
+    const [rows, setRows] = useState(() => {
+        if (!targetElement) return [];
+        const items   = parseString(targetElement.value);
+        return items.map(cleanEvent);
+    });
     
     const handleChange = (numRow, name, value) => {
         rows[numRow][name] = value;
@@ -30,7 +35,7 @@ function EventsList( { events = [], name = 'events' } ) {
         const newRow = {
             label: "",
             start: new Date(Date.now()),
-            end: new Date(Date.now() + 15 * 60 * 1000)
+            end: new Date(Date.now() + 60 * 60 * 1000)
         }
         
         setRows([...rows, newRow]);
@@ -47,6 +52,21 @@ function EventsList( { events = [], name = 'events' } ) {
         
         return errors;
     }
+    
+    useEffect(() => {
+        if (targetElement) {
+            const headers = ['label', 'start', 'end', 'errors'];
+            const lines   = rows.map(row => ([
+                row['label'],
+                formatters['yyyy-mm-dd hh:ii'](row['start']),
+                formatters['yyyy-mm-dd hh:ii'](row['end']),
+                getErrors(row).join(',')
+            ]));
+
+            const value = [headers, ...lines].map(l => l.join('\t')).join('\n');
+            targetElement.value = value;
+        }
+    }, [rows]);
     
     return (
         <fieldset className="mormat-scheduler-EventsManager-EventsList">
@@ -70,12 +90,10 @@ function EventsList( { events = [], name = 'events' } ) {
                                             </Message>
                                             <input 
                                                 type  = "hidden"
-                                                name  = { name + `[errors][${numRow}][nth-event]` }
                                                 value = { numRow + 1 }
                                             />
                                             <input 
                                                 type  = "hidden"
-                                                name  = { name + `[errors][${numRow}][message]` }
                                                 value = { error }
                                             />
                                         </Fragment>
@@ -89,7 +107,6 @@ function EventsList( { events = [], name = 'events' } ) {
 
                                 <td>
                                     <input type  = "text" 
-                                       name  = { name + `[items][${numRow}][label]` }
                                        value = { row.label }
                                        onChange = { e => handleChange(numRow, 'label', e.target.value) }
                                     />
@@ -105,7 +122,6 @@ function EventsList( { events = [], name = 'events' } ) {
                                         />
                                         
                                         <input type= "hidden"
-                                           name  = {  name + `[items][${numRow}][start]` }
                                            value = { formatters['yyyy-mm-dd hh:ii'](row.start) }
                                            readOnly = { true }
                                         />
@@ -120,7 +136,6 @@ function EventsList( { events = [], name = 'events' } ) {
                                         />
                                         
                                         <input type= "hidden"
-                                            name  = {  name + `[items][${numRow}][end]` }
                                             value = { formatters['yyyy-mm-dd hh:ii'](row.end) }
                                             readOnly = { true }
                                         />

@@ -1,13 +1,10 @@
-.mormat-scheduler-TimelineSheet-Event {
-    
-    padding-left: 3px;
+.mormat-scheduler-TimelineSheet-EventContent {
     
     & > [data-role="header"] {
         background-color: transparent;
     }
     
     & > [data-action="edit"] {
-        opacity: 0;
         margin: 0;
         padding: 0;
         position: absolute;
@@ -16,9 +13,5 @@
         bottom: 0;
         overflow: hidden;
     }
-    
-    &:hover > [data-action="edit"] {
-        opacity: 1;
-    }    
     
 }

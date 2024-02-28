@@ -9,7 +9,7 @@ function DayColumnDraggableRenderer() {
     
     const renderers = {
         'drag': ({e, action, draggable}) => {
-            clone = e.currentTarget.cloneNode(true);
+            clone = e.currentTarget.parentNode.cloneNode(true);
             clone.style['display'] = 'none';
             document.body.appendChild(clone);
             
@@ -70,7 +70,7 @@ function MonthlySheetDraggableRenderer() {
     
     const renderers = {
         'drag': ({e, action, draggable}) => {
-            clone = e.currentTarget.cloneNode(true);
+            clone = e.currentTarget.parentNode.cloneNode(true);
             clone.style['display'] = 'none';
             document.body.appendChild(clone);
         },

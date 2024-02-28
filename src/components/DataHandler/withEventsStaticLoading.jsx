@@ -22,12 +22,24 @@ function withEventsStaticLoading( WrappedComponent ) {
 
         }
         
+        const onEventCreate = (event, ...others) => {
+            staticEvents.push(event);
+            schedulerOptions.onEventCreate(event, ...others);
+        }
+        
+        const onEventDelete = (event, ...others) => {
+            setStaticEvents(staticEvents.filter(e => e !== event));
+            schedulerOptions.onEventDelete(event, ...others);
+        }
+        
         return (
             <WrappedComponent 
                 { ...otherProps } 
                 schedulerOptions = { {
                     ...schedulerOptions,
-                    onEventUpdate
+                    onEventCreate,
+                    onEventUpdate,
+                    onEventDelete
                 } }
                 events           = { staticEvents }
             />

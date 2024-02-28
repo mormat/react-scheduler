@@ -18,9 +18,11 @@ Given('the date today is {string}', function (string) {
 
 Given('the configuration contains the following events:', function (dataTable) {
     
-    const events = config['events'] || [];
+    let events = JSON.parse(config['events'] || '[]');
     
-    config['events'] = events.concat(dataTable.hashes());
+    events = events.concat(dataTable.hashes());
+    
+    config['events'] = JSON.stringify(events);
     
 });
 
@@ -36,19 +38,18 @@ Given('{string} in configuration equals:', function (string, docString) {
     config[string] = docString;
 });
 
+Given('{string} in configuration equals the csv below:', function (key, dataTable) {
+    const csv = dataTable.raw().map(r => r.join('\t')).join('\n');
+    
+    config[key] = JSON.stringify(csv);
+    
+  });
+
 function serializeConfig(config) {
     
-    const items = Object.keys(config).map(key => {
-        let value;
-        if (key.startsWith('on') || (config[key] || '').includes('function(')) {
-            value = config[key];
-        } else if (['true', 'false'].includes(config[key])) {
-            value = config[key];
-        } else {
-            value = JSON.stringify(config[key]);
-        }
-        return `"${key}":${value}`;
-    });
+    const items = Object.entries(config)
+        .filter(([_, v]) => v !== 'undefined')
+        .map(([k, v]) => `"${k}":${v}`);
     
     return items.length > 0 ? '{' + items.join(',') + '}' : '';
     
@@ -76,13 +77,6 @@ function getEventsManagerScripts()
     scripts.push(
         `renderComponent(mormat_react_scheduler.EventsList,${serializedConfig})`
     );
-    
-    /*
-    if (serializedConfig) {
-        scripts.push(`mormat_scheduler.bindEventsList(document.getElementById('main'),${serializedConfig})`);
-    } else {
-        scripts.push("mormat_scheduler.bindEventsList(document.getElementById('main'))");
-    }*/
     
     return scripts;
 }

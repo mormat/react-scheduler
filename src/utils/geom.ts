@@ -26,6 +26,10 @@ class Rectangle
         this.height = rect.height;
     }
 
+    get top() {
+        return this.y;
+    }   
+
     get right() {
         return this.x + this.width;
     }

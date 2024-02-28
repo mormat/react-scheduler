@@ -5,7 +5,7 @@ import { formatters } from '../../utils/date'
 
 const MINUTES_STEP = 5;
 
-function DateTimeInput( { value, onChange, minHour = 7, maxHour = 21, ...otherProps } ) {
+function DateTimeInput( { value, onChange, minHour = 0, maxHour = 24, ...otherProps } ) {
     
     const options = buildOptions(minHour, maxHour);
         

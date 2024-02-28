@@ -30,7 +30,9 @@ function MonthlySheet( {currentDate, events, schedulerOptions, layoutProps } ) {
     );
     
     let Table = BaseTable;
-    Table = withCreateEvent(BaseTable);
+    if (schedulerOptions.editable) {
+        Table = withCreateEvent(BaseTable);
+    }
     Table = withLayout(Table, { title, ...layoutProps });
     Table = withResizeObserver(Table);
     Table = withEventsDynamicLoading(Table, dateRange);

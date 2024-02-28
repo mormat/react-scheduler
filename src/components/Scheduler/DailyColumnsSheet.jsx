@@ -31,7 +31,9 @@ function DailyColumnsSheet( { events = [], schedulerOptions, startDate, length, 
     )).join(' - ')
     
     let Table = BaseTable;
-    Table = withCreateEvent(Table);
+    if (schedulerOptions.editable) {
+        Table = withCreateEvent(Table);
+    }
     Table = withLayout(Table, { title, ...layoutProps });
     Table = withResizeObserver(Table);
     Table = withEventsDynamicLoading(Table, dateRange);

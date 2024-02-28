@@ -31,10 +31,11 @@ Feature: Managing events in scheduler
             """
         When I open the scheduler in "<view_mode>" view
         And I move the "Presentation" event to "2023-05-01" at "08:00"
-        Then the "Presentation" event should be at "2023-05-01" <expected>
+        Then I should see the "Presentation" event in "2023-05-01"
+        And the "Presentation" event should be displayed <at_time_range>
 
     Examples:
-        | view_mode | update_script | expected                |
+        | view_mode | update_script | at_time_range           |
         | day       |               | from "08:00" to "10:00" |
         | day       | reload()      | from "14:00" to "16:00" |
         | week      |               | from "08:00" to "10:00" |
@@ -181,7 +182,6 @@ Feature: Managing events in scheduler
         | month     | "Edit event" in "Presentation" event    |
         | month     | "Edit event" in "Training course" event |    
 
-    @current
     Scenario Outline: Delete event
         Given "onEventDelete" in configuration equals:
             """

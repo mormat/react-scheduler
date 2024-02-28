@@ -1,4 +1,4 @@
-.mormat-scheduler-Scheduler-DailyColumnsSheet-Event {
+.mormat-scheduler-Scheduler-DailyColumnsSheet-EventContainer {
     
     font: caption;
     font-size: 14px;
@@ -18,23 +18,12 @@
         }
     }
     
-    [data-action="resize"] {
+    [data-draggable="resize-event"] {
         height: 5px;
         border: 0px;
         position: absolute;
         width: 100%;
         bottom: 0px;
-        cursor: ns-resize;
-    }
-    
-    [data-action="edit"] {
-        float: right;
-        margin-right: 2px;
-        opacity: 0;
-    }
-    
-    &:hover [data-action="edit"]  {
-        opacity: 1;
     }
     
 }

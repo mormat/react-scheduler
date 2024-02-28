@@ -51,26 +51,36 @@
             );
         }
           
+        function test()
+        {
+            document.dispatchEvent(new MouseEvent("mousedown", {
+                clientX: 77,
+                clientY: 166
+            }));
+
+                document.dispatchEvent(new MouseEvent("mousedown", {
+                clientX: 204,
+                clientY: 166
+            }));            
+        }
+          
+        
+          
         function onReady() {
             
             var urlParams = new URLSearchParams(window.location.search);
-            
+
             if (!urlParams.get('cucumber')) {
-                
                 renderComponent(
-                    mormat_react_scheduler.Scheduler, 
+                    mormat_react_scheduler.EventsList,
                     {
-                        minHour: 8,
-                        maxHour: 20,
-                        viewMode: 'week', 
                         events: buildSomeEvents(),
-                        width: 'auto',
-                        height: 'auto',
+                        targetElement: document.getElementById('comments')
                     }
-                );
-        
+                )
             }
             
+
         }
           
         document.addEventListener("DOMContentLoaded", onReady);

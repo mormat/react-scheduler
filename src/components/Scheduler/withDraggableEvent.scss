@@ -1,0 +1,15 @@
+
+.mormat-scheduler-Scheduler-withDraggableEvent {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    
+    cursor: move;
+    
+    [data-draggable="resize-event"] {
+        cursor: ns-resize;
+    }
+    
+}

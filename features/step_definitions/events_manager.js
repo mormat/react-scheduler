@@ -52,3 +52,32 @@ When('I open the events list', async function () {
     
 });
 
+Given('I open the events list with {string} containing:', async function (selector, dataTable) {
+    
+    await driver.get(base_url + '/test.html');
+    
+    const value = dataTable.raw().map(t => t.join('\\t')).join('\\n');
+    
+    const script = `document.querySelector('${selector}').value+='${value}'`;
+    
+    await driver.executeScript(script);
+    
+    const scripts = getEventsManagerScripts();
+    for (let script of scripts) {
+        driver.executeScript(script + ';');
+    }
+    
+});
+
+Then('{string} should contain:', async function (selector, dataTable) {
+    
+    const element = await findElementByCss(selector);
+    
+    const value   = await element.getAttribute('value');
+    
+    const actual  = value.split('\n').map(t => t.split('\t'))
+    
+    expect(actual).toStrictEqual(dataTable.raw());
+    
+});
+
