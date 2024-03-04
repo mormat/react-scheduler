@@ -55,38 +55,48 @@ function App() {
 
 ## Using the component in an ordinary HTML page
 
-1. First, you need to add the React and ReactDOM libraries in your HTML page
-```html
-    <script src="//unpkg.com/react@18/umd/react.development.js"></script>
-    <script src="//unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-```
+Add the lines below in your HTML page
 
-2. Download [mormat_react_scheduler.js](https://github.com/mormat/react-scheduler/releases/latest) in the release page then add it to your HTML page.
-```html
-    <script src="./mormat_react_scheduler.js"></script>
-```
-
-3. Then add the lines below to render the scheduler
+### With React 18
 ```html
     <div id="scheduler"></div>
+    <script src="//unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="//unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="//unpkg.com/@mormat/react-scheduler"></script>
     <script>
         var props = { 
             /* the same props used in a React project */ 
         };
 
-        var container    = document.getElementById('scheduler');
         var reactElement = React.createElement(
             mormat_react_scheduler.Scheduler, 
             props
         );
 
-        // with React v17
-        ReactDOM.render(reactElement, container)
-
-        // with React v18
-        var root = ReactDOM.createRoot(container);
+        var container = document.getElementById('scheduler');
+        var root      = ReactDOM.createRoot(container);
         root.render(reactElement);
+    </script>
+```
 
+### With React 17
+```html
+    <div id="scheduler"></div>
+    <script src="//unpkg.com/react@17/umd/react.development.js"></script>
+    <script src="//unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+    <script src="//unpkg.com/@mormat/react-scheduler"></script>
+    <script>
+        var props = { 
+            /* the same props used in a React project */ 
+        };
+
+        var reactElement = React.createElement(
+            mormat_react_scheduler.Scheduler, 
+            props
+        );
+
+        var container = document.getElementById('scheduler');
+        ReactDOM.render(reactElement, container);
     </script>
 ```
 

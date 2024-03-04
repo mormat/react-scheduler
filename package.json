@@ -5,14 +5,15 @@
   "author": "Mathieu Morel",
   "license": "GPL v2",
   "keywords": [
+    "agenda",
+    "beta",
     "calendar",
+    "front-end",
+    "planner",
     "react",
     "react-component",
     "scheduler",
-    "ui",
-    "planner",
-    "agenda",
-    "beta"
+    "ui"
   ],
   "main": "dist/mormat_react_scheduler.js",
   "files": [
