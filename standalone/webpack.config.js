@@ -2,12 +2,14 @@ const path = require('path');
 const CopyPlugin = require("copy-webpack-plugin");
 // DefinePlugin
 
+console.log("STANDALONE FOLDER", path.join(__dirname, 'web'));
+
 module.exports = {
     entry: {
-        'mormat_standalone_scheduler':  ['./src/standalone.jsx'],
+        'mormat_standalone_scheduler':  [path.resolve(__dirname,'./src/index.jsx')],
     },
     output: {
-        path: path.resolve(__dirname, 'dist'),
+        path: path.resolve(__dirname, '..', 'dist'),
         filename: '[name].js',
         library: 'mormat_standalone_scheduler',
         libraryTarget: 'umd'
@@ -49,7 +51,7 @@ module.exports = {
     plugins: [
         new CopyPlugin({
             patterns: [
-                { from: './public', to: '.' },
+                { from: path.join(__dirname, 'public'), to: '.' },
             ]
         }),
     ],

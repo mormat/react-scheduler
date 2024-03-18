@@ -277,9 +277,3 @@ Then('the {string} event should be rendered with', async function (label, dataTa
     }
     
 });
-
-When('I click on {string} in {string} event', async function (text, eventLabel) {
-    const root = css_selectors['events'] + `:contains("${eventLabel}")`;
-    
-    await clickOn(text, root);
-});

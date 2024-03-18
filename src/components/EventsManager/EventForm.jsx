@@ -1,10 +1,13 @@
 
 import { useState, useEffect, Fragment } from 'react';
 
-import ColorSelect   from '../Widget/ColorSelect';
-import Message       from '../Widget/Message';
-import DateTimeInput from '../Widget/DateTimeInput';
-import Button        from '../Widget/Button';
+import TextInput      from '../Widget/Form/TextInput';
+import DateTimePicker from '../Widget/Form/DateTimePicker';
+import ColorSelect    from '../Widget/ColorSelect';
+import Message        from '../Widget/Message';
+import Button         from '../Widget/Button';
+
+
 
 const colors = ['#0288d1', '#9575cd', '#0fc4a7', '#721c24', '#856404', '#383d41'];
 
@@ -13,7 +16,9 @@ function EventForm( { schedulerEvent, onConfirm, onDelete } ) {
     const [label,   setLabel]   = useState(schedulerEvent.label);
     const [start,   setStart]   = useState(schedulerEvent.start);
     const [end,     setEnd]     = useState(schedulerEvent.end);
-    const [bgColor, setBgColor] = useState(colors.includes(schedulerEvent.bgColor) ? schedulerEvent.bgColor : colors.at(0));
+    const [bgColor, setBgColor] = useState(
+        colors.includes(schedulerEvent.bgColor) ? schedulerEvent.bgColor : colors.at(0)
+    );
     
     const [errors,  setErrors]  = useState([]);
     
@@ -70,36 +75,31 @@ function EventForm( { schedulerEvent, onConfirm, onDelete } ) {
                     Description
                     <br/>
                     { renderErrors('label') }
-                    <input 
-                        name     = "label"
-                        type     = "text" 
+                    <TextInput
+                        label    = "Description"
                         value    = { label }
-                        onChange = { e => setLabel(e.target.value) }
+                        onChange = { setLabel }
                     />
                 </label>
             </p>
             <p> 
-                <label>
-                    <span>From</span>
-                    <br/>
-                    { renderErrors('start') }
-                    <DateTimeInput 
-                        name     = "start"
-                        value    = { start } 
-                        onChange = { setStart } 
-                    />
-                </label>
+                <label>From</label>
+                <br/>
+                { renderErrors('start') }
+                <DateTimePicker 
+                    value    = { start } 
+                    onChange = { setStart } 
+                    label    = "From"
+                />
             </p>
             <p> 
-                <label>
-                    <span>To</span>
-                    <br/>
-                    <DateTimeInput 
-                        name     = "end"
-                        value    = { end } 
-                        onChange = { setEnd } 
-                    />
-                </label>
+                <label>To</label>
+                <br/>
+                <DateTimePicker 
+                    value    = { end } 
+                    onChange = { setEnd } 
+                    label    = "To"
+                />
             </p>
             <p>
                 <label>

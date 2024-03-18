@@ -1,3 +1,4 @@
+@config
 Feature: Configuring the scheduler
 
     Background:

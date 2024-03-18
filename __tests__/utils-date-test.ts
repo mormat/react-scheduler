@@ -3,7 +3,7 @@ import { getDaysBetween } from '../src/utils/date'
 
 import { getFirstDayOfWeek, getLastDayOfWeek } from '../src/utils/date';
 
-import { formatters, date_add } from '../src/utils/date';
+import { format_date, date_add } from '../src/utils/date';
 
 require('jest-mock-now')(new Date('2023-04-20'));
 
@@ -47,36 +47,50 @@ test("Date increment", () => {
 
 });
 
-test("Date formatters", () => {
+function buildDate(value: string, type: string): any {
+    switch (type) {
+        case 'date':      return new Date(value);
+        case 'timestamp': return (new Date(value)).getTime();
+        default: return value;
+    }
+}
 
-    const d1 = new Date("2020-11-28 10:35")
-    const d2 = new Date("2020-2-5 9:7");
+const dateBuilders = {
+    'string': (s: string) => s,
+    'date':   (s: string) => new Date(s),
+}
 
-    expect( formatters['yyyy'](d1) ).toBe('2020');
+test.each(["string", "date", "timestamp"])
+("format_date() with %s", (dateType: string) => {
 
-    expect( formatters['mm'](d1) ).toBe('11');
-    expect( formatters['mm'](d2) ).toBe('02');
+    const d1 = buildDate("2020-11-28 10:35", dateType);
+    const d2 = buildDate("2020-2-5 9:7",     dateType);
 
-    expect( formatters['dd'](d1) ).toBe('28');
-    expect( formatters['dd'](d2) ).toBe('05');
+    expect( format_date('yyyy', d1) ).toBe('2020');
 
-    expect( formatters['yyyy-mm'](d1) ).toBe('2020-11');
-    expect( formatters['yyyy-mm'](d2) ).toBe('2020-02');
+    expect( format_date('mm', d1) ).toBe('11');
+    expect( format_date('mm', d2) ).toBe('02');
 
-    expect( formatters['yyyy-mm-dd'](d1) ).toBe('2020-11-28');
-    expect( formatters['yyyy-mm-dd'](d2) ).toBe('2020-02-05');
+    expect( format_date('dd', d1) ).toBe('28');
+    expect( format_date('dd', d2) ).toBe('05');
 
-    expect( formatters['hh'](d1) ).toBe('10');
-    expect( formatters['hh'](d2) ).toBe('09');
+    expect( format_date('yyyy-mm', d1) ).toBe('2020-11');
+    expect( format_date('yyyy-mm', d2) ).toBe('2020-02');
 
-    expect( formatters['ii'](d1) ).toBe('35');
-    expect( formatters['ii'](d2) ).toBe('07');
+    expect( format_date('yyyy-mm-dd', d1) ).toBe('2020-11-28');
+    expect( format_date('yyyy-mm-dd', d2) ).toBe('2020-02-05');
 
-    expect( formatters['hh:ii'](d1) ).toBe('10:35');
-    expect( formatters['hh:ii'](d2) ).toBe('09:07');
+    expect( format_date('hh', d1) ).toBe('10');
+    expect( format_date('hh', d2) ).toBe('09');
 
-    expect( formatters['yyyy-mm-dd hh:ii'](d1) ).toBe('2020-11-28 10:35');
-    expect( formatters['yyyy-mm-dd hh:ii'](d2) ).toBe('2020-02-05 09:07');
+    expect( format_date('ii', d1) ).toBe('35');
+    expect( format_date('ii', d2) ).toBe('07');
+
+    expect( format_date('hh:ii', d1) ).toBe('10:35');
+    expect( format_date('hh:ii', d2) ).toBe('09:07');
+
+    expect( format_date('yyyy-mm-dd hh:ii', d1) ).toBe('2020-11-28 10:35');
+    expect( format_date('yyyy-mm-dd hh:ii', d2) ).toBe('2020-02-05 09:07');
 
 });
 

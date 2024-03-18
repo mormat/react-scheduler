@@ -65,7 +65,8 @@ Feature: Managing events in scheduler
         |               | 2023-05-02   |
         | reload();     | 2023-05-01   |
 
-    Scenario Outline: Adding a dynamically loaded event
+    
+    Scenario Outline: Creating a dynamically loaded event
         Given "onEventCreate" in configuration equals:
             """
                 function(event, _, reload) {
@@ -73,9 +74,8 @@ Feature: Managing events in scheduler
                 }
             """
         When I open the scheduler in "<view_mode>" view
-        And I click on "Add event"
-        And I fill "new event" in "Description"
-        And I click on "Ok"
+        And I create an event with:
+            | Description | new event |
         Then I should see "new event"
         And the logs should contain the info:
         """
@@ -87,7 +87,7 @@ Feature: Managing events in scheduler
             | day       |
             | week      |
             | month     |
-
+            
     Scenario Outline: Editing a dynamically loaded event
         Given "onEventUpdate" in configuration equals:
             """
@@ -96,9 +96,8 @@ Feature: Managing events in scheduler
                 }
             """
         When I open the scheduler in "<view_mode>" view
-        And I click on "Edit event" in "<event_label>" event
-        And I fill "updated event" in "Description"
-        And I click on "Ok"
+        And I update the "<event_label>" event with:
+            | Description | updated event |
         Then I should see "updated event"
         And the logs should contain the info:
         """
@@ -114,6 +113,7 @@ Feature: Managing events in scheduler
             | month     | Presentation    |
             | month     | Training course |
 
+    
     Scenario Outline: Reloading events after create/update
         Given "onEventCreate" in configuration equals:
             """
@@ -124,63 +124,58 @@ Feature: Managing events in scheduler
                 function(event, _, reload) { reload(); }
             """
         When I open the scheduler in "<view_mode>" view
-        And I click on <item_to_click>
-        And I fill "some event" in "Description"
-        And I click on "Ok"
+        And I <create_or_update_event> with:
+            | Description | some event |
         Then I should not see "some event"
 
     Examples:
-        | view_mode | item_to_click                           |
-        | day       | "Add event"                             |
-        | day       | "Edit event" in "Presentation" event    |
-        | day       | "Edit event" in "Training course" event |
-        | week      | "Add event"                             |
-        | week      | "Edit event" in "Presentation" event    |
-        | week      | "Edit event" in "Training course" event |
-        | month     | "Add event"                             |
-        | month     | "Edit event" in "Presentation" event    |
-        | month     | "Edit event" in "Training course" event |        
+        | view_mode | create_or_update_event                |
+        | day       | create an event                       |
+        | day       | update the "Presentation" event       |
+        | day       | update the "Training course" event    |
+        | week      | create an event                       |
+        | week      | update the "Presentation" event       |
+        | week      | update the "Training course" event    |
+        | month     | create an event                       |
+        | month     | update the "Presentation" event       |
+        | month     | update the "Training course" event    |
 
     Scenario Outline: Description required when creating or editing events
         When I open the scheduler in "<view_mode>" view
-        And I click on <item_to_click>
-        And I fill "" in "Description"
-        And I click on "Ok"
+        And I <create_or_update_event> with:
+            | Description | |
         Then I should see "description required"
         
     Examples:
-        | view_mode | item_to_click                           |
-        | day       | "Add event"                             |
-        | day       | "Edit event" in "Presentation" event    |
-        | day       | "Edit event" in "Training course" event |
-        | week      | "Add event"                             |
-        | week      | "Edit event" in "Presentation" event    |
-        | week      | "Edit event" in "Training course" event |
-        | month     | "Add event"                             |
-        | month     | "Edit event" in "Presentation" event    |
-        | month     | "Edit event" in "Training course" event |        
+        | view_mode | create_or_update_event                |
+        | day       | create an event                       |
+        | day       | update the "Presentation" event       |
+        | day       | update the "Training course" event    |
+        | week      | create an event                       |
+        | week      | update the "Presentation" event       |
+        | week      | update the "Training course" event    |
+        | month     | create an event                       |
+        | month     | update the "Presentation" event       |
+        | month     | update the "Training course" event    |
 
     Scenario Outline: Invalid date range
         When I open the scheduler in "<view_mode>" view
-        And I click on <item_to_click>
-        And I select the dates below:
-            |      | time  | day | month   | year |
-            | From | 11:00 | 22  | April   | 2023 |
-            | To   | 10:00 | 22  | April   | 2023 |
-        And I click on "Ok"
+        And I <create_or_update_event> with:
+            | From | 11:00 22 April 2023 |
+            | To   | 10:00 22 April 2023 |
         Then I should see "invalid date range"
 
     Examples:
-        | view_mode | item_to_click                           |
-        | day       | "Add event"                             |
-        | day       | "Edit event" in "Presentation" event    |
-        | day       | "Edit event" in "Training course" event |
-        | week      | "Add event"                             |
-        | week      | "Edit event" in "Presentation" event    |
-        | week      | "Edit event" in "Training course" event |
-        | month     | "Add event"                             |
-        | month     | "Edit event" in "Presentation" event    |
-        | month     | "Edit event" in "Training course" event |    
+        | view_mode | create_or_update_event                |
+        | day       | create an event                       |
+        | day       | update the "Presentation" event       |
+        | day       | update the "Training course" event    |
+        | week      | create an event                       |
+        | week      | update the "Presentation" event       |
+        | week      | update the "Training course" event    |
+        | month     | create an event                       |
+        | month     | update the "Presentation" event       |
+        | month     | update the "Training course" event    |
 
     Scenario Outline: Delete event
         Given "onEventDelete" in configuration equals:
@@ -190,9 +185,7 @@ Feature: Managing events in scheduler
                 }
             """
         When I open the scheduler in "<view_mode>" view
-        And I click on "Edit event" in "<event_label>" event
-        And I click on "Delete"
-        And I confirm "Deleting event ?"
+        And I delete the "<event_label>" event
         Then I should not see "<event_label>"
         And the logs should contain the info:
         """
@@ -214,9 +207,7 @@ Feature: Managing events in scheduler
                 function(event, reload) { reload(); }
             """
         When I open the scheduler in "<view_mode>" view
-        And I click on "Edit event" in "<event_label>" event
-        And I click on "Delete"
-        And I confirm "Deleting event ?"
+        And I delete the "<event_label>" event
         Then I should see "<event_label>"
 
     Examples:

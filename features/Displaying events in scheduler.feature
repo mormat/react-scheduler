@@ -1,3 +1,4 @@
+@display
 Feature: Displaying events in the scheduler
 
     Background:

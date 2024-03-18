@@ -1,11 +1,30 @@
+const { Given, When, Before, Then } = require('@cucumber/cucumber');
+const { By, Select  } = require('selenium-webdriver');
+const { driver, findElementByCss, findElementsByCss } = require('./webdriver');
+const { JSDOM } = require("jsdom");
+const { expect } = require('expect');
+const { getPreScripts } = require('./config');
 
-const { When } = require('@cucumber/cucumber');
-
-const { driver } = require('./webdriver');
+const { setFormValues }  = require('./forms');
 
 const base_url  = 'http://localhost:9001';
 
 When('I open the standalone version with the script below:', function (docString) {
-    driver.get(base_url + '/standalone.html?action=test');    
+    
+    driver.get(base_url + '/index.html?action=test');    
+    
     driver.executeScript(docString + ';');
+    
+});
+
+When('I open the admin section', function () {
+    
+    driver.get(base_url + '/admin.html?action=test');
+    
+    for (const script of getPreScripts()) {
+        driver.executeScript(script + ';');
+    }
+    
+    driver.executeScript("mormat_standalone_scheduler.renderAdminSection('#main')");
+    
 });

@@ -1,6 +1,8 @@
 
 import BaseScheduler from './components/Scheduler' ;
 
+import { defaultSchedulerConfig } from './components/Scheduler';
+
 import { ISchedulerConfig } from './types';
 
 import withRootElement from './components/withRootElement';
@@ -31,9 +33,9 @@ const Scheduler = ( props: ISchedulerConfig ) => {
         maxHour: 22,
         draggable: true,
         editable: true,
-        onEventCreate: _noop,
-        onEventUpdate: _noop,
-        onEventDelete: _noop,
+        onEventCreate: () => {},
+        onEventUpdate: () => {},
+        onEventDelete: () => {},
         ...props
     }
 
