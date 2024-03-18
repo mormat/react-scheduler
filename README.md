@@ -149,7 +149,9 @@ The available `props` can be found in [src/types.ts](src/types.ts)
     </script>
 ```    
 
-@todo write other examples
+#### Loading dynamic events
+
+
 
 ## How it works
 

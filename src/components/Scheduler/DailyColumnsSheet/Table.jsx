@@ -11,9 +11,9 @@ import EventContainer from './EventContainer';
 import Grille from '../../Widget/Grille';
 import TimelineRow from '../TimelineSheet/Row';
 
-const yAxisWidth = 70;
-
 function Table( { events, schedulerOptions, dateRange } ) {
+
+    const yAxisWidth = schedulerOptions.width > 640 ? 70 : 30;
     
     const dates = [];
     for (
@@ -57,33 +57,57 @@ function Table( { events, schedulerOptions, dateRange } ) {
     
     const columnsDraggableAreaId = useUniqueId();
     
-    const calcRowStyle = () => {
-        const height = (schedulerOptions.height - 130) / (hours.length)
+    const rowHeight = (
+        schedulerOptions.height - 50 - ((schedulerOptions.spannedEventHeight + 4) * spannedEvents.length)
+    ) / (hours.length);
         
-        return { height: height + 'px'}
-    }
-    
     const calcDayStyle = () => {
         
         const width = (schedulerOptions.width - yAxisWidth) / (dates.length)
         
         return { width: width + 'px'}
     }
+    
+    function getStyle( { width } ) {
+        if (width < 480) {
+            return { fontSize: '12px' }
+        }
+        
+        return { fontSize: '16px' }
+    }
+    
+    function formatDateHeader(d) {
+        
+        const strdate = options => d.toLocaleString(
+            schedulerOptions.locale, 
+            options
+        );
+        
+        if (schedulerOptions.width < 1024 && columns.length == 7) {
+             return (<>
+                { strdate({ weekday: 'short' }) }
+                <br/>
+                { strdate({ month: 'short', day: 'numeric' }) }
+            </>)
+        }
+        
+        return strdate({ weekday: 'short', month: 'long',  day:'numeric' });
+        
+    }
        
     return (
         <table className="mormat-scheduler-Scheduler-DailyColumnsSheet-Table" 
-                   style = { { width: "100%" } } >
+                   style = { { 
+                       width: "100%" ,
+                        ...getStyle(schedulerOptions)
+                   } } >
 
             <thead> 
                 <tr>
                     <td style = { { width: yAxisWidth } }></td>
                     { dates.map( ( d, index) => (
                         <th key = { index } style = { calcDayStyle() }>
-                            { d.toLocaleString(schedulerOptions.locale, {
-                                weekday: 'short', 
-                                month:    schedulerOptions.width < 1024 ? 'short' : 'long', 
-                                day:     'numeric',
-                            }) }
+                            { formatDateHeader(d) }
                         </th>
                     )) }
                 </tr>
@@ -110,7 +134,7 @@ function Table( { events, schedulerOptions, dateRange } ) {
 
                 { hours.map( ( hour, index ) => (
                     <tr key   = { index } 
-                        style = { calcRowStyle() } 
+                        style = { { height: rowHeight } } 
                         data-hour = { hour }>
                         <th>
                             { hour }

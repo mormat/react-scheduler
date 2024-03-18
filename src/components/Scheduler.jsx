@@ -9,6 +9,25 @@ import ToggleButtonGroup from './Widget/ToggleButtonGroup';
 
 import { getFirstDayOfWeek, date_add } from '../utils/date';
 
+const defaultSchedulerConfig = {
+    events: [],
+    initialDate: Date.now(),
+    viewMode: 'week',
+    defaultEventBgColor: '#0288d1',
+    defaultEventColor: 'white',
+    locale: 'en',
+    width:  800,
+    height: 600,
+    spannedEventHeight: 20,
+    minHour: 6,
+    maxHour: 22,
+    draggable: true,
+    editable: true,
+    onEventCreate: () => {},
+    onEventUpdate: () => {},
+    onEventDelete: () => {},
+}
+
 function Scheduler( { events, schedulerOptions } ) {
     
     const [currentDate, setCurrentDate] = useState(schedulerOptions.initialDate);
@@ -75,4 +94,5 @@ function Scheduler( { events, schedulerOptions } ) {
     
 }
 
-export default Scheduler
+export default Scheduler;
+export { defaultSchedulerConfig };

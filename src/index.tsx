@@ -1,11 +1,13 @@
 
 import BaseScheduler from './components/Scheduler' ;
 
+import { defaultSchedulerConfig } from './components/Scheduler';
+
 import { ISchedulerConfig } from './types';
 
 import withRootElement from './components/withRootElement';
 
-import withEventsStaticLoading from './components/DataHandler/withEventsStaticLoading';
+import withSchedulerEvents from './components/DataHandler/withSchedulerEvents';
 
 import EventsList from './components/EventsManager/EventsList';
 
@@ -31,11 +33,20 @@ const Scheduler = ( props: ISchedulerConfig ) => {
         maxHour: 22,
         draggable: true,
         editable: true,
-        onEventCreate: _noop,
-        onEventUpdate: _noop,
-        onEventDelete: _noop,
+        onEventCreate: () => {},
+        onEventUpdate: () => {},
+        onEventDelete: () => {},
         ...props
     }
+
+    // Cast numeric values
+    for (const k of ['minHour', 'maxHour']) {
+        schedulerConfig[k] = Number(schedulerConfig[k]);
+    }
+
+    if (!schedulerConfig.initialDate) {
+        schedulerConfig.initialDate = Date.now()
+    }   
 
     let { events, ...schedulerOptions } = schedulerConfig;
 
@@ -46,7 +57,7 @@ const Scheduler = ( props: ISchedulerConfig ) => {
     let Scheduler = BaseScheduler;
 
     if (Array.isArray(events)) {
-        Scheduler = withEventsStaticLoading(Scheduler);
+        Scheduler = withSchedulerEvents(Scheduler);
     }
 
     Scheduler = withRootElement(Scheduler);
@@ -57,5 +68,7 @@ const Scheduler = ( props: ISchedulerConfig ) => {
     
 }
 
+const Truc = Scheduler
+
 export default Scheduler;
-export { Scheduler, EventsList }
+export { Scheduler, EventsList, Truc }

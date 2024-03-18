@@ -1,3 +1,4 @@
+@display
 Feature: Displaying events in the scheduler
 
     Background:
@@ -50,17 +51,14 @@ Feature: Displaying events in the scheduler
         Given "onEventUpdate" in configuration equals:
             """
                 function(event) {
-                    console.log(`${event.label} event was moved`);
+                    notify(`${event.label} event was moved`);
                 }
             """
         When I open the scheduler in "week" view
         And I move the "Presentation" event to "2023-05-02" at "08:00"
         Then I should see the "Presentation" event in "2023-05-02"
         And the "Presentation" event should be displayed from "08:00" to "10:00"
-        And the logs should contain the info:
-        """
-            Presentation event was moved
-        """
+        And I should see "Presentation event was moved" in notifications
 
     Scenario: Default ending time is "start + 60 minutes"
         Given the configuration contains the following events:
@@ -172,7 +170,7 @@ Feature: Displaying events in the scheduler
         Given "events" in configuration equals:
             """
                 function(setEvents, params) {
-                    console.log(`loading events from ${params.start} to ${params.end}`)
+                    notify(`loading events from ${params.start} to ${params.end}`)
                     setEvents([{
                         label: "dynamically loaded event",
                         start: "2023-05-01 10:00",
@@ -182,7 +180,7 @@ Feature: Displaying events in the scheduler
             """
         When I open the scheduler in "<view_mode>" view
         Then I should see "dynamically loaded event"
-        And the logs should contain the info:
+        And I should see in notifications:
         """
             loading events from <start_date> to <end_date>
         """
@@ -208,16 +206,16 @@ Feature: Displaying events in the scheduler
             """
         And "onEventUpdate" in configuration equals:
             """
-                function(event, _, reload) {
+                function(event, { reset }) {
                     <update_script>
-                    console.log(`${event.label} event was moved`);
+                    notify(`${event.label} event was moved`);
                 }
             """
         When I open the scheduler in "<view_mode>" view
         And I move the "dynamically loaded" event to "2023-05-01" at "<start_hour>"
         Then I should see the "dynamically loaded" event in "2023-05-01"
         And the "dynamically loaded" event should be displayed from "<start_hour>" to "<end_hour>"
-        And the logs should contain the info:
+        And I should see in notifications:
         """
             dynamically loaded event was moved
         """
@@ -225,9 +223,9 @@ Feature: Displaying events in the scheduler
     Examples:
         | view_mode  | update_script | start_hour | end_hour |
         | day        |               | 08:00      | 10:00    |
-        | day        | reload();     | 14:00      | 16:00    |
+        | day        | reset();     | 14:00      | 16:00    |
         | week       |               | 08:00      | 10:00    |
-        | week       | reload();     | 14:00      | 16:00    |
+        | week       | reset();     | 14:00      | 16:00    |
 
     Scenario: Displaying valid events in csv format
         Given "events" in configuration equals the csv below:

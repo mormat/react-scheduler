@@ -47,15 +47,24 @@ function Table( { currentDate, dateRange, events, schedulerOptions } ) {
             
             const countWeeks = Object.keys(datesByWeek).length;
             
-            const height = (schedulerOptions.height - 210) / countWeeks;
+            const height = (schedulerOptions.height - 100) / countWeeks;
             return { row, spannedEvents, height }
         })
     }
     
+    const headerHeight = 10;
+    
+    const formatDateHeader = (d) => d.toLocaleString(
+        schedulerOptions.locale,
+        {
+            weekday: schedulerOptions.width > 960 ? 'long' : 'short'
+        }
+    );
+    
     return (
         <table 
             className = "mormat-scheduler-Scheduler-MonthlySheet-Table"
-            style = {{ tableLayout: 'fixed' }}>
+            style = {{ tableLayout: 'fixed', width: '100%' }}>
             <thead>
                 <tr>
                     { dates.slice(0, 7).map((d, k) => (
@@ -65,7 +74,7 @@ function Table( { currentDate, dateRange, events, schedulerOptions } ) {
                                 wordWrap: 'break-word',
                                 overflow: 'hidden'
                             }}>
-                            { d.toLocaleString(schedulerOptions.locale, { weekday: 'long' } ) }
+                            { formatDateHeader(d) }
                         </th>
                     )) }
                 </tr> 
@@ -79,7 +88,7 @@ function Table( { currentDate, dateRange, events, schedulerOptions } ) {
                         <tr>
                             { row.map((d, k2) => (
                                 <td key = { k2 } 
-                                    style = { { height: '10px' } }
+                                    style = { { height: headerHeight } }
                                     data-role = "header"
                                     data-day  = { formatters['yyyy-mm-dd'](d) }
                                     data-current-month = { d.getMonth() === currentDate.getMonth() }
@@ -102,7 +111,7 @@ function Table( { currentDate, dateRange, events, schedulerOptions } ) {
 
                             </td>
                         </tr>
-                        <tr style = { { height: (height - 10) + 'px' } }>
+                        <tr style = { { height: height - headerHeight - (spannedEvents.length * schedulerOptions.spannedEventHeight) } }>
                             { row.map((d, k2) => (
                                 <td key = { k2 } 
                                     

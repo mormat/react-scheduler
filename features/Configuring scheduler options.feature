@@ -1,3 +1,4 @@
+@config
 Feature: Configuring the scheduler
 
     Background:
@@ -19,11 +20,16 @@ Feature: Configuring the scheduler
         When I open the scheduler in "week" view
         Then I should see "May 1, 2023"
 
-    Scenario: Define initial date
+    Scenario Outline: Define initial date
         Given the configuration contains:
-            | initialDate | '2023-10-08' |
+            | initialDate | <value> |
         When I open the scheduler in "week" view
-        Then I should see "Oct 8, 2023"
+        Then I should see "<expected_text>"
+
+    Examples:
+        | value        | expected_text |
+        | '2023-10-08' | Oct 8, 2023   |
+        | null         | May 1, 2023   |
 
     Scenario: Display hours by default
         Given the configuration is empty
@@ -51,15 +57,12 @@ Feature: Configuring the scheduler
         And "onEventUpdate" in configuration equals:
             """
                 function(e) {
-                    console.log(`'${e.label}' was moved`)
+                    notify(`'${e.label}' was moved`)
                 }
             """
         When I open the scheduler in "week" view
         And I move the "Presentation" event to "2023-05-02" at "10:00"
-        Then the logs should contain the info:
-            """
-                'Presentation' was moved
-            """
+        Then I should see "'Presentation' was moved" in notifications
     
     @crud
     Scenario Outline: enable or disable create/update events

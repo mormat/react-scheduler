@@ -6,7 +6,7 @@ import BaseEventContent from './EventContent'
 import withEditEvent from '../withEditEvent';
 import withDraggableEvent from '../withDraggableEvent';
 
-function EventContainer( { event, dateRange, draggableAreaId, schedulerOptions, draggableType}) {
+function EventContainer( { event, index, dateRange, draggableAreaId, schedulerOptions, draggableType}) {
 
     const nbrDays = getDaysBetween(dateRange).length;
     
@@ -31,12 +31,12 @@ function EventContainer( { event, dateRange, draggableAreaId, schedulerOptions, 
     const styles = {
         'right': (100 - (offset + length ) * unit) + '%',
         'left':  (offset * unit) + '%',
-        'top': 0,
+        'top':  index * schedulerOptions.spannedEventHeight,
         'display': 'block',
         'position': 'absolute',
         'height': schedulerOptions.spannedEventHeight,
-        'color':  event.color || schedulerOptions.defaultEventColor,
-        backgroundColor: event.bgColor || schedulerOptions.defaultEventBgColor
+        'color':  event.color,
+        backgroundColor: event.bgColor
     }
     
     let EventContent = BaseEventContent;
@@ -46,7 +46,6 @@ function EventContainer( { event, dateRange, draggableAreaId, schedulerOptions, 
     }
     
     if (draggableType && schedulerOptions.draggable) {
-        console.log('defaultDraggableType', draggableType);
         EventContent = withDraggableEvent(EventContent, event, draggableAreaId);
     }
     

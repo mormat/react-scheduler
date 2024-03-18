@@ -43,6 +43,15 @@ function withResizeObserver(WrappedComponent) {
             
         }, []);
         
+        const getMaxWidth = () => {
+            const widths = [0, 320, 480, 640, 1280];
+            for (let i = 0; i < widths.length - 1; i++) {
+                if (widths[i] <= size.width && size.width < widths[i+1]) {
+                    return widths[i + 1];
+                }
+            }
+        }
+        
         return (
             <div 
                 className = "mormat-scheduler-Scheduler-withResizeObserver"
@@ -50,6 +59,7 @@ function withResizeObserver(WrappedComponent) {
                     ...calcStyle(schedulerOptions),
                     ...size
                 } }
+                data-max-width = { getMaxWidth() }
             >
                 <WrappedComponent
                     schedulerOptions = { { ...schedulerOptions, ...size }}

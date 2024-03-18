@@ -1,7 +1,9 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Scheduler, EventsList } from './index';
+import { Scheduler, EventsList } from '../../src/index';
+
+import AdminSection from './components/AdminSection';
 
 function App() {
     
@@ -41,5 +43,29 @@ function renderEventsList(target, props = {} )
     }
 }
 
+function renderAdminSection(target, props = {})
+{
+    for (const domElement of findElements(target)) {
 
-export { renderScheduler, renderEventsList }
+        const defaults = serializeForm(domElement);
+        
+        console.log('defaults', defaults);
+        
+        const reactElement = React.createElement(
+            AdminSection, 
+            { ...props, defaults }
+        );
+        ReactDOM.render(reactElement, domElement);
+    }
+}
+
+function serializeForm(domElement)
+{
+    const selectors = ['input', 'textarea'];
+    
+    const children = [...domElement.querySelectorAll(selectors.join(','))];
+    
+    return Object.fromEntries(children.map(i => [i.name, i.value]));
+}
+
+export { renderScheduler, renderEventsList, renderAdminSection }

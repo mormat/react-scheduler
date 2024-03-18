@@ -8,11 +8,13 @@ Feature: Managing events in scheduler
                 function(setEvents) {
                     setEvents([
                         {
+                            id:    1,
                             label: "Presentation",
                             start: "2023-05-01 14:00",
                             end:   "2023-05-01 16:00"
                         },
                         {
+                            id:    2,
                             label: "Training course",
                             start: "2023-05-01 08:00",
                             end:   "2023-05-02 18:00"
@@ -22,206 +24,255 @@ Feature: Managing events in scheduler
             """
 
     @drag_and_drop 
-    Scenario Outline: Moving a dynamically loaded event in "week" view
+    Scenario Outline: Notify when an event has been dragged and dropped in "week" and "day" view 
         Given "onEventUpdate" in configuration equals:
             """
-                function(event, _, reload) {
-                    <update_script>;
+                function(event, { previous }) {
+                    notify(
+                        `${event.label} event was moved `+ 
+                        `from '${previous.getStartAsString('hh:ii')} - ${previous.getEndAsString('hh:ii')}' `+ 
+                        `to '${event.getStartAsString('hh:ii')} - ${event.getEndAsString('hh:ii')}'`
+                    );
                 }
             """
         When I open the scheduler in "<view_mode>" view
         And I move the "Presentation" event to "2023-05-01" at "08:00"
         Then I should see the "Presentation" event in "2023-05-01"
-        And the "Presentation" event should be displayed <at_time_range>
+        And the "Presentation" event should be displayed from '08:00' to '10:00'
+        And I should see in notifications:
+        """
+            Presentation event was moved from '14:00 - 16:00' to '08:00 - 10:00'
+        """
 
     Examples:
-        | view_mode | update_script | at_time_range           |
-        | day       |               | from "08:00" to "10:00" |
-        | day       | reload()      | from "14:00" to "16:00" |
-        | week      |               | from "08:00" to "10:00" |
-        | week      | reload()      | from "14:00" to "16:00" |
-        
+        | view_mode |
+        | day       |
+        | week      |
 
-    @drag_and_drop
-    Scenario Outline: Moving a dynamically loaded event in "month" view
+    @drag_and_drop 
+    Scenario Outline: Reset events after drag and drop in "week" and "day" view
         Given "onEventUpdate" in configuration equals:
             """
-                function(event, _, reload) {
-                    <update_script>
-                    console.log(`${event.label} event was moved`);
-                }
-            """
-        When I open the scheduler in "month" view
-        And I move the "Presentation" event to "<expected_day>"
-        Then the events below should be displayed only in the corresponding day
-            | Presentation | <expected_day> |
-        And the logs should contain the info:
-        """
-            Presentation event was moved
-        """
-
-    Examples:
-        | update_script | expected_day |
-        |               | 2023-05-02   |
-        | reload();     | 2023-05-01   |
-
-    Scenario Outline: Adding a dynamically loaded event
-        Given "onEventCreate" in configuration equals:
-            """
-                function(event, _, reload) {
-                    console.log(`${event.label} was created`);
+                function(event, { reset }) {
+                    reset();
                 }
             """
         When I open the scheduler in "<view_mode>" view
-        And I click on "Add event"
-        And I fill "new event" in "Description"
-        And I click on "Ok"
+        And I move the "Presentation" event to "2023-05-01" at "08:00"
+        Then I should see the "Presentation" event in "2023-05-01"
+        And the "Presentation" event should be displayed from '14:00' to '16:00'
+
+    Examples:
+        | view_mode |
+        | day       |
+        | week      |
+
+    
+    @drag_and_drop
+    Scenario: Notify when an event has been dragged and dropped in "month" view 
+        Given "onEventUpdate" in configuration equals:
+            """
+                function(event, { previous }) {
+                    notify(
+                        `${event.label} event was moved ` + 
+                        `from '${previous.getStartAsString('yyyy-mm-dd')}' ` + 
+                        `to '${event.getStartAsString('yyyy-mm-dd')}'`
+                    );
+                }
+            """
+        When I open the scheduler in "month" view
+        And I move the "Presentation" event to "2023-05-02"
+        Then the events below should be displayed only in the corresponding day
+            | Presentation | 2023-05-02 |
+        And I should see in notifications:
+        """
+            Presentation event was moved from '2023-05-01' to '2023-05-02'
+        """
+
+    @drag_and_drop
+    Scenario Outline: Reset events the way it was before after drag and drop in "month" view
+        Given "onEventUpdate" in configuration equals:
+            """
+                function(event, { reset } ) {
+                    reset();
+                }
+            """
+        When I open the scheduler in "month" view
+        And I move the "Presentation" event to "2023-05-02"
+        Then the events below should be displayed only in the corresponding day
+            | Presentation | 2023-05-01 |
+
+    @current
+    Scenario Outline: Creating a dynamically loaded event
+        Given "onEventCreate" in configuration equals:
+            """
+                (event) => notify(`
+                    An event was created with
+                    - id : ${event.id}
+                    - label : ${event.label}
+                `)
+            """
+        When I open the scheduler in "<view_mode>" view
+        And I create an event with:
+            | Description | new event |
         Then I should see "new event"
-        And the logs should contain the info:
-        """
-            new event was created
-        """
+        And I should see all the items below in notifications:
+            | An event was created with |  
+            | - label : new event       |
+        And I should see text matching "id : (\w*)-(\w*)-(\w*)-(\w*)-(\w*)" in notifications
 
         Examples:
             | view_mode |
             | day       |
             | week      |
             | month     |
-
-    Scenario Outline: Editing a dynamically loaded event
+            
+    Scenario Outline: Notify when an event has been updated
         Given "onEventUpdate" in configuration equals:
             """
-                function(event, old) {
-                    console.log(`${old.label} was replaced by ${event.label}`);
+                function(event, { previous }) {
+                    notify(`'${previous.label}' was replaced by '${event.label}' in event #${event.id}`);
                 }
             """
         When I open the scheduler in "<view_mode>" view
-        And I click on "Edit event" in "<event_label>" event
-        And I fill "updated event" in "Description"
-        And I click on "Ok"
+        And I update the "<event_label>" event with:
+            | Description | updated event |
         Then I should see "updated event"
-        And the logs should contain the info:
+        And I should see in notifications:
         """
-            <event_label> was replaced by updated event
+            '<event_label>' was replaced by 'updated event' in event #<event_id>
         """
     
     Examples:
-            | view_mode | event_label     |
-            | day       | Presentation    |
-            | day       | Training course |
-            | week      | Presentation    |
-            | week      | Training course |
-            | month     | Presentation    |
-            | month     | Training course |
+            | view_mode | event_label     | event_id |
+            | day       | Presentation    | 1        |
+            | day       | Training course | 2        |
+            | week      | Presentation    | 1        |
+            | week      | Training course | 2        |
+            | month     | Presentation    | 1        |
+            | month     | Training course | 2        |
 
-    Scenario Outline: Reloading events after create/update
+    Scenario Outline: Rendering colors
+        When I open the scheduler in "<view_mode>" view
+        And I <create_or_update_event> with:
+            | Description | updated |
+            | Color       | #9575cd |
+        Then the "updated" event should be rendered with
+            | background-color | #9575cd |
+            | color            | white   |
+
+    Examples:
+        | view_mode | create_or_update_event                |
+        | day       | create an event                       |
+        | day       | update the "Presentation" event       |
+        | day       | update the "Training course" event    |
+        | week      | create an event                       |
+        | week      | update the "Presentation" event       |
+        | week      | update the "Training course" event    |
+        | month     | create an event                       |
+        | month     | update the "Presentation" event       |
+        | month     | update the "Training course" event    |
+    
+    
+    Scenario Outline: Reset events after create/update
         Given "onEventCreate" in configuration equals:
             """
-                function(event, _, reload) { reload(); }
+                function(event, { reset }) { reset(); }
             """
         And "onEventUpdate" in configuration equals:
             """
-                function(event, _, reload) { reload(); }
+                function(event, { reset }) { reset(); }
             """
         When I open the scheduler in "<view_mode>" view
-        And I click on <item_to_click>
-        And I fill "some event" in "Description"
-        And I click on "Ok"
+        And I <create_or_update_event> with:
+            | Description | some event |
         Then I should not see "some event"
 
     Examples:
-        | view_mode | item_to_click                           |
-        | day       | "Add event"                             |
-        | day       | "Edit event" in "Presentation" event    |
-        | day       | "Edit event" in "Training course" event |
-        | week      | "Add event"                             |
-        | week      | "Edit event" in "Presentation" event    |
-        | week      | "Edit event" in "Training course" event |
-        | month     | "Add event"                             |
-        | month     | "Edit event" in "Presentation" event    |
-        | month     | "Edit event" in "Training course" event |        
+        | view_mode | create_or_update_event                |
+        | day       | create an event                       |
+        | day       | update the "Presentation" event       |
+        | day       | update the "Training course" event    |
+        | week      | create an event                       |
+        | week      | update the "Presentation" event       |
+        | week      | update the "Training course" event    |
+        | month     | create an event                       |
+        | month     | update the "Presentation" event       |
+        | month     | update the "Training course" event    |
 
-    Scenario Outline: Description required when creating or editing events
+    Scenario Outline: Description required
         When I open the scheduler in "<view_mode>" view
-        And I click on <item_to_click>
-        And I fill "" in "Description"
-        And I click on "Ok"
+        And I <create_or_update_event> with:
+            | Description | |
         Then I should see "description required"
         
     Examples:
-        | view_mode | item_to_click                           |
-        | day       | "Add event"                             |
-        | day       | "Edit event" in "Presentation" event    |
-        | day       | "Edit event" in "Training course" event |
-        | week      | "Add event"                             |
-        | week      | "Edit event" in "Presentation" event    |
-        | week      | "Edit event" in "Training course" event |
-        | month     | "Add event"                             |
-        | month     | "Edit event" in "Presentation" event    |
-        | month     | "Edit event" in "Training course" event |        
+        | view_mode | create_or_update_event                |
+        | day       | create an event                       |
+        | day       | update the "Presentation" event       |
+        | day       | update the "Training course" event    |
+        | week      | create an event                       |
+        | week      | update the "Presentation" event       |
+        | week      | update the "Training course" event    |
+        | month     | create an event                       |
+        | month     | update the "Presentation" event       |
+        | month     | update the "Training course" event    |
 
     Scenario Outline: Invalid date range
         When I open the scheduler in "<view_mode>" view
-        And I click on <item_to_click>
-        And I select the dates below:
-            |      | time  | day | month   | year |
-            | From | 11:00 | 22  | April   | 2023 |
-            | To   | 10:00 | 22  | April   | 2023 |
-        And I click on "Ok"
+        And I <create_or_update_event> with:
+            | From | 11:00 22 April 2023 |
+            | To   | 10:00 22 April 2023 |
         Then I should see "invalid date range"
 
     Examples:
-        | view_mode | item_to_click                           |
-        | day       | "Add event"                             |
-        | day       | "Edit event" in "Presentation" event    |
-        | day       | "Edit event" in "Training course" event |
-        | week      | "Add event"                             |
-        | week      | "Edit event" in "Presentation" event    |
-        | week      | "Edit event" in "Training course" event |
-        | month     | "Add event"                             |
-        | month     | "Edit event" in "Presentation" event    |
-        | month     | "Edit event" in "Training course" event |    
+        | view_mode | create_or_update_event                |
+        | day       | create an event                       |
+        | day       | update the "Presentation" event       |
+        | day       | update the "Training course" event    |
+        | week      | create an event                       |
+        | week      | update the "Presentation" event       |
+        | week      | update the "Training course" event    |
+        | month     | create an event                       |
+        | month     | update the "Presentation" event       |
+        | month     | update the "Training course" event    |
 
     Scenario Outline: Delete event
         Given "onEventDelete" in configuration equals:
             """
                 function(event) {
-                    console.log(`${event.label} was deleted`);
+                    notify(`event #${event.id} was deleted`);
                 }
             """
         When I open the scheduler in "<view_mode>" view
-        And I click on "Edit event" in "<event_label>" event
-        And I click on "Delete"
-        And I confirm "Deleting event ?"
+        And I delete the "<event_label>" event
         Then I should not see "<event_label>"
-        And the logs should contain the info:
+        And I should see in notifications:
         """
-            <event_label> was deleted
+            event #<event_id> was deleted
         """
+
+    Examples:
+        | view_mode | event_label     | event_id |
+        | day       | Presentation    | 1        |
+        | day       | Training course | 2        |
+        | week      | Presentation    | 1        |
+        | week      | Training course | 2        |
+        | month     | Presentation    | 1        |
+        | month     | Training course | 2        |
+
+    Scenario Outline: Reset events after delete
+        Given "onEventDelete" in configuration equals:
+            """
+                function(event, { reset }) { reset(); }
+            """
+        When I open the scheduler in "<view_mode>" view
+        And I delete the "<event_label>" event
+        Then I should see "<event_label>"
 
     Examples:
         | view_mode | event_label     |
         | day       | Presentation    |
-        | day       | Training course |
-        | week      | Presentation    |
-        | week      | Training course |
-        | month     | Presentation    |
-        | month     | Training course |
-
-    Scenario Outline: Reloading events after delete
-        Given "onEventDelete" in configuration equals:
-            """
-                function(event, reload) { reload(); }
-            """
-        When I open the scheduler in "<view_mode>" view
-        And I click on "Edit event" in "<event_label>" event
-        And I click on "Delete"
-        And I confirm "Deleting event ?"
-        Then I should see "<event_label>"
-
-    Examples:
-        | view_mode | event_label  |
-        | day       | Presentation |
         | day       | Training course |
         | week      | Presentation    |
         | week      | Training course |

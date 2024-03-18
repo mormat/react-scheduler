@@ -23,7 +23,7 @@ function withEditEvent(WrappedComponent, value)
         }
         
         const handleConfirmForm = (v) => {
-            schedulerOptions.onEventUpdate(v, formValues);
+            schedulerOptions.onEventUpdate(v, { previous: value });
 
             setFormValues(null);
         }

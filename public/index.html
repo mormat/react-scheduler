@@ -29,11 +29,13 @@
         }
         
     </style>
+    <link rel="stylesheet" href="./mormat_react_scheduler.css" >
   </head>
   <body>
       <h3>react-scheduler <small>(github : <a href="https://github.com/mormat/react-scheduler">https://github.com/mormat/react-scheduler</a>)</small></h3>
-      <div id="main">Scheduler component</div>
-      
+      <form autocomplete="off">
+        <div id="main">Scheduler component</div>
+      </form>
       <textarea id="comments" readonly></textarea>
       <script src="./externals/react/react.development.js"></script>
       <script src="./externals/react-dom/react-dom.development.js"></script>
@@ -41,6 +43,7 @@
       <script>
           
         function renderComponent(component, props = {}) {
+            
             ReactDOM.render(
                 React.createElement(
                     React.StrictMode, 
@@ -49,28 +52,45 @@
                 ), 
                 document.getElementById('main')
             );
+    
         }
           
-        function onReady() {
+        async function onReady() {
             
             var urlParams = new URLSearchParams(window.location.search);
             
-            if (!urlParams.get('cucumber')) {
-                
+            var mode = urlParams.get('mode') || 'static';
+              
+            if (mode === 'static') {
                 renderComponent(
                     mormat_react_scheduler.Scheduler, 
                     {
-                        minHour: 8,
-                        maxHour: 20,
+                        minHour: 7,
+                        maxHour: 21,
                         viewMode: 'week', 
                         events: buildSomeEvents(),
                         width: 'auto',
                         height: 'auto',
                     }
                 );
-        
             }
             
+            if (mode === 'ajax') {
+                renderComponent(
+                    mormat_react_scheduler.Scheduler, 
+                    {
+                        minHour: 7,
+                        maxHour: 21,
+                        viewMode: 'month', 
+                        events: function(setEvents) {
+                            
+                        },
+                        width: 'auto',
+                        height: 'auto',
+                    }
+                );
+            }
+
         }
           
         document.addEventListener("DOMContentLoaded", onReady);
@@ -115,14 +135,13 @@
                     color: "white",
                     bgColor: "#0fc4a7"
                 },
-                /*
                 {
                     label: "Training course (2)",
                     start: days[2] + " 10:00",
-                    end:    "2023-11-28 18:00",
+                    end:   days[3] + " 18:00",
                     color: "white",
-                    bgColor: "#0fc4a7"
-                },*/
+                    bgColor: "#9575cd"
+                },
                 {   label: "Next month event",
                     start: days[17] + " 10:00",
                     end:   days[17] + " 10:00",

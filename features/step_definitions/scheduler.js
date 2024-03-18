@@ -20,11 +20,11 @@ const css_selectors = {
 
 async function openScheduler() {
     
-    driver.get(base_url + '/test.html');
+    await driver.get(base_url + '/test.html');
     
     const scripts = getSchedulerScripts();
     for (let script of scripts) {
-        driver.executeScript(script + ';');
+        await driver.executeScript(script + ';');
     }
     
 }
@@ -261,14 +261,13 @@ Then('the {string} event should be rendered with', async function (label, dataTa
         'rgba(255, 0, 0, 1)':     'red',
         'rgba(255, 255, 255, 1)': 'white',
         'rgba(255, 192, 203, 1)': 'pink',
-        'rgba(0, 0, 0, 1)':       'black',
-        'rgba(2, 136, 209, 1)':   '#0288d1',
+        'rgba(0, 0, 0, 1)':       'black'
     }
-
+    
     for (const [cssName, expected] of Object.entries(dataTable.rowsHash())) {
         
         let actual = await subject.getCssValue(cssName);
-        actual = colors_mapping[actual] || actual;
+        actual = colors_mapping[actual] || rgbaToHexa(actual);
         
         if (actual !== expected) {
             throw `Css "${cssName}" should be "${expected}" for event ${label} (got "${actual}" instead)`;
@@ -278,8 +277,7 @@ Then('the {string} event should be rendered with', async function (label, dataTa
     
 });
 
-When('I click on {string} in {string} event', async function (text, eventLabel) {
-    const root = css_selectors['events'] + `:contains("${eventLabel}")`;
+const rgbaToHexa = (str) => '#' + str.replace('rgba(', '').replace(', 1)', '')
+    .split(',').map(s => parseInt(s.trim()).toString(16).padStart(2, '0'))
+    .join('');
     
-    await clickOn(text, root);
-});

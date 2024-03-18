@@ -69,6 +69,12 @@ const formatters = {
     'yyyy-mm-dd hh:ii': (d: Date) => formatters['yyyy-mm-dd'](d) + ' ' + formatters['hh:ii'](d)
 }
 
+function format_date(format: string, value: Date|string): string {
+    const date = value instanceof Date ? value : new Date(value);
+    // @ts-ignore
+    return formatters[format](date);
+}
+
 function date_add(d: Date|string, num: number, type: string): Date
 {
     const input:  Date = new Date(d);
@@ -106,6 +112,6 @@ function getPercentInDateRange(value: Date, dateRange: IDateRange): number {
 
 export { getDaysBetween, getPercentInDateRange }
 export { getFirstDayOfWeek, getLastDayOfWeek }
-export { formatters, date_add }
+export { formatters, date_add, format_date }
 export { dateRangeContainsAnother, dateRangeOverlapsAnother }
 export type { IDateRange }

@@ -5,7 +5,7 @@ import BaseTable from './DailyColumnsSheet/Table';
 import withLayout from './withLayout';
 import withResizeObserver from './withResizeObserver';
 import withCreateEvent from './withCreateEvent';
-import withEventsDynamicLoading from '../DataHandler/withEventsDynamicLoading';
+import withEventsLoading from '../DataHandler/withEventsLoading';
 
 import { formatters } from '../../utils/date';
 
@@ -36,12 +36,13 @@ function DailyColumnsSheet( { events = [], schedulerOptions, startDate, length, 
     }
     Table = withLayout(Table, { title, ...layoutProps });
     Table = withResizeObserver(Table);
-    Table = withEventsDynamicLoading(Table, dateRange);
+    Table = withEventsLoading(Table, dateRange);
     
     return (
         
-        <div className = "mormat-scheduler-Scheduler-DailyColumnsSheet">
-            
+        <div className = "mormat-scheduler-Scheduler-DailyColumnsSheet"
+             data-daily-columns-sheet-length = { length }
+        >
             <Table events = { events }
                    schedulerOptions = { schedulerOptions }
                    dateRange = { dateRange }

@@ -22,8 +22,8 @@ function EventContainer ( { value, constraint, draggableAreaId, schedulerOptions
             bottom: (bottomPercent * 100) + '%',
             width:  (100 / offset.length) + '%',
             left:   ((100 /offset.length) * offset.current) + '%',
-            color: value.color || schedulerOptions.defaultEventColor,
-            backgroundColor: value.bgColor || schedulerOptions.defaultEventBgColor
+            color: value.color,
+            backgroundColor: value.bgColor
         }
         
     }

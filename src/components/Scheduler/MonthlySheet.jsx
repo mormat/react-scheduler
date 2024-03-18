@@ -3,7 +3,7 @@ import BaseTable from './MonthlySheet/Table';
 import withLayout from './withLayout';
 import withResizeObserver from './withResizeObserver';
 import withCreateEvent from './withCreateEvent';
-import withEventsDynamicLoading from '../DataHandler/withEventsDynamicLoading';
+import withEventsLoading from '../DataHandler/withEventsLoading';
 
 import { formatters } from '../../utils/date';
 
@@ -35,7 +35,7 @@ function MonthlySheet( {currentDate, events, schedulerOptions, layoutProps } ) {
     }
     Table = withLayout(Table, { title, ...layoutProps });
     Table = withResizeObserver(Table);
-    Table = withEventsDynamicLoading(Table, dateRange);
+    Table = withEventsLoading(Table, dateRange);
     
     return (
         <div className="mormat-scheduler-Scheduler-MonthlySheet">

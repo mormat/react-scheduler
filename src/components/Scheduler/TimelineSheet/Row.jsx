@@ -21,6 +21,7 @@ function Row( { events, dateRange, draggableAreaId, draggableType, schedulerOpti
                 <EventContainer 
                     key           = { index }
                     event         = { event }
+                    index         = { index }
                     dateRange     = { dateRange }
                     draggableAreaId  = { draggableAreaId }
                     draggableType    = { draggableType}

@@ -1,10 +1,11 @@
 
 import { useState, useEffect, Fragment } from 'react';
 
-import ColorSelect   from '../Widget/ColorSelect';
-import Message       from '../Widget/Message';
-import DateTimeInput from '../Widget/DateTimeInput';
-import Button        from '../Widget/Button';
+import TextInput      from '../Widget/Form/TextInput';
+import DateTimePicker from '../Widget/Form/DateTimePicker';
+import ColorPicker    from '../Widget/Form/ColorPicker';
+import Message        from '../Widget/Message';
+import Button         from '../Widget/Button';
 
 const colors = ['#0288d1', '#9575cd', '#0fc4a7', '#721c24', '#856404', '#383d41'];
 
@@ -13,7 +14,9 @@ function EventForm( { schedulerEvent, onConfirm, onDelete } ) {
     const [label,   setLabel]   = useState(schedulerEvent.label);
     const [start,   setStart]   = useState(schedulerEvent.start);
     const [end,     setEnd]     = useState(schedulerEvent.end);
-    const [bgColor, setBgColor] = useState(colors.includes(schedulerEvent.bgColor) ? schedulerEvent.bgColor : colors.at(0));
+    const [bgColor, setBgColor] = useState(
+        colors.includes(schedulerEvent.bgColor) ? schedulerEvent.bgColor : colors.at(0)
+    );
     
     const [errors,  setErrors]  = useState([]);
     
@@ -63,55 +66,56 @@ function EventForm( { schedulerEvent, onConfirm, onDelete } ) {
         </Fragment>
     )
     
+    const decorators = {
+        'label': (subject, name) => (
+            <Fragment>
+                { subject }
+                <br/>
+                { renderErrors(name) }
+            </Fragment>
+        )
+    }
+    
     return (
         <form className="mormat-scheduler-EventsManager-EventForm" >
             <p> 
                 <label>
-                    Description
-                    <br/>
-                    { renderErrors('label') }
-                    <input 
+                    <TextInput
+                        label    = "Description"
                         name     = "label"
-                        type     = "text" 
                         value    = { label }
-                        onChange = { e => setLabel(e.target.value) }
+                        onChange = { setLabel }
+                        decorators = { decorators }
                     />
                 </label>
             </p>
             <p> 
-                <label>
-                    <span>From</span>
-                    <br/>
-                    { renderErrors('start') }
-                    <DateTimeInput 
-                        name     = "start"
-                        value    = { start } 
-                        onChange = { setStart } 
-                    />
-                </label>
+                <DateTimePicker 
+                    value      = { start } 
+                    onChange   = { setStart } 
+                    name       = "start"
+                    label      = "From"
+                    decorators = { decorators }
+                />
             </p>
             <p> 
-                <label>
-                    <span>To</span>
-                    <br/>
-                    <DateTimeInput 
-                        name     = "end"
-                        value    = { end } 
-                        onChange = { setEnd } 
-                    />
-                </label>
+                <DateTimePicker 
+                    value      = { end } 
+                    onChange   = { setEnd } 
+                    name       = "end"
+                    label      = "To"
+                    decorators = { decorators }
+                />
             </p>
-            <p>
-                <label>
-                    Color
-                    <br/>
-                    <ColorSelect
-                        value    = { bgColor }
-                        setValue = { setBgColor }
-                        colors = { colors }
-                    />
-    
-                </label>
+            <p>                
+                <ColorPicker
+                    value      = { bgColor }
+                    onChange   = { setBgColor }
+                    name       = "bgColor"
+                    label      = "Color"
+                    colors     = { colors }
+                    decorators = { decorators }
+                />
             </p>
             <div style= { { overflow: 'auto', paddingTop: "5px", paddingBottom: "5px" } }>
                 <span style={ { float: 'left' } }>

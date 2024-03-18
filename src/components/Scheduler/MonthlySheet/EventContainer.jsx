@@ -7,8 +7,8 @@ import withDraggableEvent from '../withDraggableEvent';
 function EventContainer( { value, draggableAreaId, schedulerOptions } ) {
     
     const styles = {
-        color: value.color || schedulerOptions.defaultEventColor, 
-        backgroundColor: value.bgColor || schedulerOptions.defaultEventBgColor,
+        color:           value.color, 
+        backgroundColor: value.bgColor,
         height:     '20px',
         lineHeight: '20px'
     }
