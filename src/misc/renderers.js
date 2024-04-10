@@ -75,19 +75,16 @@ function MonthlySheetDraggableRenderer() {
             document.body.appendChild(clone);
         },
         'move': ({e, action, draggable}) => {
-            const area  = draggable.getArea().getClosestChild(e);
+            const child  = draggable.getArea().getClosestChild(e);
 
-            for (const child of area.getChildren()) {
-                const data = child.getData(e);
-                if (data['role'] !== 'header') continue;
+            const data = child.getData(e);
 
-                const { x, y, height, width } = child.getRect();
-                clone.style['position'] = 'absolute';
-                clone.style['display']  = 'block';
-                clone.style['left'] = x + 'px';
-                clone.style['top']  = (y + height) + 'px';
-                clone.style['width']  = width + 'px';
-            }
+            const { x, y, height, width } = child.getRect();
+            clone.style['position'] = 'absolute';
+            clone.style['display']  = 'block';
+            clone.style['left'] = x + 'px';
+            clone.style['top']  = (y + height / 2)  + 'px';
+            clone.style['width']  = width + 'px';
         },
         'drop': () => {
             document.body.removeChild(clone);

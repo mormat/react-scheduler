@@ -195,16 +195,11 @@ Then('hours from {string} to {string} should be displayed', async function (min,
 
 // I should see the events below only in the corresponding day
 Then('the events below should be displayed only in the corresponding day', async (dataTable) => {
-    
-    const headers = await findElementsByCss('[data-day][data-role="header"]');
-
+   
     const daysRects = {}
-    for (const header of headers) {
-        const day      = await header.getAttribute('data-day');
-        const elements = await findElementsByCss(`td[data-day="${day}"]`);
-        daysRects[day] = Rectangle.createBounding(
-            await Promise.all(elements.map(r => r.getRect()))
-        );
+    for (const element of await findElementsByCss('[data-day]')) {
+        const day = await element.getAttribute('data-day');
+        daysRects[day] = new Rectangle(await element.getRect());
     }
     
     for (const [label, daysAsString] of Object.entries(dataTable.rowsHash())) {
@@ -275,6 +270,26 @@ Then('the {string} event should be rendered with', async function (label, dataTa
         
     }
     
+});
+
+Then('I should see the element {string} in {string} event', async function (elementSelector, eventName) {
+    
+     const subjects = await findElementsByCss(
+        css_selectors['events'] + `:contains("${eventName}") ` + elementSelector
+     );
+     
+     expect(subjects.length).toBeGreaterThan(0);
+     
+});
+
+Then('I should not see the element {string} in {string} event', async function (elementSelector, eventName) {
+    
+     const subjects = await findElementsByCss(
+        css_selectors['events'] + `:contains("${eventName}") ` + elementSelector
+     );
+     
+     expect(subjects.length).toBe(0);
+     
 });
 
 const rgbaToHexa = (str) => '#' + str.replace('rgba(', '').replace(', 1)', '')

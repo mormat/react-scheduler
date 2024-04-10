@@ -1,15 +1,15 @@
-import BaseTable from './MonthlySheet/Table';
+import GridBody   from './MonthlySheet/GridBody';
+import GridHeader from './MonthlySheet/GridHeader';
 
-import withLayout from './withLayout';
-import withResizeObserver from './withResizeObserver';
-import withCreateEvent from './withCreateEvent';
-import withEventsLoading from '../DataHandler/withEventsLoading';
+import { withLayout }     from './TimelineSheet';
+import withCreateEvent    from './withCreateEvent';
+import withEventsLoading  from '../DataHandler/withEventsLoading';
 
-import { formatters } from '../../utils/date';
+import { formatters }     from '../../utils/date';
 
 import { getFirstDayOfWeek, getLastDayOfWeek } from '../../utils/date';
 
-function MonthlySheet( {currentDate, events, schedulerOptions, layoutProps } ) {
+function MonthlySheet( {currentDate, events, schedulerOptions, header} ) {
 
     const dateRange = {
         start: new Date(currentDate),
@@ -29,21 +29,22 @@ function MonthlySheet( {currentDate, events, schedulerOptions, layoutProps } ) {
         { month: 'long', year: 'numeric' }
     );
     
-    let Table = BaseTable;
+    const subheader = (
+        <GridHeader { ... { schedulerOptions, dateRange } } />
+    );
+    
+    let Grid = withLayout(
+        GridBody, 
+        { header, subheader }
+    );
     if (schedulerOptions.editable) {
-        Table = withCreateEvent(BaseTable);
+        Grid = withCreateEvent(Grid);
     }
-    Table = withLayout(Table, { title, ...layoutProps });
-    Table = withResizeObserver(Table);
-    Table = withEventsLoading(Table, dateRange);
+    Grid = withEventsLoading(Grid, dateRange);
     
     return (
         <div className="mormat-scheduler-Scheduler-MonthlySheet">
-            <Table  currentDate = { currentDate }
-                    dateRange   = {dateRange} 
-                    events      = { events }
-                    schedulerOptions = { schedulerOptions }
-            />
+            <Grid { ... { currentDate, dateRange, events, schedulerOptions }} />
         </div>
     )
 

@@ -102,7 +102,6 @@ Feature: Managing events in scheduler
         Then the events below should be displayed only in the corresponding day
             | Presentation | 2023-05-01 |
 
-    @current
     Scenario Outline: Creating a dynamically loaded event
         Given "onEventCreate" in configuration equals:
             """

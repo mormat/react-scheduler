@@ -3,13 +3,17 @@
 
 @import './components/EventsManager/EventsList.scss';
 
+@import './components/Header.scss';
+
 @import './components/Scheduler.scss';
 
 @import './components/Scheduler/DailyColumnsSheet.scss';
 
 @import './components/Scheduler/DailyColumnsSheet/EventContainer.scss';
 
-@import './components/Scheduler/DailyColumnsSheet/Table.scss';
+@import './components/Scheduler/DailyColumnsSheet/TableBody.scss';
+
+@import './components/Scheduler/TimelineSheet.scss';
 
 @import './components/Scheduler/TimelineSheet/EventContainer.scss';
 
@@ -23,7 +27,7 @@
 
 @import './components/Scheduler/MonthlySheet/EventContent.scss';
 
-@import './components/Scheduler/MonthlySheet/Table.scss';
+@import './components/Scheduler/MonthlySheet/GridBody.scss';
 
 @import './components/Scheduler/withCreateEvent.scss';
 

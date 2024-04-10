@@ -16,7 +16,7 @@ function withLayout( WrappedComponent, { currentDate, setCurrentDate, viewMode, 
         )
     }
         
-    function Navigation() {
+    function Navigation( { labels }) {
         return (
             <div style = {{ float: 'left'}}>
                 <Button onClick = { () => setCurrentDate( date_add(currentDate, -1, viewMode) ) } 
@@ -27,7 +27,7 @@ function withLayout( WrappedComponent, { currentDate, setCurrentDate, viewMode, 
                 <Button onClick = { () => setCurrentDate(new Date()) } 
                         variant    = "outline"
                 >
-                    today
+                    { labels['header.today'] || 'today' }
                 </Button>
                 <Button onClick =  { () => setCurrentDate( date_add(currentDate, 1, viewMode) ) } 
                         variant    = "outline"
@@ -38,39 +38,30 @@ function withLayout( WrappedComponent, { currentDate, setCurrentDate, viewMode, 
         )
     }
     
-    function Tabs() {
+    function Tabs( { labels } ) {
         return (
             <div style = {{ float: 'right'}}>
                 <ToggleButtonGroup 
                     value    = { viewMode } 
                     onChange = { setViewMode } 
                     options = {[
-                        { value: 'day',   label: 'day'  },
-                        { value: 'week',  label: 'week' },
-                        { value: 'month', label: 'month' },
+                        { value: 'day',   label: labels['header.day']   || 'day'   },
+                        { value: 'week',  label: labels['header.week']  || 'week'  },
+                        { value: 'month', label: labels['header.month'] || 'month' },
                     ]}
                 />
             </div>
         )
     }
     
-    function getStyle( { width } ) {
-        if (width < 480) {
-            return { fontSize: '12px' }
-        }
-        
-        if (width < 840) {
-            return { fontSize: '15px' }
-        }
-        
-        return { fontSize: '17px' }
-    }
-    
     return function( { schedulerOptions, ...otherProps} ) {
     
+        const navigation = ( <Navigation { ...schedulerOptions } /> );
+        const tabs       = ( <Tabs { ...schedulerOptions } /> )
+    
         const headers = schedulerOptions.width > 640 ?
-            [[<Navigation />, <Tabs />, <Title />]] :
-            [[<Navigation />, <Tabs />], [<Title />]]
+            [[navigation, tabs, <Title />]] :
+            [[navigation, tabs], [<Title />]]
         ;
         
         const headerHeight = 40;
@@ -81,8 +72,7 @@ function withLayout( WrappedComponent, { currentDate, setCurrentDate, viewMode, 
                 style = { { 
                     position: 'relative',
                     height: schedulerOptions.height,
-                    width:  schedulerOptions.width, 
-                    ...getStyle(schedulerOptions)
+                    width:  schedulerOptions.width
                 } }
             >
 

@@ -1,5 +1,6 @@
 const path = require('path');
 const CopyPlugin = require("copy-webpack-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const { DefinePlugin } = require('webpack');
 
 module.exports = function (env, argv) {
@@ -35,12 +36,13 @@ module.exports = function (env, argv) {
                 {
                     test: /\.s[ac]ss$/i,
                     use: [
-                        {
+                        /*{
                             loader: "style-loader",
                             options: { 
                                 injectType: "singletonStyleTag" 
                             },
-                        },
+                        },*/
+                        MiniCssExtractPlugin.loader,
                         'css-loader', 
                         'sass-loader',
                     ]
@@ -53,6 +55,7 @@ module.exports = function (env, argv) {
                     { from: path.join(__dirname, 'public'), to: '.' },
                 ]
             }),
+            new MiniCssExtractPlugin(),
             new DefinePlugin({
                 __WEBPACK_MODE__: JSON.stringify(argv.mode)
             })

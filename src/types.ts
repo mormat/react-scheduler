@@ -4,6 +4,8 @@ interface ISchedulerOptions {
 
     viewMode: string;   // 'day', 'week' or 'month'
 
+    timelined: boolean; // if true, the events will be displayed in timeline view
+
     locale: string;     // i18n 
 
     width: number;      // width of the scheduler in pixel
@@ -29,6 +31,8 @@ interface ISchedulerOptions {
     defaultEventBgColor: string;
 
     spannedEventHeight: number;
+
+    labels: Dictionary<String>; // used to custom displayed text in scheduler
 
 }
 

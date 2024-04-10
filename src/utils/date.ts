@@ -7,6 +7,48 @@ interface IDateRange {
     end:   Date;
 }
 
+class DateRange implements IDateRange {
+    
+    start: Date;
+    end:   Date;
+
+    constructor(start: Date, end: Date) {
+        this.start = start;
+        this.end   = end;
+    }
+
+    public *iterDays() {
+        
+        let current = this.start;
+        do {
+            yield current;
+            current = date_add(current, 1, 'day');
+        } while (current < this.end)
+
+    }
+
+    overlapsWith(dateRange: IDateRange): boolean {
+        if ( !(dateRange.end.getTime() - 1 < this.start.getTime() || this.end.getTime() - 1 < dateRange.start.getTime()) ) {
+            return true;
+        }
+
+        return false;
+    }
+
+    contains(another: IDateRange)
+    {
+        return this.start <= another.start && another.end <= this.end;
+    }
+
+    static createWeek(date: Date): DateRange {
+        return new DateRange(
+            new Date(getFirstDayOfWeek(date) + ' 00:00'),
+            new Date(getLastDayOfWeek(date) + ' 23:59')
+        );
+    }
+
+}
+
 /**
  * 
  */
@@ -37,6 +79,27 @@ const getLastDayOfWeek = (date: Date) => {
 
     const d = new Date(date);
     d.setDate(d.getDate() - d.getDay() + (d.getDay() == 0 ? 0 : 7) );
+
+    return formatters['yyyy-mm-dd'](d);
+
+}
+
+// @todo missing unit test
+function getFirstDayOfMonth(date: Date|string) {
+
+    const d = new Date(date);
+    d.setDate(1);
+
+    return formatters['yyyy-mm-dd'](d);
+}
+
+// @todo missing unit test
+function getLastDayOfMonth(date: Date|string) {
+
+    const d = new Date(date);
+    d.setDate(1);
+    d.setMonth(d.getMonth() + 1);
+    d.setDate( d.getDate()  - 1);
 
     return formatters['yyyy-mm-dd'](d);
 
@@ -111,7 +174,9 @@ function getPercentInDateRange(value: Date, dateRange: IDateRange): number {
 
 
 export { getDaysBetween, getPercentInDateRange }
-export { getFirstDayOfWeek, getLastDayOfWeek }
+export { getFirstDayOfWeek,  getLastDayOfWeek }
+export { getFirstDayOfMonth, getLastDayOfMonth }
 export { formatters, date_add, format_date }
 export { dateRangeContainsAnother, dateRangeOverlapsAnother }
+export { DateRange }
 export type { IDateRange }

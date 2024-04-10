@@ -133,6 +133,18 @@ Given('{string} in the {string} form equal:', function (name, selector, dataTabl
     
 });
 
+Given('{string} in configuration contains the values below:', function (key, dataTable) {
+    
+    config[key] = JSON.stringify(dataTable.rowsHash());
+    
+});
+
+Given('{string} in configuration is undefined', function (key) {
+    
+    delete config[key];
+    
+});
+
 const getPreScripts = () => preScripts;
 
 module.exports = { getSchedulerScripts, getEventsManagerScripts, getPreScripts }

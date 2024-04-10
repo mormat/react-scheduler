@@ -1,11 +1,9 @@
 .mormat-scheduler-Scheduler-DailyColumnsSheet-EventContainer {
     
     font: caption;
-    font-size: 14px;
+    font-size: 0.9em;
     border: 1px solid white;
     background-color: white;
-    position: absolute;
-    top:  0;
     width: 100%;
     padding-top: 5px;
     
@@ -24,20 +22,6 @@
         position: absolute;
         width: 100%;
         bottom: 0px;
-    }
-    
-}
-
-[data-daily-columns-sheet-length="7"] .mormat-scheduler-Scheduler-withResizeObserver {
-    
-    $fontSizes: ("320": 8px, "480": 10px, "640": 12px, "1280": 14px);
-    
-    @each $maxWidth, $fontSize in $fontSizes {
-        &[data-max-width="#{$maxWidth}"] {
-             .mormat-scheduler-Scheduler-DailyColumnsSheet-EventContainer {
-                font-size: $fontSize;
-            }
-        }
     }
     
 }

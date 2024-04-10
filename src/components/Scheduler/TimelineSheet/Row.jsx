@@ -1,7 +1,8 @@
 
 import EventContainer from './EventContainer';
 
-import { formatters } from '../../../utils/date';
+import { formatters }        from '../../../utils/date';
+import { calcEventsOffsets } from '../../../models/events';
 
 function Row( { events, dateRange, draggableAreaId, draggableType, schedulerOptions }) {
 
@@ -10,6 +11,8 @@ function Row( { events, dateRange, draggableAreaId, draggableType, schedulerOpti
         'width': '100%',
         'position': 'relative',
     }
+    
+    const eventsOffsets = calcEventsOffsets(events);
     
     return (
         <div className = "mormat-scheduler-Scheduler-TimelineSheet-Row" 
@@ -21,7 +24,7 @@ function Row( { events, dateRange, draggableAreaId, draggableType, schedulerOpti
                 <EventContainer 
                     key           = { index }
                     event         = { event }
-                    index         = { index }
+                    index         = { eventsOffsets.get(event).current }
                     dateRange     = { dateRange }
                     draggableAreaId  = { draggableAreaId }
                     draggableType    = { draggableType}

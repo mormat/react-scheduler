@@ -65,6 +65,7 @@ Feature: Configuring the scheduler
         Then I should see "'Presentation' was moved" in notifications
     
     @crud
+    @debug
     Scenario Outline: enable or disable create/update events
         Given the configuration contains:
             | editable | <value> |
@@ -75,8 +76,8 @@ Feature: Configuring the scheduler
             | 2023-05-01 10:00 | 2023-05-02 12:00 | Training      |
         When I open the scheduler in "<view_mode>" view
         Then I should <see_or_not> the element "[title='Add event']"
-        And I should <see_or_not> the element "[data-day] [title='Edit event']"
-        And I should <see_or_not> the element "[data-start] [title='Edit event']"
+        And I should <see_or_not> the element "[title='Edit event']" in "Presentation" event
+        And I should <see_or_not> the element "[title='Edit event']" in "Training" event
 
         Examples:
             | value     | view_mode | see_or_not |
@@ -106,3 +107,20 @@ Feature: Configuring the scheduler
             | false | not see    | month     | Presentation | "2023-05-02"            |
             | true  | see        | month     | Training     | "2023-05-02"            |
             | false | not see    | month     | Training     | "2023-05-02"            |
+
+    Scenario: Configure displayed text
+        Given "labels" in configuration contains the values below:
+            | header.today | Aujourd'hui |
+            | header.day   | Jour        |
+            | header.month | Mois        |
+            | header.week  | Semaine     |
+        When I open the scheduler
+        Then I should see "<AUJOURD'HUI>"
+        And I should see "JOURSEMAINEMOIS"
+
+    @current
+    Scenario: Displayed text with default configuration
+        Given "labels" in configuration is undefined
+        When I open the scheduler
+        Then I should see "<TODAY>"
+        And I should see "DAYWEEKMONTH"

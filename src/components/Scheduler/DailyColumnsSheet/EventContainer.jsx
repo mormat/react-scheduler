@@ -23,7 +23,8 @@ function EventContainer ( { value, constraint, draggableAreaId, schedulerOptions
             width:  (100 / offset.length) + '%',
             left:   ((100 /offset.length) * offset.current) + '%',
             color: value.color,
-            backgroundColor: value.bgColor
+            backgroundColor: value.bgColor,
+            position: 'absolute'
         }
         
     }

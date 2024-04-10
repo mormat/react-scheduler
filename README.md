@@ -24,6 +24,11 @@ A [standalone version](#using-the-standalone-version) that can be installed in a
 npm install @mormat/react-scheduler
 ```
 
+### Importing stylesheet
+```js
+import "@mormat/react-scheduler/mormat_react_scheduler.css";
+```
+
 ### Loading static events
 
 ```js
@@ -51,18 +56,28 @@ function App() {
 
 ### Loading dynamic events
 
-@todo write other examples
+@todo write example
 
 ## Using the component in an ordinary HTML page
 
-Add the lines below in your HTML page
+### Loading the assets
 
-### With React 18
 ```html
-    <div id="scheduler"></div>
+<head>
+    ...
+    <link rel="stylesheet" href="//unpkg.com/react@18/mormat_react_scheduler.css">
     <script src="//unpkg.com/react@18/umd/react.development.js"></script>
     <script src="//unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
     <script src="//unpkg.com/@mormat/react-scheduler"></script>
+</head>
+```
+
+### Rendering the scheduler
+
+#### With React 18
+```html
+<body>
+    <div id="scheduler"></div>
     <script>
         var props = { 
             /* the same props used in a React project */ 
@@ -77,14 +92,13 @@ Add the lines below in your HTML page
         var root      = ReactDOM.createRoot(container);
         root.render(reactElement);
     </script>
+</body>
 ```
 
-### With React 17
+#### With React 17
 ```html
+<body>
     <div id="scheduler"></div>
-    <script src="//unpkg.com/react@17/umd/react.development.js"></script>
-    <script src="//unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
-    <script src="//unpkg.com/@mormat/react-scheduler"></script>
     <script>
         var props = { 
             /* the same props used in a React project */ 
@@ -98,19 +112,28 @@ Add the lines below in your HTML page
         var container = document.getElementById('scheduler');
         ReactDOM.render(reactElement, container);
     </script>
+</body>
 ```
 
 The available `props` can be found in [src/types.ts](src/types.ts)
 
 ## Using the standalone version
 
-1. Download [mormat_standalone_scheduler.js](https://github.com/mormat/react-scheduler/releases/latest) in the release page then add it to your HTML page.
+### Loading the assets
+
+Download the assets **mormat_standalone_scheduler.js** and **mormat_standalone_scheduler.css** in the [release page](https://github.com/mormat/react-scheduler/releases/latest)
+
 ```html
+<head>
+    <link rel="stylesheet" href="./mormat_standalone_scheduler.css" >
     <script src="./mormat_standalone_scheduler.js"></script>
+</head>
 ```
 
-2. Then add the lines below to render the scheduler
+### Rendering the scheduler
+
 ```html
+<body>
     <div id="scheduler"></div>
     <script>
         var props = { 
@@ -119,6 +142,7 @@ The available `props` can be found in [src/types.ts](src/types.ts)
 
         mormat_standalone_scheduler.renderScheduler('#scheduler', props);
     </script>
+</body>
 ```
 
 The available `props` can be found in [src/types.ts](src/types.ts)
@@ -127,34 +151,27 @@ The available `props` can be found in [src/types.ts](src/types.ts)
 #### Loading static events
 
 ```html
-    <div id="scheduler"></div>
-    <script>
-        var props = { 
-            initialDate: '2024-02-01',
-            events: [
-                {
-                    label: 'Meeting',
-                    start: '2024-02-01 10:00',
-                    end:   '2024-02-01 12:00',
-                },
-                {
-                    label: 'Conference',
-                    start: '2024-02-01 14:00',
-                    end:   '2024-02-01 18:00',
-                },
-            ]
-        };
+<script>
+    var props = { 
+        initialDate: '2024-02-01',
+        events: [
+            {
+                label: 'Meeting',
+                start: '2024-02-01 10:00',
+                end:   '2024-02-01 12:00',
+            },
+            {
+                label: 'Conference',
+                start: '2024-02-01 14:00',
+                end:   '2024-02-01 18:00',
+            },
+        ]
+    };
 
-        mormat_standalone_scheduler.renderScheduler('#scheduler', props);
-    </script>
+    mormat_standalone_scheduler.renderScheduler('#scheduler', props);
+</script>
 ```    
 
 #### Loading dynamic events
 
-
-
-## How it works
-
-
-
-Inline CSS are used for styling. To avoid conflicts, all classNames are prefixed with `mormat-scheduler-*`
+@todo write example

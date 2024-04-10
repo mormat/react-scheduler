@@ -20,22 +20,8 @@ const _noop = () => {}
 const Scheduler = ( props: ISchedulerConfig ) => {
 
     const schedulerConfig = {
-        events: [],
+        ...defaultSchedulerConfig,
         initialDate: Date.now(),
-        viewMode: 'week',
-        defaultEventBgColor: '#0288d1',
-        defaultEventColor: 'white',
-        locale: 'en',
-        width:  800,
-        height: 600,
-        spannedEventHeight: 20,
-        minHour: 6,
-        maxHour: 22,
-        draggable: true,
-        editable: true,
-        onEventCreate: () => {},
-        onEventUpdate: () => {},
-        onEventDelete: () => {},
         ...props
     }
 

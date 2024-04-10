@@ -35,6 +35,11 @@ function createDraggableArea(selector) {
             return new CompositeDraggableArea(
                 [...new Set(days)].map(d => {
                     
+                    return new ElementDraggableArea(
+                        `${selector} [data-day="${d}"]`
+                    );
+                    
+                    /*
                     return new CompositeDraggableArea([
                         new ElementDraggableArea(
                             `${selector} [data-day="${d}"][data-role="header"]`
@@ -43,6 +48,7 @@ function createDraggableArea(selector) {
                             `${selector} [data-day="${d}"][data-role="content"]`
                         )
                     ]);
+                     */
                     
                 })
             )

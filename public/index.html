@@ -29,7 +29,9 @@
         }
         
     </style>
+    
     <link rel="stylesheet" href="./mormat_react_scheduler.css" >
+    
   </head>
   <body>
       <h3>react-scheduler <small>(github : <a href="https://github.com/mormat/react-scheduler">https://github.com/mormat/react-scheduler</a>)</small></h3>
@@ -60,17 +62,35 @@
             var urlParams = new URLSearchParams(window.location.search);
             
             var mode = urlParams.get('mode') || 'static';
-              
+            
+            var defaults = {
+                minHour:  7,
+                maxHour:  21,
+                locale:   'en',
+                viewMode: 'week',
+                width:    'auto',
+                height:   'auto',
+                timelined: false,
+                
+            }
+            
+            for (const key in defaults) {
+                if (urlParams.has(key)) {
+                    defaults[key] = urlParams.get(key);
+                }
+            }
+            
+            var timelined = urlParams.has('timelined') || false;
+            var locale    = urlParams.get('locale') || 'en';
+            var viewMode  = urlParams.get('viewMode') || 'week';
+            var width     = urlParams.get('width') || 'auto';
+
             if (mode === 'static') {
                 renderComponent(
                     mormat_react_scheduler.Scheduler, 
                     {
-                        minHour: 7,
-                        maxHour: 21,
-                        viewMode: 'week', 
                         events: buildSomeEvents(),
-                        width: 'auto',
-                        height: 'auto',
+                        ...defaults,
                     }
                 );
             }
