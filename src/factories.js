@@ -1,12 +1,12 @@
 
 import { ElementDraggableArea, CompositeDraggableArea } from './misc/drag-and-drop';
 
-import { MonthlySheetDraggableRenderer, DayColumnDraggableRenderer } from './misc/renderers';
+import { getTimelineDragAndDropRenderer, getColumnDragAndDropRenderer } from './misc/renderers';
 
-function createDraggableArea(selector) {
+function createDroppable(droppableId) {
     
-    const element = document.querySelector(selector);
-    const type    = element.getAttribute('data-draggable-area-type');
+    const element = document.getElementById(droppableId);
+    const type    = element.getAttribute('data-droppable-type');
 
     switch (type) {
 
@@ -19,14 +19,14 @@ function createDraggableArea(selector) {
             return new CompositeDraggableArea(
                 [...new Set(days)].map(d => {
                     return new ElementDraggableArea(
-                        `${selector} td[data-day="${d}"]`
+                        `#${droppableId} td[data-day="${d}"]`
                     )
                 })      
             )
 
         }
 
-        case 'monthly_sheet': {
+        case 'timeline': {
 
             const days = [...element.querySelectorAll('[data-day]')].map(e => {
                 return e.getAttribute('data-day');
@@ -36,19 +36,8 @@ function createDraggableArea(selector) {
                 [...new Set(days)].map(d => {
                     
                     return new ElementDraggableArea(
-                        `${selector} [data-day="${d}"]`
+                        `#${droppableId} [data-day="${d}"]`
                     );
-                    
-                    /*
-                    return new CompositeDraggableArea([
-                        new ElementDraggableArea(
-                            `${selector} [data-day="${d}"][data-role="header"]`
-                        ),
-                        new ElementDraggableArea(
-                            `${selector} [data-day="${d}"][data-role="content"]`
-                        )
-                    ]);
-                     */
                     
                 })
             )
@@ -57,23 +46,23 @@ function createDraggableArea(selector) {
     
 }
 
-function createDraggableRenderer(selector) {
+function createDragAndDropRenderer(droppableId) {
     
-    const element = document.querySelector(selector);
-    const type    = element.getAttribute('data-draggable-area-type');
+    const element = document.getElementById(droppableId);
+    const type    = element.getAttribute('data-droppable-type');
     
     switch (type) {
 
         case 'day-column': 
         
-            return DayColumnDraggableRenderer();
+            return getColumnDragAndDropRenderer();
 
-        case 'monthly_sheet':
+        case 'timeline':
 
-            return MonthlySheetDraggableRenderer();
+            return getTimelineDragAndDropRenderer();
         
     }
     
 }
 
-export { createDraggableArea, createDraggableRenderer }
+export { createDroppable, createDragAndDropRenderer }

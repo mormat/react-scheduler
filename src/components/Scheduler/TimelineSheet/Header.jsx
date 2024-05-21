@@ -10,7 +10,7 @@ function Header( { schedulerOptions, parentSize } ) {
         return date.toLocaleString(
             schedulerOptions.locale,
             {
-                weekday: schedulerOptions.width > 960 ? 'long' : 'short'
+                weekday: 'short'
             }
         )
     });

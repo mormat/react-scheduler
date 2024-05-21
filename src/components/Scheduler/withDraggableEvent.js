@@ -3,16 +3,16 @@ import { MonthlySheetDraggable } from '../../misc/drag-and-drop';
 
 import { MoveEventDraggable, ResizeEventDraggable } from '../../misc/drag-and-drop';
 
-import { createDraggableArea, createDraggableRenderer } from '../../factories';
+import { createDroppable, createDragAndDropRenderer } from '../../factories';
 
-function withDraggableEvent(WrappedComponent, value, draggableAreaId)
+function withDraggableEvent(WrappedComponent, value, droppableId)
 {
     
     const createDraggable = (draggableType, onChange) => {
 
-        const area = createDraggableArea('#' + draggableAreaId);
+        const area = createDroppable(droppableId);
 
-        if (draggableType === 'monthly-sheet') {
+        if (draggableType === 'timeline') {
             return new MonthlySheetDraggable(value, onChange, area);
         }
 
@@ -45,7 +45,7 @@ function withDraggableEvent(WrappedComponent, value, draggableAreaId)
                 
                 e.preventDefault();
                 
-                const renderer = createDraggableRenderer('#' + draggableAreaId);
+                const renderer = createDragAndDropRenderer(droppableId);
                 
                 draggable.startDragAndDrop(e, renderer);
             }

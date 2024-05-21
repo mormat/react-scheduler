@@ -65,7 +65,6 @@ Feature: Configuring the scheduler
         Then I should see "'Presentation' was moved" in notifications
     
     @crud
-    @debug
     Scenario Outline: enable or disable create/update events
         Given the configuration contains:
             | editable | <value> |
@@ -118,7 +117,6 @@ Feature: Configuring the scheduler
         Then I should see "<AUJOURD'HUI>"
         And I should see "JOURSEMAINEMOIS"
 
-    @current
     Scenario: Displayed text with default configuration
         Given "labels" in configuration is undefined
         When I open the scheduler

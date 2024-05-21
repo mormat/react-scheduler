@@ -1,46 +1,48 @@
-import TableBody      from './TableBody';
-import TableHeader    from './TableHeader';
-import { withLayout } from '../TimelineSheet';
+import TableBody   from './TableBody';
+import TableHeader from './TableHeader';
+import withFixedHeader  from '../../Widget/withFixedHeader';
 
-import { format_date, DateRange, dateRangeOverlapsAnother, dateRangeContainsAnother } from '../../../utils/date'
+import { format_date } from '../../../utils/date'
+
+import { groupBy } from '../../../utils/collections'
 
 function Table({ events, schedulerOptions, dateRange, header })
 {
-    const { start, end } = dateRange;
     
-    const days = [...dateRange.iterDays()].map(d => {
-        const str   = format_date('yyyy-mm-dd', d) + ' ';
-        const start = str + schedulerOptions.minHour + ':00';
-        const end   = str + schedulerOptions.maxHour + ':00';
-        return new DateRange(  new Date(start), new Date(end) );
-    });
-    
-    const displayedEvents = events.filter(e => dateRange.overlapsWith(e));
-    const bodyEvents = displayedEvents.filter(event => {
-        for (const day of days) {
-            if (day.contains(event)) {
-                return true;
+    const eventsByType = groupBy(
+        events.filter(e => dateRange.intersects(e)),
+        function( {start, end } ) {
+            
+            if (format_date('yyyy-mm-dd', start) !== format_date('yyyy-mm-dd', end)) {
+                return 'header';
             }
+            
+            if (start.getHours() < schedulerOptions.minHour) {
+                return 'header';
+            }
+
+            if (end.getHours() > schedulerOptions.maxHour) {
+                return 'header';
+            }
+
+            return 'body';
         }
-        return false;
-    });
-    const headerEvents = displayedEvents.filter(e => !bodyEvents.includes(e));
-    
-    const subheader = (
-        <TableHeader 
-            events = { headerEvents }
-            { ... { days, schedulerOptions, dateRange } } 
-        />
     )
     
-    const TableLayout = withLayout(
+    const TableLayout = withFixedHeader(
         TableBody, 
-        { header, subheader }
+        <>
+            { header }
+            <TableHeader 
+                events = { eventsByType['header'] || [] }
+                { ... { schedulerOptions, dateRange } } 
+            />
+        </>
     );
     
     return (
         <TableLayout 
-            events = { bodyEvents }
+            events = { eventsByType['body']  || []}
             { ... { schedulerOptions, dateRange } }
         />
     );

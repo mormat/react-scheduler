@@ -1,5 +1,5 @@
 
-import { getDaysBetween } from '../src/utils/date'
+import { DateRange } from '../src/utils/date'
 
 import { getFirstDayOfWeek, getLastDayOfWeek } from '../src/utils/date';
 
@@ -94,21 +94,7 @@ test.each(["string", "date", "timestamp"])
 
 });
 
-
 describe("Date utils", () => {
-
-    test.each([
-        ['2023-01-01', '2023-01-03', ['1/1/2023', '1/2/2023', '1/3/2023']],
-        ['2023-01-04', '2023-01-01', []]
-    ])("getDaysBetween from '%s', '%s'", (from, to, expected) => {
-
-        const days = getDaysBetween({
-            start: new Date(from + ' 00:00'),
-            end:   new Date(to   + ' 00:00')  
-        }).map( (t: Date) => t.toLocaleDateString('en'));
-
-        expect(days).toStrictEqual(expected);
-    });
 
     test('getFirstDayOfWeek()', () => {
 
@@ -124,7 +110,124 @@ describe("Date utils", () => {
 
         expect(getLastDayOfWeek(new Date('2023-05-22'))).toBe('2023-05-28');
 
-
     });
 
 });
+
+describe("DateRange", () => {
+
+    test('.createMonth', () => {
+
+        expect(DateRange.createMonth(
+            new Date("2024-05-05 10:02:03.200")
+        )).toStrictEqual(new DateRange(
+            new Date("2024-05-01 00:00:00.000"),
+            new Date("2024-05-31 23:59:59.999"),    
+        ));
+
+        expect(DateRange.createMonth(
+            new Date("2024-02-05 10:02:03.200")
+        )).toStrictEqual(new DateRange(
+            new Date("2024-02-01 00:00:00.000"),
+            new Date("2024-02-29 23:59:59.999"),    
+        ));
+
+    });
+
+    test('.createWeek', () => {
+
+        expect(DateRange.createWeek(
+            new Date("2024-05-05 10:02:03.200")
+        )).toStrictEqual(new DateRange(
+            new Date("2024-04-29 00:00:00.000"),
+            new Date("2024-05-05 23:59:59.999"),    
+        ));
+
+    });
+
+    test('.createDay', () => {
+
+        expect(DateRange.createDay(
+            new Date("2024-05-05 10:02:03.200")
+        )).toStrictEqual(new DateRange(
+            new Date("2024-05-05 00:00:00.000"),
+            new Date("2024-05-05 23:59:59.999"),    
+        ));
+
+    });
+
+    test('.intersects()', () => {
+
+        const dateRange = new DateRange(
+            new Date("2020-01-02 10:00"),
+            new Date("2020-01-02 13:59"),
+        );
+
+        expect(dateRange.intersects({
+            start: new Date("2020-01-01 10:00"),
+            end:   new Date("2020-01-01 13:59"),
+        })).toBe(null);
+
+        expect(dateRange.intersects({
+            start: new Date("2020-01-03 10:00"),
+            end:   new Date("2020-01-03 13:59"),
+        })).toBe(null);
+        
+        expect(dateRange.intersects({
+            start: new Date("2020-01-02 09:00"),
+            end:   new Date("2020-01-02 13:59"),
+        })).toStrictEqual(new DateRange(
+            new Date("2020-01-02 10:00"),
+            new Date("2020-01-02 13:59"),
+        ));
+
+        expect(dateRange.intersects({
+            start: new Date("2020-01-02 09:00"),
+            end:   new Date("2020-01-02 14:00"),
+        })).toStrictEqual(new DateRange(
+            new Date("2020-01-02 10:00"),
+            new Date("2020-01-02 13:59"),
+        ));
+
+        expect(dateRange.intersects({
+            start: new Date("2020-01-02 11:00"),
+            end:   new Date("2020-01-02 12:00"),
+        })).toStrictEqual(new DateRange(
+            new Date("2020-01-02 11:00"),
+            new Date("2020-01-02 12:00"),
+        ));
+
+    });
+
+    test('.groupByPosition()', () => {
+
+        const items = [
+            {
+                start: new Date("2020-01-02 11:20"),
+                end:   new Date("2020-01-02 11:30")
+            },
+            {
+                start: new Date("2020-01-01 10:00"),
+                end:   new Date("2020-01-01 10:25")
+            },
+            {
+                start: new Date("2020-01-01 10:20"),
+                end:   new Date("2020-01-01 16:00")
+            },
+            
+            {
+                start: new Date("2020-01-01 14:30"),
+                end:   new Date("2020-01-01 15:30")
+            },
+        ];
+        
+        expect(DateRange.groupByPosition(items)).toStrictEqual([
+            [items[0], items[1], items[3]],
+            [items[2]]
+        ]);
+
+    })
+
+
+});
+

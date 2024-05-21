@@ -1,7 +1,4 @@
 
-const MINUTE_LENGTH = 60 * 1000;
-const DAY_LENGTH    = 24 * 60 * 60 * 1000;
-
 interface IDateRange {
     start: Date;
     end:   Date;
@@ -17,54 +14,116 @@ class DateRange implements IDateRange {
         this.end   = end;
     }
 
-    public *iterDays() {
-        
-        let current = this.start;
-        do {
-            yield current;
-            current = date_add(current, 1, 'day');
-        } while (current < this.end)
-
+    static from(another: IDateRange): DateRange {
+        return new DateRange(another.start, another.end);
     }
 
-    overlapsWith(dateRange: IDateRange): boolean {
-        if ( !(dateRange.end.getTime() - 1 < this.start.getTime() || this.end.getTime() - 1 < dateRange.start.getTime()) ) {
-            return true;
+    public intersects(dateRange: IDateRange): DateRange|null {
+
+        if (dateRange.end < this.start || this.end < dateRange.start) {
+            return null;
         }
 
-        return false;
+        return new DateRange(
+            new Date(Math.max(this.start.getTime(), dateRange.start.getTime())),
+            new Date(Math.min(this.end.getTime(),   dateRange.end.getTime())),
+        );
+
+        return DateRange.from(dateRange);
     }
 
-    contains(another: IDateRange)
+    public contains(another: IDateRange)
     {
         return this.start <= another.start && another.end <= this.end;
     }
 
-    static createWeek(date: Date): DateRange {
+    public includes(date: Date) {
+        return this.start <= date && date <= this.end;
+    }
+
+    public getDays(): DateRange[] {
+        const days = []
+        let current = new Date(this.start);
+        while (current < this.end) {
+            days.push(DateRange.createDay(current));
+            current = date_add(current, 1, 'day')
+        }
+        return days;
+    }
+
+    public countDays(): number {
+        return this.getDays().length;
+    }
+
+    public getWeeks(): DateRange[] {
+        const weeks = []
+        let week = DateRange.createWeek(this.start);
+        while (week.start <= this.end) {
+            weeks.push(week);
+            week = DateRange.createWeek( date_add(week.end, 1, 'day') );
+        }
+        return weeks;
+    }
+
+    static createDay(date: Date): DateRange {
         return new DateRange(
-            new Date(getFirstDayOfWeek(date) + ' 00:00'),
-            new Date(getLastDayOfWeek(date) + ' 23:59')
+            new Date(format_date('yyyy-mm-dd', date) + ' 00:00:00.000'),
+            new Date(format_date('yyyy-mm-dd', date) + ' 23:59:59.999'),
         );
     }
 
+    static createWeek(date: Date): DateRange {
+        return new DateRange(
+            new Date(getFirstDayOfWeek(date) + ' 00:00:00.000'),
+            new Date(getLastDayOfWeek(date)  + ' 23:59:59.999')
+        );
+    }
+
+    static createMonth(date: Date): DateRange {
+        const start = new Date(date);
+        const end   = new Date(date);
+
+        start.setDate(1);
+        end.setDate(1)
+        end.setMonth(end.getMonth() + 1);
+        end.setDate( end.getDate()  - 1);
+
+        return new DateRange(
+            new Date(format_date('yyyy-mm-dd', start) + " 00:00:00.000"), 
+            new Date(format_date('yyyy-mm-dd', end)   + " 23:59:59.999"), 
+        );
+    }
+
+    static groupByPosition(items: IDateRange[]) {
+
+        const results: any = [];
+
+        loop_items: for (const item of items) {
+
+            const constraint = DateRange.from(item);
+
+            for (const position in results) {
+
+                const overlapping = results[position].find(
+                    (v: IDateRange) => constraint.intersects(v)
+                )
+
+                if (!overlapping) {
+                    results[position].push(item);
+                    continue loop_items;
+                }
+
+            }
+
+            results.push([item])
+
+        }
+
+        return results;
+
+    }
+
 }
-
-/**
- * 
- */
-const getDaysBetween = ({start, end}: IDateRange): Date[] => {
-    
-    const results = [];
-
-    const current = new Date(start);
-    while (current <= end) {
-        results.push(new Date(current));
-        current.setDate(current.getDate() + 1);
-    } 
-
-    return results;
-}
-
 
 const getFirstDayOfWeek = (date: Date) => {
 
@@ -82,42 +141,6 @@ const getLastDayOfWeek = (date: Date) => {
 
     return formatters['yyyy-mm-dd'](d);
 
-}
-
-// @todo missing unit test
-function getFirstDayOfMonth(date: Date|string) {
-
-    const d = new Date(date);
-    d.setDate(1);
-
-    return formatters['yyyy-mm-dd'](d);
-}
-
-// @todo missing unit test
-function getLastDayOfMonth(date: Date|string) {
-
-    const d = new Date(date);
-    d.setDate(1);
-    d.setMonth(d.getMonth() + 1);
-    d.setDate( d.getDate()  - 1);
-
-    return formatters['yyyy-mm-dd'](d);
-
-}
-
-// @todo rename to dateRangeOverlapAnother
-function dateRangeOverlapsAnother(dateRange: IDateRange, another: IDateRange): boolean
-{
-    if ( !(another.end.getTime() - 1 < dateRange.start.getTime() || dateRange.end.getTime() - 1 < another.start.getTime()) ) {
-        return true;
-    }
-
-    return false;
-}
-
-function dateRangeContainsAnother(dateRange: IDateRange, another: IDateRange)
-{
-    return dateRange.start <= another.start && another.end <= dateRange.end;
 }
 
 const formatters = {
@@ -173,10 +196,10 @@ function getPercentInDateRange(value: Date, dateRange: IDateRange): number {
 }
 
 
-export { getDaysBetween, getPercentInDateRange }
+
+
+export { getPercentInDateRange }
 export { getFirstDayOfWeek,  getLastDayOfWeek }
-export { getFirstDayOfMonth, getLastDayOfMonth }
 export { formatters, date_add, format_date }
-export { dateRangeContainsAnother, dateRangeOverlapsAnother }
 export { DateRange }
 export type { IDateRange }

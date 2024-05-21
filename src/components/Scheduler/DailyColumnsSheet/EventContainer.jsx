@@ -10,7 +10,7 @@ import BaseEventContent from './EventContent';
 import withEditEvent from '../withEditEvent';
 import withDraggableEvent from '../withDraggableEvent';
 
-function EventContainer ( { value, constraint, draggableAreaId, schedulerOptions, offset } ) {
+function EventContainer ( { value, constraint, droppableId, schedulerOptions, offset } ) {
     
     const getStyles = () => {
                 
@@ -36,7 +36,7 @@ function EventContainer ( { value, constraint, draggableAreaId, schedulerOptions
     }
     
     if (schedulerOptions.draggable) {
-        EventContent = withDraggableEvent(EventContent, value, draggableAreaId);
+        EventContent = withDraggableEvent(EventContent, value, droppableId);
     }
     
     return (

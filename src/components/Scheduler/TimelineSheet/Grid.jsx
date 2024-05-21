@@ -1,7 +1,7 @@
 
 import { date_add } from '../../../utils/date';
 
-import { indexBy } from '../../../utils/collections';
+import { groupBy } from '../../../utils/collections';
 
 function Grid( { dateRange, schedulerOptions, parentSize } ) {
 
@@ -13,8 +13,10 @@ function Grid( { dateRange, schedulerOptions, parentSize } ) {
     }
     
     const rows = Object.values(
-        indexBy(dates,  (_, k) => Math.floor(k / 7) )
+        groupBy(dates,  (_, k) => Math.floor(k / 7) )
     );
+    
+    console.log('rows', rows);
     
     const rowHeight = parentSize.height / rows.length;
     

@@ -10,7 +10,7 @@ import Header            from './Header'
 import Button from './Widget/Button'
 import ToggleButtonGroup from './Widget/ToggleButtonGroup';
 
-import { getFirstDayOfWeek, date_add, DateRange } from '../utils/date';
+import { DateRange } from '../utils/date';
 
 const defaultSchedulerConfig = {
     events: [],
@@ -35,147 +35,92 @@ const defaultSchedulerConfig = {
 
 function Scheduler( { events, schedulerOptions } ) {
         
-    const [currentDate, setCurrentDate] = useState(schedulerOptions.initialDate);
+    const [currentDate, setCurrentDate] = useState( 
+        new Date(schedulerOptions.initialDate) 
+    );
     
     const [viewMode, setViewMode] = useState( schedulerOptions.viewMode );
     
-    const layoutProps = { currentDate, setCurrentDate, viewMode, setViewMode }
+    const viewModeRenderers = {
         
-    const getTitle = () => {
-        
-        const date = new Date(currentDate);
-        
-        switch (viewMode) {
+        day: function() {
             
-            case 'day':
-                
-                return date.toLocaleString(
-                    schedulerOptions.locale, 
-                    {
-                        weekday: "long",
-                        month:   'short', 
-                        day:     'numeric', 
-                        year:    'numeric'
-                    }
-                );
-        
-            case 'week':
-                
-                const week = DateRange.createWeek(date);
-                
-                return [week.start, week.end].map(d => d.toLocaleString(
-                    schedulerOptions.locale, 
-                    {
-                        month:   'short', 
-                        day:     'numeric', 
-                        year:    'numeric'
-                    }
-                )).join(' - ');
-                
-            case 'month':
-                
-                return date.toLocaleString(
-                    schedulerOptions.locale, 
-                    { 
-                        month: 'long', 
-                        year: 'numeric' 
-                    }   
-                )
-                    
-        }
-        
-    }
-    
-    const getSheet = () => {
-        
-        const d = new Date(currentDate);
-        
-        if (schedulerOptions.timelined) {
+            const dateRange = DateRange.createDay(currentDate);
+                        
+            const title = currentDate.toLocaleString(
+                schedulerOptions.locale, 
+                {
+                    weekday: "long",
+                    month:   'short', 
+                    day:     'numeric', 
+                    year:    'numeric'
+                }
+            );
+                        
             return (
-                <TimelineSheet 
-                    currentDate = { d }
-                    events      = { events }
-                    schedulerOptions = { schedulerOptions }
-                    layoutProps = { layoutProps }
+                <DailyColumnsSheet 
+                    key    = { 'day-' + currentDate }
+                    header = { buildHeader(title) }
+                    { ... {schedulerOptions, events, dateRange } }
+                /> 
+            )
+        },
+        
+        week: function() {
+            
+            const dateRange = DateRange.createWeek(currentDate);
+            
+            const title = [dateRange.start, dateRange.end].map(function(d) {
+                return d.toLocaleString(
+                    schedulerOptions.locale, 
+                    { month: 'short', day: 'numeric', year: 'numeric' }
+                );
+            }).join(' - ');
+            
+            return (
+                <DailyColumnsSheet 
+                    key    = { 'week-' + currentDate }
+                    header = { buildHeader(title) }
+                    { ... {schedulerOptions, events, dateRange } }
+                /> 
+            )
+        },
+        
+        month: function() {
+            
+            const dateRange = DateRange.createMonth(currentDate);
+                    
+            const title = currentDate.toLocaleString(
+                schedulerOptions.locale, 
+                { month: 'long', year: 'numeric' }   
+            );
+                    
+            return (
+                <MonthlySheet 
+                    key    = { 'month-' + currentDate }
+                    header = { buildHeader(title) }
+                    { ... {schedulerOptions, events, dateRange } }
                 />
             )
         }
-        
-        switch (viewMode) {
-         
-            case 'week':
-                
-                return (
-                    <DailyColumnsSheet 
-                        key       = { 'week-' + currentDate }
-                        startDate = { new Date(getFirstDayOfWeek(currentDate)) }
-                        length    = { 7 }
-                        events    = { events }
-                        header    = { getHeader() }
-                        schedulerOptions = { schedulerOptions }
-                        layoutProps = { layoutProps }
-                    /> 
-                )
-
-            case 'day':
-                
-                return (
-                    <DailyColumnsSheet 
-                        key       = { 'day-' + currentDate }
-                        startDate = { new Date(currentDate) }
-                        length    = { 1 }
-                        events    = { events }
-                        header    = { getHeader() }
-                        schedulerOptions = { schedulerOptions }
-                        layoutProps = { layoutProps }
-                    /> 
-                )
-        
-            case 'month' : {
-                    
-                return (
-                    <MonthlySheet 
-                        currentDate = { d }
-                        events      = { events }
-                        header      = { getHeader() }
-                        schedulerOptions = { schedulerOptions }
-                        layoutProps = { layoutProps }
-                    />
-                )
-        
-            }
-        }
-        
     }
-    
-    const getHeader = () => (
+        
+    const buildHeader = (title) => (
         <Header 
             schedulerOptions = { schedulerOptions }
-            title = { getTitle() }
-            { ...layoutProps }
+            { ... { title, currentDate, setCurrentDate, viewMode, setViewMode } }
         />
     )
-    
-    const getStyles = () => {
-        const styles = {}
-        
-        for (const key of ['width', 'height']) {
-            let value = schedulerOptions[key];
-            if (!isNaN(Number(value))) {
-                value += 'px';
-            }
-            styles[key] = value;
-        }
-        
-        return styles;
-    }
            
     return (
         <div className="mormat-scheduler-Scheduler"
             id    = { schedulerOptions.id }
-            style = { getStyles() }
+            style = { {
+                width:  schedulerOptions.width,
+                height: schedulerOptions.height,
+            } }
         >       
-            {  getSheet() }           
+            {  viewModeRenderers[viewMode]() }           
         </div>  
     )
     

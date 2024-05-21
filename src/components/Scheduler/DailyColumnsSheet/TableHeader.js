@@ -1,30 +1,16 @@
 
 import TimelineRow from '../TimelineSheet/Row';
 
-import { useLayoutSize } from '../../../utils/dom';
+import { format_date } from '../../../utils/date';
+import { useUniqueId } from '../../../utils/dom';
 
-function TableHeader( { events, days, dateRange, schedulerOptions }) {
+function TableHeader( { events, dateRange, schedulerOptions }) {
     
-    const size = useLayoutSize(schedulerOptions);
+    const days = dateRange.getDays();
     
-    const formatDate = (d) => {
-        const strdate = options => d.toLocaleString(
-            schedulerOptions.locale, 
-            options
-        );
-        
-        if (schedulerOptions.width < 1024 && days.length === 7) {
-             return (<>
-                { strdate({ weekday: 'short' }) }
-                <br/>
-                { strdate({ month: 'short', day: 'numeric' }) }
-            </>)
-        }
-        
-        return strdate({ weekday: 'short', month: 'long',  day:'numeric' });
-    };
+    const droppableId = useUniqueId();
     
-    const yAxisWidth = size.width > 640 ? 70 : 30;
+    const yAxisWidth = 30;
     
     return (
         <table style = { { width: '100%'} }>
@@ -36,7 +22,16 @@ function TableHeader( { events, days, dateRange, schedulerOptions }) {
                             <th key={ start }
                                 style= {{ textAlign: 'center' }}
                             >
-                                { formatDate(start) }
+                                { 
+                                    start.toLocaleString(
+                                        schedulerOptions.locale, 
+                                        { 
+                                            weekday: 'short', 
+                                            month: 'short',  
+                                            day:'numeric' 
+                                        }
+                                    ) 
+                                }
                             </th>
                         )) }
                     </tr>
@@ -45,12 +40,33 @@ function TableHeader( { events, days, dateRange, schedulerOptions }) {
             <tbody>
                 <tr>
                     <td style= {{ width: yAxisWidth }}></td>
-                    <td colSpan={ days.length }>
-                        <TimelineRow
+                    <td colSpan={ days.length } 
+                        id    = { droppableId }
+                        style = {{ position: 'relative' }}
+                        data-droppable-type = "timeline"
+                    >
+                        { days.map(({ start }, index) => (
+                            <div key = { index } 
+                                 style = { { 
+                                     position: 'absolute',
+                                     width: (100 / days.length) + '%',
+                                     height: '100%',
+                                     top: 0,
+                                     left: (index * 100 / days.length) + '%',
+                                } }
+                                data-day = { format_date('yyyy-mm-dd', start) }
+                            >
+                            </div>
+                        )) }
+
+                         <TimelineRow
                             events    = { events }
                             dateRange = { dateRange }
                             schedulerOptions = { schedulerOptions }
+                            droppableId  = { droppableId } 
+                            draggableType    = "timeline"
                         />
+
                     </td>
                 </tr>
             </tbody>

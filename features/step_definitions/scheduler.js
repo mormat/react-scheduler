@@ -197,7 +197,8 @@ Then('hours from {string} to {string} should be displayed', async function (min,
 Then('the events below should be displayed only in the corresponding day', async (dataTable) => {
    
     const daysRects = {}
-    for (const element of await findElementsByCss('[data-day]')) {
+    const elements = await findElementsByCss('[data-droppable-type="timeline"] [data-day]');
+    for (const element of elements) {
         const day = await element.getAttribute('data-day');
         daysRects[day] = new Rectangle(await element.getRect());
     }

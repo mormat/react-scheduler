@@ -6,8 +6,6 @@ import { useState, useEffect } from 'react'
 
 import { date_add } from '../utils/date';
 
-import { useLayoutSize } from '../utils/dom';
-
 function Title( { title } ) {
     
     return (
@@ -64,37 +62,23 @@ function Tabs( { schedulerOptions, viewMode, setViewMode } ) {
 
 const Header = function( props ) {
     
-    const { schedulerOptions } = props;
-    
-    const size = useLayoutSize(schedulerOptions);
-    
-    
-    const rows = size.width < 640 ?
-        [[Navigation, Tabs], [Title]]:
-        [[Navigation, Tabs, Title], []]
-    ;
-    
-    const renderer = (Component, k) => (
-        <Component key = { k } { ...props } />
-    );
-    
     return (
         <div 
             className  = "mormat-scheduler-Header"
         >
 
             <div>
-                { rows[0].map(renderer) }
+                <Navigation { ... props } />
+                
+                <Tabs { ... props } />
             </div>
             
             <div>
-                { rows[1].map(renderer) }
+            
+                <Title { ... props } />
+            
             </div>
         
-            <span style={{ display: 'none'}}>
-                { size.width } x  { size.height }
-            </span>
-
         </div>    
     );
         

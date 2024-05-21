@@ -1,7 +1,7 @@
 
 import { formatters, getPercentInDateRange } from '../utils/date';
 
-function DayColumnDraggableRenderer() {
+function getColumnDragAndDropRenderer() {
     
     let clone = null;
     let targetRole = null;
@@ -64,7 +64,7 @@ function DayColumnDraggableRenderer() {
     }
 }
 
-function MonthlySheetDraggableRenderer() {
+function getTimelineDragAndDropRenderer() {
     
     let clone = null;
     
@@ -100,4 +100,4 @@ function MonthlySheetDraggableRenderer() {
     
 }
 
-export { MonthlySheetDraggableRenderer, DayColumnDraggableRenderer }
+export { getTimelineDragAndDropRenderer, getColumnDragAndDropRenderer }

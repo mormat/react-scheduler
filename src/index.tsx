@@ -5,8 +5,6 @@ import { defaultSchedulerConfig } from './components/Scheduler';
 
 import { ISchedulerConfig } from './types';
 
-import withRootElement from './components/withRootElement';
-
 import withSchedulerEvents from './components/DataHandler/withSchedulerEvents';
 
 import EventsList from './components/EventsManager/EventsList';
@@ -30,6 +28,12 @@ const Scheduler = ( props: ISchedulerConfig ) => {
         schedulerConfig[k] = Number(schedulerConfig[k]);
     }
 
+    for (const key of ['width', 'height']) {
+        if (!isNaN(Number(schedulerConfig[key]))) {
+            schedulerConfig[key] += 'px';
+        }
+    }
+
     if (!schedulerConfig.initialDate) {
         schedulerConfig.initialDate = Date.now()
     }   
@@ -46,15 +50,11 @@ const Scheduler = ( props: ISchedulerConfig ) => {
         Scheduler = withSchedulerEvents(Scheduler);
     }
 
-    Scheduler = withRootElement(Scheduler);
-
     return (
         <Scheduler { ...{ events, schedulerOptions }} />
     )
     
 }
 
-const Truc = Scheduler
-
 export default Scheduler;
-export { Scheduler, EventsList, Truc }
+export { Scheduler, EventsList }

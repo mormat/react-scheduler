@@ -6,7 +6,6 @@ Feature: Timel
         And the configuration contains:
             | timelined | true |
 
-    @current
     Scenario: rendering the scheduler in "week" view
         # When I open the scheduler in "week" view
         # Then I should see "Apr 15, 2024 - Apr 21, 2024"

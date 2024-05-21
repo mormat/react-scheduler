@@ -1,37 +1,47 @@
 
+import { Fragment } from 'react';
+
 import EventContainer from './EventContainer';
 
-import { formatters }        from '../../../utils/date';
-import { calcEventsOffsets } from '../../../models/events';
+import { format_date, DateRange } from '../../../utils/date';
 
-function Row( { events, dateRange, draggableAreaId, draggableType, schedulerOptions }) {
 
-    const styles = {
-        'height': schedulerOptions.spannedEventHeight * events.length,
-        'width': '100%',
-        'position': 'relative',
-    }
-    
-    const eventsOffsets = calcEventsOffsets(events);
+function Row( { events, dateRange, droppableId, draggableType, schedulerOptions }) {
+
+    const groupedEvents = DateRange.groupByPosition(events);
     
     return (
         <div className = "mormat-scheduler-Scheduler-TimelineSheet-Row" 
-             style     = { styles }
-             data-start = { formatters['yyyy-mm-dd hh:ii'](dateRange.start) }
-             data-end   = { formatters['yyyy-mm-dd hh:ii'](dateRange.end) }
+             style     = { {
+                'height': schedulerOptions.spannedEventHeight * groupedEvents.length,
+                'width': '100%',
+                'position': 'relative',
+             } }
+             data-start = { format_date('yyyy-mm-dd hh:ii', dateRange.start) }
+             data-end   = { format_date('yyyy-mm-dd hh:ii', dateRange.end) }
         >
-            { events.map((event, index) => (
-                <EventContainer 
-                    key           = { index }
-                    event         = { event }
-                    index         = { eventsOffsets.get(event).current }
-                    dateRange     = { dateRange }
-                    draggableAreaId  = { draggableAreaId }
-                    draggableType    = { draggableType}
-                    schedulerOptions = { schedulerOptions }
-                    
-                />                    
-            )) }
+            { groupedEvents.map((events, offset) => (
+                <Fragment key = { offset } >
+            
+                    { events.map((event, k) => (
+                            
+                        <EventContainer 
+                            key           = { k }
+                            event         = { event }
+                            index         = { offset }
+                            dateRange     = { dateRange }
+                            droppableId  = { droppableId }
+                            draggableType    = { draggableType}
+                            schedulerOptions = { schedulerOptions }
+
+                        />  
+                                
+                    ) ) }
+            
+                </Fragment>
+            ) ) }
+            
+                
         </div>
     )
 

@@ -1,50 +1,34 @@
 import GridBody   from './MonthlySheet/GridBody';
 import GridHeader from './MonthlySheet/GridHeader';
 
-import { withLayout }     from './TimelineSheet';
+import withFixedHeader    from '../Widget/withFixedHeader';
 import withCreateEvent    from './withCreateEvent';
 import withEventsLoading  from '../DataHandler/withEventsLoading';
 
-import { formatters }     from '../../utils/date';
+import { DateRange }     from '../../utils/date';
 
-import { getFirstDayOfWeek, getLastDayOfWeek } from '../../utils/date';
+function MonthlySheet( {dateRange, events, schedulerOptions, header} ) {
 
-function MonthlySheet( {currentDate, events, schedulerOptions, header} ) {
-
-    const dateRange = {
-        start: new Date(currentDate),
-        end:   new Date(currentDate),
-    }
     
-    dateRange.start.setDate(1);
-    dateRange.end.setDate(1);
-    dateRange.end.setMonth(dateRange.end.getMonth() + 1);
-    dateRange.end.setDate(dateRange.end.getDate() - 1);
-
-    dateRange.start = new Date(getFirstDayOfWeek(dateRange.start) + ' 00:00');
-    dateRange.end   = new Date(getLastDayOfWeek(dateRange.end)    + ' 23:59');
     
-    const title = currentDate.toLocaleString(
-        schedulerOptions.locale, 
-        { month: 'long', year: 'numeric' }
-    );
-    
-    const subheader = (
-        <GridHeader { ... { schedulerOptions, dateRange } } />
-    );
-    
-    let Grid = withLayout(
+    let Grid = withFixedHeader(
         GridBody, 
-        { header, subheader }
+        <>
+            { header }
+            <GridHeader { ... { schedulerOptions, dateRange } } />
+        </>
     );
     if (schedulerOptions.editable) {
         Grid = withCreateEvent(Grid);
     }
-    Grid = withEventsLoading(Grid, dateRange);
+    Grid = withEventsLoading(Grid, new DateRange(
+        DateRange.createWeek(dateRange.start).start,
+        DateRange.createWeek(dateRange.end).end,
+    ));
     
     return (
         <div className="mormat-scheduler-Scheduler-MonthlySheet">
-            <Grid { ... { currentDate, dateRange, events, schedulerOptions }} />
+            <Grid { ... { dateRange, events, schedulerOptions }} />
         </div>
     )
 

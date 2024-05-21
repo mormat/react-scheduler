@@ -1,51 +1,45 @@
 
-import { useUniqueId, getClassName, useLayoutSize } from '../../../utils/dom'
+import { Fragment } from 'react';
 
-import { formatters, dateRangeOverlapsAnother, dateRangeContainsAnother } from '../../../utils/date'
+import { useUniqueId, getClassName } from '../../../utils/dom'
 
-import { calcEventsOffsets  } from '../../../models/events';
+import { format_date, DateRange } from '../../../utils/date'
 
 import EventContainer from './EventContainer';
 import Grille from '../../Widget/Grille';
 
 function TableBody( { events, schedulerOptions, dateRange } ) {
-
     
     const uniqueId  = useUniqueId();    
-    const size = useLayoutSize(schedulerOptions);
     
-    const yAxisWidth = size.width < 640 ? 30 : 70;
-    
-    const dates = [...dateRange.iterDays()];
+    const yAxisWidth = 30;
     
     const hours = [];
     for (let h = schedulerOptions.minHour; h < schedulerOptions.maxHour; h++) {
         hours.push((('0' + h).slice(-2)) + ':00');
     }
     
-    const columns = dates.map(date => {
+    const columns = dateRange.getDays().map( ({start} ) => {
         
-        const day = formatters['yyyy-mm-dd'](date);
+        const day = format_date('yyyy-mm-dd', start);
         
         const minHour = schedulerOptions.minHour + ':00';
         const maxHour = schedulerOptions.maxHour + ':00';
         
-        const constraint = {
-            start: new Date(day + ' ' + minHour),
-            end: new Date(day + ' ' + maxHour)
-        };
+        const constraint = new DateRange(
+            new Date(day + ' ' + minHour),
+            new Date(day + ' ' + maxHour)
+        );
         
-        const filteredEvents = events.filter(e => dateRangeContainsAnother(constraint, e));
+        const filteredEvents = events.filter(e => constraint.contains(e));
+    
+        const groupedEvents = DateRange.groupByPosition(filteredEvents);
         
-        const eventsOffsets = calcEventsOffsets(filteredEvents);
-        
-        return { day, minHour, maxHour, constraint, events: filteredEvents, eventsOffsets }
+        return { day, minHour, maxHour, constraint, groupedEvents }
         
     });
     
-    const columnsDraggableAreaId = useUniqueId();
-    
-    const rowHeight = (size.height || 0) /hours.length;
+    const columnsDroppableId = useUniqueId();
         
     return (
         <div style = {{
@@ -57,15 +51,18 @@ function TableBody( { events, schedulerOptions, dateRange } ) {
              }} 
         >
         
-            <table className="mormat-scheduler-Scheduler-DailyColumnsSheet-TableBody" 
-                style = { { 
-                    width: "100%",
-                    height: "100%"
-                } } >
+            <table 
+            
+                className = "mormat-scheduler-Scheduler-DailyColumnsSheet-TableBody" 
+                id = { columnsDroppableId }
+                data-droppable-type = 'day-column'
+                style = { {  width: "100%", height: "100%" } } 
+                
+            >
 
-                <tbody id = { columnsDraggableAreaId }
-                       data-draggable-area-type = 'day-column'
-                       style= {{ position: 'relative' }} >
+                <tbody 
+                    style= {{ position: 'relative' }} 
+                >
 
                     { hours.map( ( hour, index ) => (
                         <tr key   = { index } 
@@ -77,7 +74,7 @@ function TableBody( { events, schedulerOptions, dateRange } ) {
                                 <span>{ hour }</span>
                                 { index === 0 && <Grille rows = { hours.length } /> }
                             </th>
-                            { index === 0 && columns.map( ({events, constraint, day, minHour, maxHour, eventsOffsets}, key) => (
+                            { index === 0 && columns.map( ({groupedEvents, constraint, day, minHour, maxHour}, key) => (
 
                                 <td key     = { key } 
                                     style   = { { position: "relative"} }
@@ -86,15 +83,23 @@ function TableBody( { events, schedulerOptions, dateRange } ) {
                                     data-minhour = { minHour }
                                     data-maxhour = { maxHour }
                                 >
-                                    { events.map((event, i) => (
-                                        <EventContainer
-                                               key        = { i }
-                                               value      = { event }
-                                               constraint = { constraint }
-                                               schedulerOptions = { schedulerOptions }
-                                               draggableAreaId  = { columnsDraggableAreaId }
-                                               offset     = { eventsOffsets.get(event) }
-                                        />
+                                    { groupedEvents.map((events, position) => (
+                                        
+                                        <Fragment key = { position }>
+                                
+                                            { events.map((event, k) => (
+                                                <EventContainer
+                                                    key        = { k }
+                                                    value      = { event }
+                                                    constraint = { constraint }
+                                                    schedulerOptions = { schedulerOptions }
+                                                    droppableId  = { columnsDroppableId }
+                                                    offset     = { { current: position, length: groupedEvents.length } }
+                                                />
+                                            )) }
+    
+                                        </Fragment> 
+    
                                     )) }
 
                                 </td>

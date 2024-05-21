@@ -1,32 +1,20 @@
 
-import { getDaysBetween, formatters } from '../../../utils/date';
+import { getDaysBetween, format_date, DateRange } from '../../../utils/date';
 
 import BaseEventContent from './EventContent'
 
 import withEditEvent from '../withEditEvent';
 import withDraggableEvent from '../withDraggableEvent';
 
-function EventContainer( { event, index, dateRange, draggableAreaId, schedulerOptions, draggableType}) {
-
-    const nbrDays = getDaysBetween(dateRange).length;
+function EventContainer( { event, index, dateRange, droppableId, schedulerOptions, draggableType}) {
+   
+    const intersect = dateRange.intersects(event);
+    const padding = new DateRange(dateRange.start, new Date(event.start - 1));
     
-    const offset  = Math.max(
-        getDaysBetween({
-            start: dateRange.start, 
-            end: event.start}
-        ).length - 1,
-        0
-    );
+    const length = intersect.countDays();
+    const offset = Math.max(padding.countDays() - 1, 0);
     
-    const length  = Math.min(
-        getDaysBetween({
-            start: Math.max(event.start, dateRange.start),
-            end:  event.end
-        }).length,
-        nbrDays - offset
-    );
-    
-    const unit = 100 / nbrDays;
+    const unit = 100 / dateRange.countDays();
     
     const styles = {
         'right': (100 - (offset + length ) * unit) + '%',
@@ -46,14 +34,14 @@ function EventContainer( { event, index, dateRange, draggableAreaId, schedulerOp
     }
     
     if (draggableType && schedulerOptions.draggable) {
-        EventContent = withDraggableEvent(EventContent, event, draggableAreaId);
+        EventContent = withDraggableEvent(EventContent, event, droppableId);
     }
     
     return (
         <span 
             className   = "mormat-scheduler-TimelineSheet-EventContainer"
             style       = { styles } 
-            data-event-from = { formatters['yyyy-mm-dd hh:ii'](event.start) }
+            data-event-from = { format_date('yyyy-mm-dd hh:ii', event.start) }
             data-draggable  = { draggableType }
         >
             <EventContent 

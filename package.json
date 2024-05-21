@@ -44,7 +44,7 @@
     "@testing-library/react": "^12.1.5",
     "babel-jest": "^29.5.0",
     "babel-loader": "^9.1.2",
-    "chromedriver": "^123.0.2",
+    "chromedriver": "^125.0.0",
     "concurrently": "^8.2.2",
     "copy-webpack-plugin": "^11.0.0",
     "cors": "^2.8.5",
@@ -69,13 +69,12 @@
     "webpack-dev-server": "^4.13.2"
   },
   "scripts": {
-    "dev": "concurrently 'webpack serve --mode=development' 'webpack serve --mode=development --config standalone/webpack.config.js'",
+    "start": "concurrently 'webpack serve --mode=development' 'webpack serve --mode=development --config standalone/webpack.config.js'",
     "prepare": "webpack --mode=production && webpack --mode=production --config standalone/webpack.config.js",
     "build": "npm pack --pack-destination=./build",
     "jest": "jest",
     "precucumber": "babel --out-dir ./dist/utils ./src/utils --extensions .js,.jsx,.ts,.tsx",
     "cucumber": "cucumber-js",
-    "machin": "nodejs ./src/server.js",
     "test": "npm run jest && npm run prepare && npm run cucumber"
   }
 }

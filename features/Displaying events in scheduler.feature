@@ -6,45 +6,50 @@ Feature: Displaying events in the scheduler
         And the configuration contains the following events:
             | start            | end              | label           |
             | 2023-05-01 10:00 | 2023-05-01 12:00 | Presentation    |
-            | 2023-05-05 14:00 | 2023-05-06 16:00 | Meeting         |
+            | 2023-05-05 14:00 | 2023-05-06 16:00 | Training course |
             | 2023-05-07  9:00 | 2023-05-07 10:00 | Medical checkup |
-            | 2023-04-28  9:00 | 2023-04-28 18:00 | Training course |
+            | 2023-04-28  9:00 | 2023-04-28 18:00 | Meeting         |
             | 2023-05-09 11:00 | 2023-05-09 12:00 | Job Interview   |
         
     Scenario: Displaying events for current week    
         When I open the scheduler in "week" view
         Then only the items checked below should be visible
             | Presentation    | X |
-            | Meeting         | X |  
+            | Training course | X |  
             | Medical checkup | X |  
             | Job Interview   |   |
-            | Training course |   |  
+            | Meeting         |   |  
     
     Scenario: Displaying events for next week
         When I open the scheduler in "week" view
         And I click on ">"
         Then only the items checked below should be visible
             | Presentation    |   |
-            | Meeting         |   |  
+            | Training course |   |  
             | Medical checkup |   |  
             | Job Interview   | X |
-            | Training course |   |  
+            | Meeting         |   |  
 
     Scenario: Displaying events for previous week
         When I open the scheduler in "week" view
         And I click on "<"
         Then only the items checked below should be visible
             | Presentation    |   |
-            | Meeting         |   |  
+            | Training course |   |  
             | Medical checkup |   |  
             | Job Interview   |   |
-            | Training course | X |  
+            | Meeting         | X |  
 
     Scenario: Event should be displayed at the corresponding time range
         When I open the scheduler in "week" view
         Then I should see the "Presentation" event in "2023-05-01"
         And the "Presentation" event should be displayed from "10:00" to "12:00"
         And I should see "10:00 - 12:00 Presentation"
+
+    Scenario: Spanned events in week mode
+        When I open the scheduler in "week" view
+        Then the events below should be displayed only in the corresponding day
+            | Training course | 2023-05-05,2023-05-06 |
 
     @drag_and_drop
     Scenario: Displaying an event that has been moved in week view
@@ -60,6 +65,15 @@ Feature: Displaying events in the scheduler
         And the "Presentation" event should be displayed from "08:00" to "10:00"
         And I should see "Presentation event was moved" in notifications
 
+    @current
+    @drag_and_drop
+    Scenario: Displaying an spanned event that has been moved in month view
+        When I open the scheduler in "week" view
+        And I move the "Training course" event to "2023-05-03"
+        Then the events below should be displayed only in the corresponding day
+            | Training course | 2023-05-03,2023-05-04 |
+
+
     Scenario: Default ending time is "start + 60 minutes"
         Given the configuration contains the following events:
             | start            | label    |
@@ -71,10 +85,10 @@ Feature: Displaying events in the scheduler
         When I open the scheduler in "day" view
         Then only the items checked below should be visible
             | Presentation    | X |
-            | Meeting         |   |  
+            | Training course |   |  
             | Medical checkup |   |  
             | Job Interview   |   |
-            | Training course |   |
+            | Meeting         |   |
 
     Scenario: Displaying events for the next day
         Given the configuration contains the following events:
@@ -105,7 +119,7 @@ Feature: Displaying events in the scheduler
             | Presentation           | 2023-05-01 |
             | Medical checkup        | 2023-05-07 |  
             | Job Interview          | 2023-05-09 |
-            | Meeting                | 2023-05-05,2023-05-06 |
+            | Training course        | 2023-05-05,2023-05-06 |
             | Overlapping week event | 2023-05-21,2023-05-22 |
            
     Scenario: Displaying events for the next month
@@ -131,11 +145,11 @@ Feature: Displaying events in the scheduler
     @drag_and_drop
     Scenario: Displaying an event that has been moved in month view
         When I open the scheduler in "month" view
-        And I move the "Meeting" event to "2023-05-03"
+        And I move the "Training course" event to "2023-05-03"
         And I move the "Presentation" event to "2023-05-02"
         Then the events below should be displayed only in the corresponding day
-            | Presentation    | 2023-05-02 |
-            | Meeting         | 2023-05-03,2023-05-04 |
+            | Presentation    | 2023-05-02            |
+            | Training course | 2023-05-03,2023-05-04 |
 
     Scenario Outline: Rendering events color in day/week/month view
         Given the configuration contains the following events:
@@ -223,17 +237,17 @@ Feature: Displaying events in the scheduler
     Examples:
         | view_mode  | update_script | start_hour | end_hour |
         | day        |               | 08:00      | 10:00    |
-        | day        | reset();     | 14:00      | 16:00    |
+        | day        | reset();      | 14:00      | 16:00    |
         | week       |               | 08:00      | 10:00    |
-        | week       | reset();     | 14:00      | 16:00    |
+        | week       | reset();      | 14:00      | 16:00    |
 
     Scenario: Displaying valid events in csv format
         Given "events" in configuration equals the csv below:
-            | start            | end              | label         | errors  |
-            | 2023-05-01 10:00 | 2023-05-01 12:00 | Presentation  |         |
-            | 2023-05-01 16:00 | 2023-05-01 18:00 | Conference    | invalid |
-            | 2023-05-05 14:00 | 2023-05-06 16:00 | Meeting       |         |
+            | start            | end              | label           | errors  |
+            | 2023-05-01 10:00 | 2023-05-01 12:00 | Presentation    |         |
+            | 2023-05-01 16:00 | 2023-05-01 18:00 | Conference      | invalid |
+            | 2023-05-05 14:00 | 2023-05-06 16:00 | Training course |         |
         When I open the scheduler in "week" view
         Then I should see "Presentation"
-        And I should see "Meeting"
+        And I should see "Training course"
         And I should not see "Conference"

@@ -14,6 +14,7 @@
             top: 10%;
             left: 5%;
             width: 90%;
+            max-width: 1000px;
             /* padding-bottom: 100px; */
             height: 80%;
             /* border: 2px dashed red; */
@@ -26,6 +27,7 @@
             right: 5px;
             resize: none;
             height: 50px;
+            display: none;
         }
         
     </style>
@@ -69,7 +71,7 @@
                 locale:   'en',
                 viewMode: 'week',
                 width:    'auto',
-                height:   'auto',
+                height:   '80vh',
                 timelined: false,
                 
             }
@@ -81,9 +83,6 @@
             }
             
             var timelined = urlParams.has('timelined') || false;
-            var locale    = urlParams.get('locale') || 'en';
-            var viewMode  = urlParams.get('viewMode') || 'week';
-            var width     = urlParams.get('width') || 'auto';
 
             if (mode === 'static') {
                 renderComponent(
@@ -164,7 +163,7 @@
                 },
                 {   label: "Next month event",
                     start: days[17] + " 10:00",
-                    end:   days[17] + " 10:00",
+                    end:   days[17] + " 12:00",
                     color: "white",
                     backgroundColor: "#0fc4a7"
                 }   
