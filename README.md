@@ -25,9 +25,32 @@ npm install @mormat/react-scheduler
 ```
 
 ### Importing stylesheet
+
+The stylesheet is required, otherwise, the scheduler will not be rendered properly.
+
+There is several ways to include the stylesheet :
+
+- With the [css-loader](https://github.com/webpack/css-loader) module if you're using webpack
+
 ```js
-import "@mormat/react-scheduler/mormat_react_scheduler.css";
+/*
+ The following line can be included in your src/index.js or App.js file
+*/
+import "@mormat/react-scheduler/dist/mormat_react_scheduler.css";
 ```
+
+- In the html template where the scheduler will displayed (using [unpkg](https://www.unpkg.com/))
+
+```html
+<head>
+    ...
+    <link 
+        rel="stylesheet" 
+        href="https://unpkg.com/@mormat/react-scheduler/dist/mormat_react_scheduler.css"
+    >
+</head>
+```
+
 
 ### Loading static events
 
@@ -65,10 +88,10 @@ function App() {
 ```html
 <head>
     ...
-    <link rel="stylesheet" href="//unpkg.com/react@18/mormat_react_scheduler.css">
-    <script src="//unpkg.com/react@18/umd/react.development.js"></script>
-    <script src="//unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-    <script src="//unpkg.com/@mormat/react-scheduler"></script>
+    <link rel="stylesheet" href="https://unpkg.com/@mormat/react-scheduler/dist/mormat_react_scheduler.css">
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@mormat/react-scheduler"></script>
 </head>
 ```
 
