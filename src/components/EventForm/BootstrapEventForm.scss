@@ -1,0 +1,12 @@
+.mormat-scheduler-BootstrapEventForm {
+    min-width: 400px;
+    
+    .btn-danger {
+        opacity: 0.75;
+        
+        &:hover {
+            opacity: 1;
+        }
+    }
+    
+}

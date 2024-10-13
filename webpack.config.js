@@ -1,22 +1,35 @@
-const path = require('path');
 const CopyPlugin = require("copy-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const { DefinePlugin } = require('webpack');
+const { createJsonServer } = require('./src/stubs/json_server');
+const path = require('path');
+const fs = require('fs');
 
 module.exports = function (env, argv) {
+    
+    if (env.WEBPACK_SERVE) {
+        const jsonServer = createJsonServer();
+        jsonServer.listen(3000, () => {
+            console.log('JSON server is running at 3000');
+        });
+    }
+    
+    const package_infos = get_package_infos();
+    const examples = scan_examples();
+    
     return {
         entry: {
-            'mormat_react_scheduler':  ['./src/index.tsx'],
+            'index':            ['./src/index.js'],
+            'examples':         ['./src/examples.js'],
+            'react_scheduler':  ['./src/react_scheduler.js'],
+            ...Object.fromEntries( Object.keys(examples).map(
+                f => ['examples__' + f, './src/examples/' + f]
+            ) )
         },
         output: {
             path: path.resolve(__dirname, 'dist'),
-            filename: ( { chunk } ) => {
-                if (chunk.name === 'styles') {
-                    return './include/[name].js';
-                }
-                return '[name].js';
-            },
-            library: 'mormat_react_scheduler',
+            filename: ({ chunk }) => chunk.name.replace('__', '/') + '.js',
+            library: '[name]',
             libraryTarget: 'umd'
         },
         devServer: {
@@ -34,20 +47,26 @@ module.exports = function (env, argv) {
                     publicPath: './externals/react-dom'
                 }
             ],
+            proxy: [
+                {
+                    context: ['/events'],
+                    target: 'http://localhost:3000',
+                },
+            ],
             compress: true,
             port: 9000,
         },
         module: {
             rules: [
                 {
-                    test: /\.(js|jsx|ts|tsx)$/,
+                    test: /\.(js|jsx)$/,
                     exclude: /node_modules/,
                     use: [
                         'babel-loader',
                     ]
                 },
                 {
-                    test: /\.s[ac]ss$/i,
+                    test: /\.s[ac]ss|css$/i,
                     use: [
                         // 'style-loader',
                         MiniCssExtractPlugin.loader,
@@ -58,7 +77,10 @@ module.exports = function (env, argv) {
             ]
         },
         resolve: {
-            extensions: ['.js', '.jsx', '.tsx', '.ts']
+            extensions: ['.js', '.jsx'],
+            alias: {
+                '@src': path.resolve(__dirname, 'src')
+            }
         },
         plugins: [
             new CopyPlugin({
@@ -70,7 +92,9 @@ module.exports = function (env, argv) {
             }),
             new MiniCssExtractPlugin(),
             new DefinePlugin({
-                __WEBPACK_MODE__: JSON.stringify(argv.mode)
+                __EXAMPLES_SOURCES__: JSON.stringify(examples),
+                __WEBPACK_MODE__:     JSON.stringify(argv.mode),
+                __PACKAGE_INFOS__:    JSON.stringify(package_infos)
             })
         ],
         externals: {
@@ -84,6 +108,23 @@ module.exports = function (env, argv) {
                 'commonjs2': 'react-dom',
                 'root': 'ReactDOM'
             },
+            '@mormat/react_scheduler': 'react_scheduler'
         },
     }
+}
+
+function scan_examples() {
+    const folder = path.join(__dirname, 'src', 'examples');
+    return Object.fromEntries(
+        fs.readdirSync(folder).map( filename => [
+            filename.split('.')[0],
+            fs.readFileSync(path.join(folder, filename), 'utf8')
+        ])
+    );
+}
+
+function get_package_infos() {
+    const filename = path.join(__dirname, 'package.json');
+    const contents = fs.readFileSync(filename,'utf8');
+    return JSON.parse(contents);
 }
