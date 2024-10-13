@@ -1,0 +1,31 @@
+
+.mormat-scheduler-withEventAdd {
+    
+    > a {
+        z-index: 999;
+        display: block;
+        background-color: #0288d1;
+        width:  48px;
+        height: 48px;
+        border-radius: 24px 24px;
+        position: absolute;
+        right: 15px;
+        bottom: 15px;
+        cursor: pointer;
+        opacity: 0;
+
+        > svg {
+            margin: 12px;
+            color: white;
+        }
+    }
+    
+    &:hover > a {
+        opacity: 0.5;
+        
+        &:hover {
+            opacity: 1;
+        }
+    }
+    
+}

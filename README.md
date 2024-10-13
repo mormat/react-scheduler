@@ -1,200 +1,138 @@
 # @mormat/react-scheduler 
 
-React scheduler component ([demo](https://mormat.github.io/react-scheduler/))
+A google-like scheduler component for React
 
 week view                 | month view
 :-------------------------:|:-------------------------:
 ![preview](docs/week-view.png) | ![preview](docs/month-view.png)
 
-A [standalone version](#using-the-standalone-version) that can be installed in any HTML page without installing React is also available. 
+[Demo](https://mormat.github.io/react-scheduler/) -
+[Examples](https://mormat.github.io/react-scheduler/examples.html)
 
-## Available features
+This is mostly a wrapper of this [web component](https://mormat.github.io/jscheduler_ui/)
+
+Available features :
 - switch between views `day`, `week` or `month`
-- events can be loaded [statically](#loading-static-events) (from an array) or [dynamically](#loading-dynamic-events) (from an ajax request for instance)
 - drag and drop events
 - create/update/delete events
-- few dependencies : only `React` (>= 17.0.0) and `ReactDOM` (>= 17.0.0) are required. The standalone version requires no dependencies at all.
+- few dependencies : only `React` (>= 17.0.0) and `ReactDOM` (>= 17.0.0) are required.
 
 
-## Usage in a React project
 
-### Installing
+## Installation
 
 ```
 npm install @mormat/react-scheduler
 ```
 
-### Importing stylesheet
+### Stylesheet
 
-The stylesheet is required, otherwise, the scheduler will not be rendered properly.
-
-There is several ways to include the stylesheet :
-
-- With the [css-loader](https://github.com/webpack/css-loader) module if you're using webpack
-
-```js
-/*
- The following line can be included in your src/index.js or App.js file
-*/
-import "@mormat/react-scheduler/dist/mormat_react_scheduler.css";
+The following line can be included in your `src/index.js` or `App.js` file
+```
+import '@mormat/react-scheduler/dist/react_scheduler.css'
 ```
 
-- In the html template where the scheduler will displayed (using [unpkg](https://www.unpkg.com/))
-
+The css can also be loaded using [unpkg](https://unpkg.com)
 ```html
 <head>
-    ...
     <link 
         rel="stylesheet" 
-        href="https://unpkg.com/@mormat/react-scheduler/dist/mormat_react_scheduler.css"
+        href="https://unpkg.com/@mormat/react-scheduler/dist/react_scheduler.css"
     >
 </head>
 ```
 
+## Usage
 
-### Loading static events
+### Importing the component
 
 ```js
 import Scheduler from "@mormat/react-scheduler";
-
-function App() {
-    
-    const events = [
-        {
-            label: "Meeting",
-            start: "2024-02-28 10:00",
-            end:   "2024-02-28 12:00",
-        }
-    ];
-
-    return (
-        <Scheduler 
-            events      = { events } 
-            initialDate = "2024-02-28"
-        />
-    );
-    
-}
 ```
 
-### Loading dynamic events
+### Loading some events
 
-@todo write example
+```js
+import { render } from 'react-dom';
 
-## Using the component in an ordinary HTML page
+const currentDate = "2024-10-08";
 
-### Loading the assets
+const events = [
+    { "label": "interview",  "start": "2024-10-08 10:00", "bgColor": "#0288d1" },
+    { "label": "conference", "start": "2024-10-09 14:00", "end": "2024-10-09 18:00", "bgColor": "#9575cd" },
+    { "label": "meeting", "start": "2024-10-11 09:00", "end": "2024-10-11 18:00", "bgColor": "#0fc4a7" },
+    { "label": "training course", "start": "2024-10-08 09:00", "end": "2024-10-11 18:00", "bgColor": "#856404" },
+]
 
-```html
-<head>
-    ...
-    <link rel="stylesheet" href="https://unpkg.com/@mormat/react-scheduler/dist/mormat_react_scheduler.css">
-    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-    <script src="https://unpkg.com/@mormat/react-scheduler"></script>
-</head>
+render(
+    <Scheduler 
+        currentDate = { currentDate } 
+        events = { events } 
+    />, 
+    document.getElementById('scheduler')
+);
 ```
 
-### Rendering the scheduler
+### More examples
 
-#### With React 18
-```html
-<body>
-    <div id="scheduler"></div>
-    <script>
-        var props = { 
-            /* the same props used in a React project */ 
-        };
+[https://mormat.github.io/react-scheduler/examples.html](https://mormat.github.io/react-scheduler/examples.html)
 
-        var reactElement = React.createElement(
-            mormat_react_scheduler.Scheduler, 
-            props
-        );
+## Availables props
 
-        var container = document.getElementById('scheduler');
-        var root      = ReactDOM.createRoot(container);
-        root.render(reactElement);
-    </script>
-</body>
-```
+### `events`
 
-#### With React 17
-```html
-<body>
-    <div id="scheduler"></div>
-    <script>
-        var props = { 
-            /* the same props used in a React project */ 
-        };
+The events can be defined with a static array or a function for dynamic loading
 
-        var reactElement = React.createElement(
-            mormat_react_scheduler.Scheduler, 
-            props
-        );
+#### Using an array of objects 
+Each object should at least contains the attributes below:
+| attr    | type      | description        |
+|-|-|-|
+| `label` | string    | Describe the event |
+| `start` | string|integer|Date |  Start of the event. The value must be compliant with the constructor of [Date()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/Date) |
+| `end`   | string|integer|Date |  End of the event. The value must be compliant with the constructor of [Date()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/Date) |
 
-        var container = document.getElementById('scheduler');
-        ReactDOM.render(reactElement, container);
-    </script>
-</body>
-```
+#### Using a function for dynamic loading
 
-The available `props` can be found in [src/types.ts](src/types.ts)
+See example here : [loading dynamic events](https://mormat.github.io/react-scheduler/examples.html?p=loading_ajax_events)
 
-## Using the standalone version
+### `currentDate`: string|date|integer
 
-### Loading the assets
+If defined, the scheduler will start displaying events from this date.
 
-Download the assets **mormat_standalone_scheduler.js** and **mormat_standalone_scheduler.css** in the [release page](https://github.com/mormat/react-scheduler/releases/latest)
+The value must be compliant with the constructor of [Date()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/Date)
 
-```html
-<head>
-    <link rel="stylesheet" href="./mormat_standalone_scheduler.css" >
-    <script src="./mormat_standalone_scheduler.js"></script>
-</head>
-```
+### `viewMode`: string
 
-### Rendering the scheduler
+If defined, the scheduler will start displaying events from this specific view mode.
 
-```html
-<body>
-    <div id="scheduler"></div>
-    <script>
-        var props = { 
-            /* the same props used in a React project */ 
-        };
+Expected values are `day`, `week`, `month`
 
-        mormat_standalone_scheduler.renderScheduler('#scheduler', props);
-    </script>
-</body>
-```
+### `dateLocale`: string
 
-The available `props` can be found in [src/types.ts](src/types.ts)
+The i18n locale used to format dates. 
 
-### Examples
-#### Loading static events
+For instances: `en`, `it`, `es` ...
 
-```html
-<script>
-    var props = { 
-        initialDate: '2024-02-01',
-        events: [
-            {
-                label: 'Meeting',
-                start: '2024-02-01 10:00',
-                end:   '2024-02-01 12:00',
-            },
-            {
-                label: 'Conference',
-                start: '2024-02-01 14:00',
-                end:   '2024-02-01 18:00',
-            },
-        ]
-    };
+### `onEventAdd`: callback
 
-    mormat_standalone_scheduler.renderScheduler('#scheduler', props);
-</script>
-```    
+A listener called when the user add a event on the scheduler
 
-#### Loading dynamic events
+See example [Creating event](https://mormat.github.io/react-scheduler/examples.html?p=creating_event)
 
-@todo write example
+### `onEventEdit`: callback
+
+A listener called when the user edit a event on the scheduler
+
+See example [Edit event](https://mormat.github.io/react-scheduler/examples.html?p=editing_event)
+
+### `onEventDrop`: callback
+
+A listener called when the user drop on event on the scheduler
+
+See example [Drag and drop event](https://mormat.github.io/react-scheduler/examples.html?p=drag_and_drop_event)
+
+### `onEventResize`: callback
+
+A listener called when the user resize an event on the scheduler
+
+See example [Drag and drop event](https://mormat.github.io/react-scheduler/examples.html?p=resize_event)

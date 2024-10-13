@@ -1,21 +1,70 @@
 
+$primary-color: #0288d1;
+$header-height: 40px;
+
 .mormat-scheduler-Header {
     
-    font-size: 0.9em;
-    padding-bottom: 20px!important;
+    font: caption;
+    height: $header-height;
+    margin-bottom: 20px;
     
     & > div {
-        overflow: hidden;
+        padding-top: 1px;
+        height: $header-height;
+    
+        h4 {
+            line-height: $header-height - 2px;
+            font-size: 20px;
+            padding: 0;
+            margin: 0;
+        }
+
+        button {
+
+            color: $primary-color;
+            border: 1px solid transparent;
+            background-color: inherit;
+            font-size: 1em;
+            text-transform: uppercase;
+            padding: 0 10px 0 10px;
+            cursor: pointer;
+            height: $header-height - 2px;
+            line-height: $header-height - 2px;
+            display: inline;
+            &:hover {
+                background-color: lightgray;
+            }   
+
+        }
+
+        label {
+            line-height: $header-height - 2px;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            color: $primary-color;
+            background-color: transparent;
+
+            padding: 8px;
+            cursor: pointer;
+
+            border: 1px solid $primary-color;
+            border-right: none;
+            display: inline;
+
+            &:last-child {
+                border-right: 1px solid $primary-color;
+            }
+
+            &:has(:checked) {
+                background-color: $primary-color;
+                color: white;
+            }
+
+            input[type="radio"] {
+                display: none;
+            }
+        }
+        
     }
-    
-    h3 {
-        text-align: center;
-        padding: 0;
-        margin: 0;
-        font-size: 1.7em;
-    }
-    
-    
     
 }
-    

@@ -1,176 +1,64 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
   <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="./vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    
     <title>react-scheduler</title>
+    <meta name="keywords" content="scheduler, planner, agenda, widget, ui, js, library, component">
+    <meta name="description" content="a simple js scheduler widget written in javascript">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css" integrity="sha512-jnSuA4Ss2PkkikSOLtYs8BlYIeeIK1h99ty4YfvRPAlzr377vr3CXDb7sb7eEEBYjDtcYj+AjBH3FLv5uSJuXg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/cerulean/bootstrap.min.css" integrity="sha512-vaImhtQoaCXvevCM/UK+8ND/df0kiQWLtR65wgq0AWShEXLpWHMve0oGgU0q1gq1MbbyEuAhMMlqNmZd7s7wTQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="./react_scheduler.css" />
     <style>
-        h3 small { font-weight: normal }
         
-        #main {
-            position: absolute;
-            top: 10%;
-            left: 5%;
-            width: 90%;
+        .container {
             max-width: 1000px;
-            /* padding-bottom: 100px; */
-            height: 80%;
-            /* border: 2px dashed red; */
         }
         
-        #comments {
-            position: absolute;
-            left: 5px;
-            bottom: 5px;
-            right: 5px;
-            resize: none;
-            height: 50px;
-            display: none;
+        #app {
+            height: 600px;
         }
         
+        #footer {
+            max-width: 1000px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+                
     </style>
-    
-    <link rel="stylesheet" href="./mormat_react_scheduler.css" >
-    
   </head>
   <body>
-      <h3>react-scheduler <small>(github : <a href="https://github.com/mormat/react-scheduler">https://github.com/mormat/react-scheduler</a>)</small></h3>
-      <form autocomplete="off">
-        <div id="main">Scheduler component</div>
-      </form>
-      <textarea id="comments" readonly></textarea>
-      <script src="./externals/react/react.development.js"></script>
-      <script src="./externals/react-dom/react-dom.development.js"></script>
-      <script src="./mormat_react_scheduler.js"></script>
-      <script>
-          
-        function renderComponent(component, props = {}) {
-            
-            ReactDOM.render(
-                React.createElement(
-                    React.StrictMode, 
-                    {},
-                    React.createElement(component, props)
-                ), 
-                document.getElementById('main')
-            );
-    
-        }
-          
-        async function onReady() {
-            
-            var urlParams = new URLSearchParams(window.location.search);
-            
-            var mode = urlParams.get('mode') || 'static';
-            
-            var defaults = {
-                minHour:  7,
-                maxHour:  21,
-                locale:   'en',
-                viewMode: 'week',
-                width:    'auto',
-                height:   '80vh',
-                timelined: false,
+      
+    <div class="container">
                 
-            }
+        <div class="bg-light p-4 rounded-lg m-3">
+            <h1 class="display-6">react-scheduler</h1>
+            <p class="lead">
+                A google-like scheduler component for React
+            </p>
+            <a class="btn btn-primary rounded-0" 
+               href="examples.html" 
+               role="button"
+            >
+                Examples
+            </a>
+            <a class="btn btn-secondary rounded-0 ms-2" 
+               href="https://github.com/mormat/react-scheduler" 
+               role="button"
+            >
+                Github
+            </a>
             
-            for (const key in defaults) {
-                if (urlParams.has(key)) {
-                    defaults[key] = urlParams.get(key);
-                }
-            }
-            
-            var timelined = urlParams.has('timelined') || false;
-
-            if (mode === 'static') {
-                renderComponent(
-                    mormat_react_scheduler.Scheduler, 
-                    {
-                        events: buildSomeEvents(),
-                        ...defaults,
-                    }
-                );
-            }
-            
-            if (mode === 'ajax') {
-                renderComponent(
-                    mormat_react_scheduler.Scheduler, 
-                    {
-                        minHour: 7,
-                        maxHour: 21,
-                        viewMode: 'month', 
-                        events: function(setEvents) {
-                            
-                        },
-                        width: 'auto',
-                        height: 'auto',
-                    }
-                );
-            }
-
-        }
-          
-        document.addEventListener("DOMContentLoaded", onReady);
-          
-        function buildSomeEvents() {
-
-            var date  = new Date(Date.now());
-
-            var diff  = date.getDate() - date.getDay() + (date.getDay() == 0 ? -6:1);
-            var start = new Date( date.setDate(diff) ).getTime();
-            var interval = 24 * 60 * 60 * 1000;
-
-            const days = [];
-            for (i = 0; i < 31; i++) {
-                days.push(new Date(start + i * interval).toISOString().substring(0, 10));
-            }
-
-            return [
-                {
-                    label: "Conference",
-                    start: days[1] + ' 14:00',
-                    end:   days[1] + ' 16:00',
-                },
-                {
-                    label: "Meeting",
-                    start: days[3] + " 10:00",
-                    end:   days[3] + " 18:00",
-                    color: "white",
-                    bgColor: "#9575cd"
-                },
-                {
-                    label: "Exhibition",
-                    start: days[5] + " 10:00",
-                    end:   days[5] + " 16:00",
-                    color: "white",
-                    bgColor: "#0fc4a7"
-                },
-                {
-                    label: "Training course (1)",
-                    start: days[1] + " 10:00",
-                    end:   days[7] + " 18:00",
-                    color: "white",
-                    bgColor: "#0fc4a7"
-                },
-                {
-                    label: "Training course (2)",
-                    start: days[2] + " 10:00",
-                    end:   days[3] + " 18:00",
-                    color: "white",
-                    bgColor: "#9575cd"
-                },
-                {   label: "Next month event",
-                    start: days[17] + " 10:00",
-                    end:   days[17] + " 12:00",
-                    color: "white",
-                    backgroundColor: "#0fc4a7"
-                }   
-            ]
-            
-        }
-          
-      </script>
+        </div>
+        
+        <div id="app"></div>
+        
+        <div id="footer" class="fixed-bottom">
+            Put footer here
+        </div>
+        
+    </div>
+    <script src="./externals/react/react.development.js"></script>
+    <script src="./externals/react-dom/react-dom.development.js"></script>
+    <script src="./react_scheduler.js"></script>
+    <script src="./index.js"></script>
   </body>
 </html>

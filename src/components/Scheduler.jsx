@@ -1,130 +1,156 @@
 
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import jscheduler_ui from '@mormat/jscheduler_ui';
 
-import DailyColumnsSheet from './Scheduler/DailyColumnsSheet'
-import MonthlySheet      from './Scheduler/MonthlySheet'
-import TimelineSheet     from './Scheduler/TimelineSheet'
+import Header from './Header';
+import Layout from './Layout';
 
-import Header            from './Header'
+const instances = new Map();
 
-import Button from './Widget/Button'
-import ToggleButtonGroup from './Widget/ToggleButtonGroup';
-
-import { DateRange } from '../utils/date';
-
-const defaultSchedulerConfig = {
-    events: [],
-    initialDate: Date.now(),
-    viewMode: 'week',
-    timelined: false,
-    defaultEventBgColor: '#0288d1',
-    defaultEventColor: 'white',
-    locale: 'en',
-    width:  800,
-    height: 600,
-    spannedEventHeight: 20,
-    minHour: 6,
-    maxHour: 22,
-    draggable: true,
-    editable: true,
-    onEventCreate: () => {},
-    onEventUpdate: () => {},
-    onEventDelete: () => {},
-    labels: {},
-}
-
-function Scheduler( { events, schedulerOptions } ) {
+function Scheduler( { translations = {}, ...schedulerProps } ) {
+    
+    const divRef = useRef();
+    const [viewMode,       setViewMode]       = useState('week');
+    const [currentDate,    setCurrentDate]    = useState();
+    const [schedulerLabel, setSchedulerLabel] = useState('');
+    
+    const getInstance = () => instances.get(divRef.current);
+    
+    useEffect(() => {
         
-    const [currentDate, setCurrentDate] = useState( 
-        new Date(schedulerOptions.initialDate) 
+        const { events, ...otherSchedulerProps } = schedulerProps;
+        
+        const element  = divRef.current;     
+        const scheduler = jscheduler_ui.render(
+            element, 
+            { 
+                ...defaultSchedulerProps, 
+                ...otherSchedulerProps,
+                styles: {position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }
+            }
+        );
+        setSchedulerLabel( scheduler.getLabel() );
+        instances.set(element, scheduler );
+        
+        loadEvents(events);
+        
+        return function() {
+            instances.delete( element );
+        }
+        
+    }, []);
+    
+    useEffect(() => {
+        const scheduler = instances.get(divRef.current);
+        scheduler.setOptions( { 
+            viewMode, 
+            headersVisible: viewMode !== 'day'
+        } );
+        setSchedulerLabel( scheduler.getLabel() );
+        loadEvents( schedulerProps.events );
+        
+    }, [viewMode, currentDate]);
+    
+    const handleClickNext = (e) => {
+        e.preventDefault();
+        const scheduler = getInstance();
+        scheduler.next();
+        setCurrentDate( scheduler.getOption('currentDate') );
+    }
+    
+    const handleClickToday = (e) => {
+        e.preventDefault();
+        const scheduler = getInstance();
+        scheduler.today();
+        setCurrentDate( scheduler.getOption('currentDate') );
+    }
+    
+    const handleClickPrevious = (e) => {
+        e.preventDefault();
+        const scheduler = getInstance();
+        scheduler.previous();
+        setCurrentDate( scheduler.getOption('currentDate') );
+    }
+    
+    function loadEvents(events) {
+        const scheduler = instances.get(divRef.current);
+        
+        if (typeof events === 'function') {
+            const dateRange = scheduler.getEventsDateRange();
+            const setEvents = (events) => {
+                scheduler.setOptions({ events });
+            };
+            events({ dateRange, setEvents });
+            
+        } else if (events) {
+            scheduler.setOptions({ events });
+        }
+        
+    }
+    
+    const header = (
+        <Header>
+            <Header.ButtonGroup 
+                items={[
+                    { label: '<',     onClick: handleClickPrevious },
+                    { 
+                        label: translations['header.today'] || 'today', 
+                        onClick: handleClickToday 
+                    },
+                    { label: '>',     onClick: handleClickNext },
+                ]} 
+            />
+            <h4>{ schedulerLabel }</h4>
+            <Header.ToggleGroup 
+                items={[
+                    { 
+                        label: translations['header.day'] || 'day', 
+                        value: 'day' 
+                    },
+                    { 
+                        label: translations['header.week'] || 'week', 
+                        value: 'week' 
+                    },
+                    { 
+                        label: translations['header.month'] || 'month', 
+                        value: 'month'
+                    }
+                ]} 
+                onChange = { (e) => setViewMode(e.target.value)} 
+                value={ viewMode } 
+            />
+        </Header>
     );
     
-    const [viewMode, setViewMode] = useState( schedulerOptions.viewMode );
-    
-    const viewModeRenderers = {
-        
-        day: function() {
-            
-            const dateRange = DateRange.createDay(currentDate);
-                        
-            const title = currentDate.toLocaleString(
-                schedulerOptions.locale, 
-                {
-                    weekday: "long",
-                    month:   'short', 
-                    day:     'numeric', 
-                    year:    'numeric'
-                }
-            );
-                        
-            return (
-                <DailyColumnsSheet 
-                    key    = { 'day-' + currentDate }
-                    header = { buildHeader(title) }
-                    { ... {schedulerOptions, events, dateRange } }
-                /> 
-            )
-        },
-        
-        week: function() {
-            
-            const dateRange = DateRange.createWeek(currentDate);
-            
-            const title = [dateRange.start, dateRange.end].map(function(d) {
-                return d.toLocaleString(
-                    schedulerOptions.locale, 
-                    { month: 'short', day: 'numeric', year: 'numeric' }
-                );
-            }).join(' - ');
-            
-            return (
-                <DailyColumnsSheet 
-                    key    = { 'week-' + currentDate }
-                    header = { buildHeader(title) }
-                    { ... {schedulerOptions, events, dateRange } }
-                /> 
-            )
-        },
-        
-        month: function() {
-            
-            const dateRange = DateRange.createMonth(currentDate);
-                    
-            const title = currentDate.toLocaleString(
-                schedulerOptions.locale, 
-                { month: 'long', year: 'numeric' }   
-            );
-                    
-            return (
-                <MonthlySheet 
-                    key    = { 'month-' + currentDate }
-                    header = { buildHeader(title) }
-                    { ... {schedulerOptions, events, dateRange } }
-                />
-            )
-        }
-    }
-        
-    const buildHeader = (title) => (
-        <Header 
-            schedulerOptions = { schedulerOptions }
-            { ... { title, currentDate, setCurrentDate, viewMode, setViewMode } }
-        />
-    )
-           
-    return (
-        <div className="mormat-scheduler-Scheduler"
-            id    = { schedulerOptions.id }
-            style = { {
-                width:  schedulerOptions.width,
-                height: schedulerOptions.height,
-            } }
-        >       
-            {  viewModeRenderers[viewMode]() }           
-        </div>  
+    return ( 
+        <Layout.FixedHeader 
+            header = { header }
+            body   = {( 
+                <div ref = { divRef } 
+                     data-scheduler
+                     style= { Layout.styles['full'] }>
+                </div>
+            )}
+        /> 
     )
     
 }
 
+const defaultSchedulerProps = {
+    headerRenderer: function( { year, monthIndex, day } ) {
+        var date = new Date(year, monthIndex, day);
+        return date.toLocaleString(
+            'en', 
+            { 
+                weekday: 'short', 
+                month: 'short',  
+                day:'numeric',
+            }
+        ) 
+    }
+}
+
+
 export default Scheduler;
-export { defaultSchedulerConfig };
+    
+export { instances }

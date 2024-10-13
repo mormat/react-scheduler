@@ -1,87 +1,61 @@
+import { useState } from 'react';
 
-import Button            from './Widget/Button'
-import ToggleButtonGroup from './Widget/ToggleButtonGroup';
+import { useUniqueId } from '@src/utils/hooks';
 
-import { useState, useEffect } from 'react'
+const Header = ({ children }) => (
+    <div className="mormat-scheduler-Header" 
+         style={{ overflow: 'visible', padding: '1px' }} 
+    >
+        <div style={{ width: '33.33%', float: 'left', textAlign: 'left' }}>
+            { children[0] }
+        </div>
+        <div style={{ width: '33.33%', float: 'left', textAlign: 'center' }}>
+            { children[1] }
+        </div>
+        <div style={{ width: '33.33%', float: 'right', textAlign: 'right' }}>
+            { children[2] }
+        </div>
+    </div>                
+);
 
-import { date_add } from '../utils/date';
+Header.ButtonGroup = ({ items }) => (
+    <div>
+        { items.map( ( { label, onClick }, k)  => (
+            <button key={ k } onClick={ onClick } >
+                { label }
+            </button>
+        )) }
+    </div>
+);
 
-function Title( { title } ) {
+Header.ToggleGroup = ({ items, value, onChange }) => {
+    
+    const name = useUniqueId();
+    const [currentValue, setCurrentValue] = useState( value );
+    
+    const handleChange = (e) => {
+        setCurrentValue(e.target.value);
+        onChange(e);
+    }
     
     return (
-        <h3>
-            { title || (<span>&nbsp;</span>) }
-        </h3>
+        <div>
+            { items.map( ({ value, label }, k) => (
+                <label key={ k }>
+                    <input type="radio" 
+                        checked = { currentValue === value }
+                        onChange = { handleChange }
+                        { ... { value, name } }  
+
+                    />
+                    &nbsp;
+                    { label }
+                    &nbsp;
+                </label>
+            ) ) }
+        </div>
     )
-}
-
-function Navigation( { schedulerOptions, currentDate, setCurrentDate, viewMode }) {
- 
-    const { labels } = schedulerOptions;
- 
-    return (
-        <div style = {{ float: 'left'}}>
-            <Button onClick = { () => setCurrentDate( date_add(currentDate, -1, viewMode) ) } 
-                    variant = "outline"
-            >
-                &lt;
-            </Button>
-            <Button onClick = { () => setCurrentDate(new Date()) } 
-                    variant    = "outline"
-            >
-                { labels['header.today'] || 'today' }
-            </Button>
-            <Button onClick =  { () => setCurrentDate( date_add(currentDate, 1, viewMode) ) } 
-                    variant    = "outline"
-            >
-                &gt;
-            </Button>            
-        </div>        
-    )
     
-}
+};
 
-function Tabs( { schedulerOptions, viewMode, setViewMode } ) {
-    
-    const { labels } = schedulerOptions;
-    
-    return (
-        <div style = {{ float: 'right'}}>
-            <ToggleButtonGroup 
-                value    = { viewMode } 
-                onChange = { setViewMode } 
-                options = {[
-                    { value: 'day',   label: labels['header.day']   || 'day'   },
-                    { value: 'week',  label: labels['header.week']  || 'week'  },
-                    { value: 'month', label: labels['header.month'] || 'month' },
-                ]}
-            />
-        </div>        
-    )
-}
-
-const Header = function( props ) {
-    
-    return (
-        <div 
-            className  = "mormat-scheduler-Header"
-        >
-
-            <div>
-                <Navigation { ... props } />
-                
-                <Tabs { ... props } />
-            </div>
-            
-            <div>
-            
-                <Title { ... props } />
-            
-            </div>
-        
-        </div>    
-    );
-        
-}
-
-export default Header;
+export default Header

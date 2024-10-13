@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="./vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>react-scheduler</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css" integrity="sha512-jnSuA4Ss2PkkikSOLtYs8BlYIeeIK1h99ty4YfvRPAlzr377vr3CXDb7sb7eEEBYjDtcYj+AjBH3FLv5uSJuXg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="./react_scheduler.css" >
+  </head>
+  <style>
+      #scheduler {
+          height: 550px;
+      }
+  </style>
+  <body>
+    <div class="container mt-4">
+        
+        <div class="row">
+            <div class="col-12">
+                <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                  <li class="breadcrumb-item">
+                      <a href=".">Home</a>
+                  </li>
+                  <li class="breadcrumb-item active" aria-current="page">
+                      Examples
+                  </li>
+                </ol>
+              </nav>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-3">
+                <div id="menu"></div>
+            </div>
+            <div class="col-9">
+                <div id="scheduler"></div>
+                <p id="comments" class="text-muted text-center">
+                    &nbsp;
+                </p>
+                <h5 class="mt-2 text-secondary">
+                    source
+                </h5>
+                <div id="source" class="mb-4"></div>
+            </div>
+        </div>
+    </div>
+      
+    <script src="./externals/react/react.development.js"></script>
+    <script src="./externals/react-dom/react-dom.development.js"></script>
+    <script src="./react_scheduler.js"></script>
+    <script src="./examples.js"></script>
+  </body>
+</html>
