@@ -27,9 +27,9 @@ Feature: Demo page
         When I open "index" page
         And I click on "Add event"
         And I fill the values below:
-            | Label | conference        |
-            | Start | 10/14/2024 02:00P |
-            | End   | 10/14/2024 05:00P |
+            | Label | conference       |
+            | Start | 14/10/2024 14:00 |
+            | End   | 14/10/2024 17:00 |
         And I click on "OK"
         And the 'conference' event should be displayed at "Mon, Oct 14" from '14:00' to '17:00'
 
@@ -38,9 +38,9 @@ Feature: Demo page
         When I open "index" page
         And I click on the "interview" event
         And I fill the values below:
-            | Label | conference        |
-            | Start | 10/14/2024 02:00P |
-            | End   | 10/14/2024 05:00P |
+            | Label | conference       |
+            | Start | 14/10/2024 14:00 |
+            | End   | 14/10/2024 17:00 |
         And I click on "OK"
         And the 'conference' event should be displayed at "Mon, Oct 14" from '14:00' to '17:00'
 

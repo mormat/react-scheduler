@@ -69,9 +69,9 @@ Feature: Examples
         And I click on "Creating event"
         And I click on "Add event"
         And I fill the values below:
-            | label | meeting           |
-            | start | 10/07/2024 02:00P |
-            | end   | 10/07/2024 05:00P |
+            | label | meeting          |
+            | start | 07/10/2024 14:00 |
+            | end   | 07/10/2024 17:00 |
         And I click on "ok"
         And the 'meeting' event should be displayed at "Mon, Oct 7" from '14:00' to '17:00'
 
@@ -81,9 +81,9 @@ Feature: Examples
         And I click on "Editing event"
         And I click on the "interview" event
         And I fill the values below:
-            | label | meeting           |
-            | start | 10/07/2024 02:00P |
-            | end   | 10/07/2024 05:00P |
+            | label | meeting          |
+            | start | 07/10/2024 14:00 |
+            | end   | 07/10/2024 17:00 |
         And I click on "ok"
         And the 'meeting' event should be displayed at "Mon, Oct 7" from '14:00' to '17:00'
 
