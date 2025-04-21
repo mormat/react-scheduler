@@ -1,7 +1,7 @@
-import { render } from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import Scheduler from '@mormat/react_scheduler';
 
-render(
+createRoot( document.getElementById('scheduler' ) ).render(
     <Scheduler 
         dateLocale="fr" 
         translations = {{
@@ -10,9 +10,6 @@ render(
             "header.week":  "semaine",
             "header.month": "mois"
         }}
-    />, 
-    document.getElementById('scheduler')
+    />
 );
-
-
 

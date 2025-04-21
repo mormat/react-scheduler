@@ -1,4 +1,4 @@
-import { render } from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { basicSetup } from 'codemirror';
 import { EditorState } from "@codemirror/state";
 import { EditorView } from "@codemirror/view";
@@ -88,4 +88,4 @@ if (currentScript in scriptsSources) {
     window.view = view;
 }
 
-render(<Menu />,   document.getElementById('menu'));
+createRoot( document.getElementById('menu' ) ).render( <Menu /> );

@@ -1,4 +1,4 @@
-import { render } from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { Scheduler, OkCancelDialog } from '@mormat/react_scheduler';
 import { useState, useMemo } from 'react';
 
@@ -43,4 +43,4 @@ function App() {
     </>;
 }
 
-render(<App />, document.getElementById('scheduler'));
+createRoot( document.getElementById('scheduler' ) ).render( <App /> );

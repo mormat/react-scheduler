@@ -1,4 +1,4 @@
-import { render } from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { Scheduler } from '@mormat/react_scheduler';
 import { utils }     from '@mormat/jscheduler_ui';
 
@@ -108,5 +108,5 @@ function Footer() {
     
 }
 
-render(<App />, document.getElementById('app'));
-render(<Footer />, document.getElementById('footer'));
+createRoot( document.getElementById('app' ) ).render(<App />);
+createRoot( document.getElementById('footer' ) ).render(<Footer />);

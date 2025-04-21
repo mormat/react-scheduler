@@ -1,4 +1,4 @@
-import { render } from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import Scheduler from '@mormat/react_scheduler';
 
 const props = {
@@ -18,4 +18,7 @@ const props = {
     }
 }
 
-render(<Scheduler { ...props } />, document.getElementById('scheduler'));
+createRoot( document.getElementById('scheduler' ) ).render( 
+    <Scheduler { ...props } />
+);
+

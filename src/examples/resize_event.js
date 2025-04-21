@@ -1,4 +1,4 @@
-import { render } from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { Scheduler } from '@mormat/react_scheduler';
 
 function App() {
@@ -23,4 +23,4 @@ function App() {
     );
 }
 
-render(<App />, document.getElementById('scheduler'));
+createRoot( document.getElementById('scheduler' ) ).render( <App /> );
