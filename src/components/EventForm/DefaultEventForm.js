@@ -3,7 +3,9 @@ import { useState } from 'react';
 
 import { utils } from '@mormat/jscheduler_ui';
 
-import { withOverlay, withState } from './Decorators';
+import { withOverlay, withState, withPopup } from './FormDecorators';
+
+import { Button } from './Widgets';
 
 function DefaultEventForm({ 
     labelInput,                
@@ -15,48 +17,58 @@ function DefaultEventForm({
     handleDelete,
     ...otherProps
 }) {
-        
+ 
     return (
-        <div className="mormat-scheduler-DefaultEventForm">
-            <form onSubmit = { handleSubmit }>
-                <p>
-                    <label>
-                        label<br/>
-                        { labelInput }
-                    </label>
-                </p>
+        <form 
+            className = "mormat-scheduler-DefaultEventForm"
+            onSubmit  = { handleSubmit }
+        >
+            <p>
+                <label>
+                    Description<br/>
+                    { labelInput }
+                </label>
+            </p>
 
-                <p>
-                    <label>
-                        start<br/>
-                        { startInput }
-                    </label>
-                </p>
+            <p>
+                <label>
+                    From<br/>
+                    { startInput }
+                </label>
+            </p>
 
-                <p>
-                    <label>
-                        end<br/>
-                        { endInput }
-                    </label>
-                </p>
+            <p>
+                <label>
+                    To<br/>
+                    { endInput }
+                </label>
+            </p>
 
-                <p>
-                    <button type="submit">
-                        ok
-                    </button>
-                    &nbsp;
-                    <button onClick={ handleCancel }>
-                        cancel
-                    </button>
-                    
-                    <button onClick={ handleDelete } style = {{ float: 'right'}}>
-                        delete
-                    </button>
-                </p>
-            </form>
-        </div>
+            <p>
+                <label>
+                    Color<br/>
+                    { bgColorInput }
+                </label>
+            </p>
+
+            <p>
+                <Button onClick={ handleDelete } variant="danger">
+                    delete
+                </Button>
+                &nbsp;
+
+                <Button type="submit" variant="primary">
+                    ok
+                </Button>
+
+            </p>
+        </form>
     )
     
 }
 
-export default withOverlay( withState( DefaultEventForm ) )
+
+export default withOverlay( withPopup( withState ( 
+    DefaultEventForm, 
+    { useDatePicker: true, useColorPicker: true} 
+) ) );

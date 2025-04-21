@@ -5,4 +5,8 @@
 
 @use './components/EventForm/DefaultEventForm.scss';
 
+@use './components/EventForm/FormDecorators.scss';
+
+@use './components/EventForm/Widgets.scss';
+
 @use './components/EventForm/BootstrapEventForm.scss';

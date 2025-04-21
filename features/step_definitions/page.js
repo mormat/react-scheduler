@@ -42,3 +42,39 @@ Then('the scheduler header should contains:', async function (dataTable) {
     }
     
 });
+
+Then('the form should contains', async function (dataTable) {
+    
+    const values = dataTable.rowsHash();
+    
+    for (const [description, expectedValue] of Object.entries(values)) {   
+        
+        const label = await this.getElement(`label:contains("${description}")`);
+        
+        const fields = await this.findElements(
+            [
+                'input[type=text]',
+                'select option:checked',
+                'input[type=radio]:checked',
+            ].join(','),
+            label
+        );
+        
+        const actualValues = [];
+        for (const field of fields) {       
+            const tagName = await field.getTagName();
+            if (tagName === 'input') {
+                actualValues.push(await field.getAttribute('value'));
+            }
+            
+            if (tagName === 'option') {
+                actualValues.push(await field.getText());
+            }
+        }
+        
+        const actualValue = actualValues.join(' ');
+        expect(expectedValue).toBe(actualValue);
+        
+    };
+    
+});

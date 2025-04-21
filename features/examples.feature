@@ -1,8 +1,8 @@
-@refactor
+@example
 Feature: Examples
 
     Background:
-        Given today is "2024-10-07" 
+        Given today is "2024-10-07 10:12" 
 
     Scenario: Create empty scheduler
         When I open "examples" page
@@ -64,16 +64,39 @@ Feature: Examples
         Then the "fixed height" event should be displayed at "Thu, Oct 10" from '09:00' to '12:00'
 
     @form
+    Scenario: Default form values when creating an event
+        When I open "examples" page
+        And I click on "Creating event"
+        And I click on "Add event"
+        Then the form should contains
+            | Description |                      |
+            | From        | 10:15 7 October 2024 |
+            | To          | 11:15 7 October 2024 |
+            | Color       | #0288d1              |
+
+    @form
     Scenario: Creating event
         When I open "examples" page
         And I click on "Creating event"
         And I click on "Add event"
         And I fill the values below:
-            | label | meeting          |
-            | start | 07/10/2024 14:00 |
-            | end   | 07/10/2024 17:00 |
+            | Description | meeting |
+        And I fill the dates below:
+            | From        | 14:00 7 October 2024 |
+            | To          | 17:00 7 October 2024 |
         And I click on "ok"
-        And the 'meeting' event should be displayed at "Mon, Oct 7" from '14:00' to '17:00'
+        Then the 'meeting' event should be displayed at "Mon, Oct 7" from '14:00' to '17:00'
+
+    @form
+    Scenario: Default form values when editing an event
+        When I open "examples" page
+        And I click on "Editing event"
+        And I click on the "interview" event
+        Then the form should contains
+            | Description | interview            |
+            | From        | 10:00 8 October 2024 |
+            | To          | 12:00 8 October 2024 |
+            | Color       | #0288d1              |
 
     @form
     Scenario: Editing event
@@ -81,9 +104,10 @@ Feature: Examples
         And I click on "Editing event"
         And I click on the "interview" event
         And I fill the values below:
-            | label | meeting          |
-            | start | 07/10/2024 14:00 |
-            | end   | 07/10/2024 17:00 |
+            | Description | meeting |
+        And I fill the dates below:
+            | From        | 14:00 7 October 2024 |
+            | To          | 17:00 7 October 2024 |
         And I click on "ok"
         And the 'meeting' event should be displayed at "Mon, Oct 7" from '14:00' to '17:00'
 

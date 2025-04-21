@@ -1,4 +1,4 @@
-import DefaultEventForm from './EventForm/DefaultEventForm';
+import DefaultEventForm   from './EventForm/DefaultEventForm';
 import BootstrapEventForm from './EventForm/BootstrapEventForm';
 import OkCancelDialog     from './EventForm/OkCancelDialog';
 

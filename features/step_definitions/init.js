@@ -33,6 +33,32 @@ When('I fill the values below:', async function (dataTable) {
     
 });
 
+When('I fill the dates below:', async function (dataTable) {
+    
+    const entries = Object.entries( dataTable.rowsHash() );
+    
+    for (const [label, value] of entries) {   
+        const values = value.split(' ');
+        
+        const selects = await this.findElements(
+            `label:contains("${label}") select`
+        );
+        
+        for (const v of values) {
+            const select = selects.shift();
+            
+            const option = await this.getElement(
+              `option[title="${v}"]`,
+              select
+            );
+            
+            option.click();
+        }
+        
+    }
+    
+});
+
 async function sendKeys(field, value) {
 
     const type = await field.getAttribute('type');

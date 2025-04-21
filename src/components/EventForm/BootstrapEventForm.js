@@ -1,5 +1,5 @@
 
-import { withOverlay, withState } from './Decorators';
+import { withOverlay, withState } from './FormDecorators';
 
 import { useUniqueId } from '@src/utils/hooks';
 

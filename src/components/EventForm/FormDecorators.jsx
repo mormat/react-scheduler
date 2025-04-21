@@ -1,10 +1,15 @@
 import { useState, useCallback, useMemo  } from 'react';
 import { utils } from '@mormat/jscheduler_ui';
 
-import { useContext } from 'react';
-import { InputPropsContext } from './Contexts';
+import { Input, ColorPicker, DateTimePicker } from './Widgets';
 
-function withState(WrappedComponent) {
+function withState(
+    WrappedComponent, 
+    { 
+        useDatePicker = false, 
+        useColorPicker = false 
+    } = {}
+) {
     
     return function({ values = {}, onConfirm, onCancel, onDelete, ...otherProps }) {
         
@@ -13,12 +18,12 @@ function withState(WrappedComponent) {
         const [start, setStart ] = useState(
             values.start ?
             utils.format_date('yyyy-mm-dd hh:ii', values.start):
-            ''
+            utils.format_date('yyyy-mm-dd hh:ii', Date.now() )
         );
         const [end,   setEnd ]  = useState(
             values.end ?
             utils.format_date('yyyy-mm-dd hh:ii', values.end):
-            ''        
+            utils.format_date('yyyy-mm-dd hh:ii', Date.now() + HOUR_LENGTH )
         );
         const [bgColor, setBgColor] = useState(values.bgColor || 'lightgray');
 
@@ -51,15 +56,14 @@ function withState(WrappedComponent) {
             />
         );
 
-        const endInput = (
-            <Input 
-                value    = { end } 
-                setValue = { setEnd } 
-                type     = "datetime-local"
-            />
-        );
-
-        const startInput = (
+        const startInput = useDatePicker ? 
+        (
+            <DateTimePicker 
+                value    = { start } 
+                setValue = { setStart } 
+            />      
+        ) :
+        (
             <Input 
                 value    = { start } 
                 setValue = { setStart } 
@@ -67,13 +71,34 @@ function withState(WrappedComponent) {
             />
         );
 
-        const bgColorInput = (
+        const endInput =  useDatePicker ? 
+        (
+            <DateTimePicker 
+                value    = { end } 
+                setValue = { setEnd } 
+            />      
+        ) :
+        (
+            <Input 
+                value    = { end } 
+                setValue = { setEnd } 
+                type     = "datetime-local"
+            />
+        );
+
+        const bgColorInput = useColorPicker ?
+        (
+            <ColorPicker 
+                value    = { bgColor } 
+                setValue = { setBgColor } 
+            />
+        ) : (
             <Input 
                 value    = { bgColor } 
                 setValue = { setBgColor } 
                 type     = "color"
-            />        
-        );
+            />      
+        )
         
         return (
             <WrappedComponent { ...{
@@ -131,19 +156,56 @@ function withOverlay(WrappedComponent) {
     
 } 
 
-function Input({ value, setValue, ...otherProps }) {
+function withPopup(WrappedComponent) {
     
-    const inputProps = useContext(InputPropsContext);
+    return function( props ) {
+
+        const handleCancel = (e) => {
+            e.preventDefault();
+            if (props.onCancel) {
+                props.onCancel();
+            }
+        }
+
+        return (
+            <div className="mormat-scheduler-withPopup">
+
+                <a onClick={ handleCancel }>
+                    { closeIcon }
+                </a>
+                
+                <div>
+                    <WrappedComponent { ... props } />
+                </div>
+                
+            </div>   
+        )
     
-    return (
-        <input 
-            value    = { value }
-            onChange = { e => setValue(e.target.value) }
-            { ...otherProps }
-            { ...inputProps }
-        />
-    );
-    
+    }
 }
 
-export { withOverlay, withState }
+const HOUR_LENGTH = 60 * 60 * 1000;
+
+const closeIcon = (
+    <svg xmlns="http://www.w3.org/2000/svg" 
+        width  = "24"
+        height = "24"
+        viewBox="0 0 24 24" 
+        fill="none" 
+        stroke="currentColor" 
+        strokeWidth="2" 
+        strokeLinecap="round" 
+        strokeLinejoin="round" 
+        className="feather feather-x-circle">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="15" y1="9" x2="9" y2="15"></line>
+            <line x1="9" y1="9" x2="15" y2="15"></line>
+    </svg>
+);
+
+
+export { 
+    withOverlay, 
+    withState,
+    withPopup
+}

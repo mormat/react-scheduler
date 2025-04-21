@@ -1,0 +1,46 @@
+.mormat-scheduler-Button {
+    
+    border: 0;
+    padding: 5px 10px 5px 10px;
+    opacity: 0.75;
+
+    &:hover {
+        opacity: 1;
+    }
+
+    &[data-variant=primary] {
+        color: white;
+        background-color: #0288d1;    
+    }
+    
+    &[data-variant=danger] {
+        color: white;
+        background-color: #B22222; /* FireBrick */
+    }
+
+}
+
+.mormat-scheduler-ColorPicker {
+    
+    display: block;
+    padding-top: 3px;
+
+    label {
+        margin-right: 5px;
+        padding: 0;
+        cursor: pointer;
+        border: 2px solid transparent;
+        padding: 2px;
+        height: 26px;
+
+        > span {
+            height: 18px;
+            display: block;
+        }
+        
+        input {
+            display: none;
+        }
+    }    
+    
+}

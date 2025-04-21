@@ -1,0 +1,21 @@
+
+.mormat-scheduler-withPopup {
+    padding: 10px;
+    min-width: 300px;
+    position: relative;
+    
+    > a {
+        cursor: pointer;
+        position: absolute;
+        top: 0;
+        right: 0;
+        background-color: white;
+    }
+    
+    > div {
+        border: 1px solid black;
+        padding: 10px;
+        background-color: white;
+    }
+    
+}

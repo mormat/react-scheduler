@@ -1,5 +1,5 @@
 
-import { withOverlay } from './Decorators';
+import { withOverlay } from './FormDecorators';
 
 function OkCancelDialog({ 
     message,
