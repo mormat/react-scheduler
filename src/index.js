@@ -6,6 +6,16 @@ import { useState, useMemo } from 'react';
 
 import BootstrapEventForm from './components/EventForm/BootstrapEventForm'
 
+const webpack_mode = __WEBPACK_MODE__;
+const url = new URL(window.location.href);
+
+if (webpack_mode !== 'production') {
+     // date stub
+     if (url.searchParams.has('today')) {
+         Date.now = () => new Date(url.searchParams.get('today')).getTime();
+     }
+}
+
 function App() {
     
     const [schedulerEvent, setSchedulerEvent] = useState();

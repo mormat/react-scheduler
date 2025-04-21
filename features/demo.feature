@@ -3,7 +3,7 @@
 Feature: Demo page
 
     Background:
-        Given today is "2024-08-13" 
+        Given today is "2024-10-14" 
 
     Scenario: Events should be displayed
         When I open "index" page
