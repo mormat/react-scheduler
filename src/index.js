@@ -1,5 +1,5 @@
 import { createRoot } from 'react-dom/client';
-import { Scheduler } from '@mormat/react_scheduler';
+import { Scheduler, withEventForm } from '@mormat/react_scheduler';
 import { utils }     from '@mormat/jscheduler_ui';
 
 import { useState, useMemo } from 'react';
@@ -16,6 +16,43 @@ if (webpack_mode !== 'production') {
      }
 }
 
+const SchedulerWithEventForm = withEventForm(Scheduler, BootstrapEventForm);
+
+function App() {
+    
+    const startDay = (new utils.Day(Date.now())).getFirstDayOfWeek();
+    
+    const events = [
+        { 
+            start: startDay.addDays(1) + " 10:00", 
+            label: "interview",
+            bgColor: '#0288d1',
+        },
+        { 
+            start: startDay.addDays(3) + " 09:00", 
+            end:   startDay.addDays(3) + " 18:00", 
+            label: "meeting",
+            bgColor: '#9575cd',
+        },
+        { 
+            label: "training course",
+            start: startDay.addDays(2) + " 09:00",
+            end  : startDay.addDays(5) + " 18:00",
+            bgColor: "#0fc4a7" 
+        }
+    ];
+    
+    return (
+        <SchedulerWithEventForm
+            events        = { events } 
+            onEventDrop   = { () => {} }
+            onEventResize = { () => {} }
+        />        
+    )
+    
+}
+
+/*
 function App() {
     
     const [schedulerEvent, setSchedulerEvent] = useState();
@@ -87,6 +124,8 @@ function App() {
     )
     
 }
+ * 
+ */
 
 function Footer() {
     

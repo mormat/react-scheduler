@@ -44,10 +44,11 @@ Feature: Demo page
         And I click on "OK"
         And the 'conference' event should be displayed at "Mon, Oct 14" from '14:00' to '17:00'
 
-    @form @todo
+    @form @delete
     Scenario: User can delete event
         When I open "index" page
         And I click on the "interview" event
         And I click on "Delete"
+        And I click on "Ok"
         Then the "interview" event should not be displayed
 

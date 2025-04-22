@@ -15,8 +15,11 @@ function DefaultEventForm({
     handleSubmit,
     handleCancel,
     handleDelete,
+    translations = {},
     ...otherProps
 }) {
+ 
+    console.log('translations', translations);
  
     return (
         <form 
@@ -25,40 +28,44 @@ function DefaultEventForm({
         >
             <p>
                 <label>
-                    Description<br/>
+                    { translations['form.event_label'] || 'Description' }
+                    <br/>
                     { labelInput }
                 </label>
             </p>
 
             <p>
                 <label>
-                    From<br/>
+                    { translations['form.event_start'] || 'From' }
+                    <br/>
                     { startInput }
                 </label>
             </p>
 
             <p>
                 <label>
-                    To<br/>
+                    { translations['form.event_end'] || 'To' }
+                    <br/>
                     { endInput }
                 </label>
             </p>
 
             <p>
                 <label>
-                    Color<br/>
+                    { translations['form.event_bgcolor'] || 'Color' }
+                    <br/>
                     { bgColorInput }
                 </label>
             </p>
 
             <p>
                 <Button onClick={ handleDelete } variant="danger">
-                    delete
+                    { translations['form.delete_btn'] || 'delete' }
                 </Button>
                 &nbsp;
 
                 <Button type="submit" variant="primary">
-                    ok
+                    { translations['form.ok_btn'] || 'ok' }
                 </Button>
 
             </p>

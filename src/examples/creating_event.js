@@ -1,36 +1,19 @@
 import { createRoot } from 'react-dom/client';
-import { Scheduler, EventForm } from '@mormat/react_scheduler';
-import { useState, useMemo } from 'react';
+import { 
+    Scheduler, 
+    DefaultEventForm, 
+    withEventForm 
+} from '@mormat/react_scheduler';
 
-function App() {
-    
-    const [schedulerEvent, setSchedulerEvent] = useState();
-    
-    const scheduler = useMemo(() => {
-        
-        const handleEventAdd = function(schedulerEvent) {
-            setSchedulerEvent(schedulerEvent);
-        }
-        
-        return ( <Scheduler onEventAdd = { handleEventAdd } /> );
-        
-    }, [setSchedulerEvent]);
+const SchedulerWithEventForm = withEventForm(Scheduler, DefaultEventForm);
 
-    return <>
-        { scheduler }
-        { schedulerEvent && (
-            <EventForm 
-                onConfirm = { (values) => {
-                    schedulerEvent.update(values);
-                    setSchedulerEvent(null);
-                }}
-                onCancel = { () => {
-                    setSchedulerEvent(null);
-                }}
-            />
-        ) }
-    </>;
+const handleEventCreate = function(values) {
+    document.getElementById('comments').innerHTML = `'${values.label}' event created`;
 }
 
-
-createRoot( document.getElementById('scheduler' ) ).render( <App /> );
+const root = createRoot( document.getElementById('scheduler' ) );
+root.render( 
+    <SchedulerWithEventForm 
+        onEventCreate = { handleEventCreate }
+    /> 
+);

@@ -86,6 +86,7 @@ Feature: Examples
             | To          | 17:00 7 October 2024 |
         And I click on "ok"
         Then the 'meeting' event should be displayed at "Mon, Oct 7" from '14:00' to '17:00'
+        And I should see "'meeting' event created"
 
     @form
     Scenario: Default form values when editing an event
@@ -110,16 +111,20 @@ Feature: Examples
             | To          | 17:00 7 October 2024 |
         And I click on "ok"
         And the 'meeting' event should be displayed at "Mon, Oct 7" from '14:00' to '17:00'
+        And I should see "'meeting' event updated"
 
-    @form
+    @form @delete
     Scenario: Deleting event
         When I open "examples" page
         And I click on "Deleting event"
         And I click on the "interview" event
+        And I click on "delete"
         And I click on "Ok"
         Then the "interview" event should not be displayed
+        And I should see "'interview' event deleted"
 
-    Scenario: i18n
+    @i18n
+    Scenario: i18n in scheduler header
         When I open "examples" page
         And I click on "i18n"
         Then the scheduler header should contains:
@@ -138,3 +143,27 @@ Feature: Examples
         Then I should see "octobre 2024"
         And I should see "lun. mar. mer. jeu. ven. sam. dim."
         
+    @i18n
+    Scenario: i18n in scheduler form
+        When I open "examples" page
+        And I click on "i18n"
+        And I click on "Add event"
+        Then I should see :
+            | Nom de l'evenement   |
+            | A partir de          |
+            | Jusqu'a              |
+            | Couleur              |
+            | Confirmer            |
+        # And the value in "A partir de" should countains "Avril"
+        # And the value in "Jusqu'a" should countains "Avril"
+
+    @i18n
+    Scenario: i18n in ok/cancel dialog
+        When I open "examples" page
+        And I click on "i18n"
+        And I click on the "interview" event
+        And I click on "Supprimer"
+        Then I should see :
+            | Confirmer                           |
+            | Annuler                             |
+            | Supprimer l'evenement 'interview' ? |
