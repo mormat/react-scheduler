@@ -43,6 +43,17 @@ Then('the scheduler header should contains:', async function (dataTable) {
     
 });
 
+Then(
+    'I should see {string} in field {string}', 
+    async function (expectedText, fieldLabel) {
+        const pageText = await this.getPageText(
+            `label:contains("${fieldLabel}")`
+        );
+
+        expect(pageText).toContain(expectedText);
+    }
+);
+
 Then('the form should contains', async function (dataTable) {
     
     const values = dataTable.rowsHash();
@@ -78,3 +89,8 @@ Then('the form should contains', async function (dataTable) {
     };
     
 });
+
+Then('I should a see {string} tooltip', async function (string) {
+    await this.getElement(`[title="${string}"]`);
+});
+

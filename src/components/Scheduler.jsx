@@ -8,7 +8,7 @@ import Layout from './Layout';
 const instances = new Map();
 
 function Scheduler( { translations = {}, ...schedulerProps } ) {
-    
+        
     const divRef = useRef();
     const [viewMode,       setViewMode]       = useState('week');
     const [currentDate,    setCurrentDate]    = useState();

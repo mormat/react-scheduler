@@ -19,8 +19,6 @@ function DefaultEventForm({
     ...otherProps
 }) {
  
-    console.log('translations', translations);
- 
     return (
         <form 
             className = "mormat-scheduler-DefaultEventForm"
@@ -28,7 +26,7 @@ function DefaultEventForm({
         >
             <p>
                 <label>
-                    { translations['form.event_label'] || 'Description' }
+                    { translations['event_desc_label'] || 'Description' }
                     <br/>
                     { labelInput }
                 </label>
@@ -36,7 +34,7 @@ function DefaultEventForm({
 
             <p>
                 <label>
-                    { translations['form.event_start'] || 'From' }
+                    { translations['event_start_label'] || 'From' }
                     <br/>
                     { startInput }
                 </label>
@@ -44,7 +42,7 @@ function DefaultEventForm({
 
             <p>
                 <label>
-                    { translations['form.event_end'] || 'To' }
+                    { translations['event_end_label'] || 'To' }
                     <br/>
                     { endInput }
                 </label>
@@ -52,7 +50,7 @@ function DefaultEventForm({
 
             <p>
                 <label>
-                    { translations['form.event_bgcolor'] || 'Color' }
+                    { translations['event_bgcolor_label'] || 'Color' }
                     <br/>
                     { bgColorInput }
                 </label>
@@ -60,12 +58,12 @@ function DefaultEventForm({
 
             <p>
                 <Button onClick={ handleDelete } variant="danger">
-                    { translations['form.delete_btn'] || 'delete' }
+                    { translations['delete_btn'] || 'delete' }
                 </Button>
                 &nbsp;
 
                 <Button type="submit" variant="primary">
-                    { translations['form.ok_btn'] || 'ok' }
+                    { translations['ok_btn'] || 'ok' }
                 </Button>
 
             </p>

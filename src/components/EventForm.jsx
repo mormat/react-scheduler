@@ -7,6 +7,7 @@ import { useState, useMemo } from 'react';
 function withEventForm(WrappedComponent, EventForm) {
     
     return function(props) {
+        
         const [schedulerEvent, setSchedulerEvent] = useState();
         const [isEventAdd, setEventAdd] = useState(false);
         const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -56,13 +57,14 @@ function withEventForm(WrappedComponent, EventForm) {
                         setShowDeleteConfirm(true);
                     }}
                     translations = { props.translations }
+                    dateLocale = { props.dateLocale }
                 />
             ) }
             { showDeleteConfirm && (
                 <OkCancelDialog 
                     message = { 
                         ( 
-                            (props.translations || {})['msg.confirm_delete'] ||
+                            (props.translations || {})['delete_event_confirm_msg'] ||
                             "Delete the '$event_label' event ?"
                         ).replace('$event_label', schedulerEvent.label)
                     }

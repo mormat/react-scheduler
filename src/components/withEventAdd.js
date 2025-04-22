@@ -6,6 +6,8 @@ function withEventAdd( WrappedComponent ) {
     
     return function( { onEventAdd, ...otherProps } ) {
         
+        const { translations = {} } = otherProps;
+        
         const refParent = useRef();
         
         const handleEventAdd = (e) => {
@@ -24,7 +26,8 @@ function withEventAdd( WrappedComponent ) {
                 <WrappedComponent { ...otherProps } />
                         
                 { onEventAdd && (
-                    <a onClick = { handleEventAdd } title="Add event">
+                    <a onClick = { handleEventAdd }
+                       title={ translations['add_event_btn'] || "Add event" }>
                         { plusIcon }
                     </a>
                 ) }

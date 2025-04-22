@@ -28,11 +28,11 @@ function OkCancelDialog({
                     
             <p>
                 <Button onClick = { handleCancel }>
-                    { translations['form.cancel_btn'] || 'Cancel' }
+                    { translations['cancel_btn'] || 'Cancel' }
                 </Button>
                 &nbsp;
                 <Button onClick = { handleConfirm } variant="primary">
-                    { translations['form.ok_btn'] || 'Ok' }
+                    { translations['ok_btn'] || 'Ok' }
                 </Button>
             </p>
         </div>

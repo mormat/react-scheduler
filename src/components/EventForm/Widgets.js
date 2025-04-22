@@ -79,9 +79,9 @@ function ColorPicker( { value, setValue })
     )
 }
 
-function DateTimePicker( { value, setValue, ...otherProps }) {
+function DateTimePicker( { value, setValue, dateLocale = 'en', ...otherProps }) {
     
-    const options = buildDateTimeOptions();
+    const options = buildDateTimeOptions( { dateLocale });
     
     // @todo useState may not be needed as the value as controlled by the parent
     const [values, setValues] = useState(() => {
@@ -184,7 +184,7 @@ function DateTimePicker( { value, setValue, ...otherProps }) {
     
 }
 
-function buildDateTimeOptions({ minutesStep = 5 } = {}) {
+function buildDateTimeOptions({ minutesStep = 5, dateLocale = 'en' } = {}) {
     
     const today   = new Date(Date.now());
     
@@ -205,7 +205,7 @@ function buildDateTimeOptions({ minutesStep = 5 } = {}) {
     const months = {}
     for (let i = 0; i < 12; i++) {
         const d = new Date(1970, i, 1);
-        const label = d.toLocaleString('en', { month: 'long' });
+        const label = d.toLocaleString(dateLocale, { month: 'long' });
         const key   = String(i + 1).padStart(2, '0');
         months[key] = label;
     }

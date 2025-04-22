@@ -6,7 +6,7 @@ import withEventEdit from './withEventEdit';
 function withRootElement( WrappedComponent ) {
     
     return function( props ) {
-        
+    
         let DecoratedComponent = WrappedComponent;
         if (props.onEventAdd) {
             DecoratedComponent = withEventAdd(DecoratedComponent);

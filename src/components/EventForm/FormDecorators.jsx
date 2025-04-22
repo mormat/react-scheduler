@@ -59,8 +59,9 @@ function withState(
         const startInput = useDatePicker ? 
         (
             <DateTimePicker 
-                value    = { start } 
-                setValue = { setStart } 
+                value      = { start } 
+                setValue   = { setStart } 
+                dateLocale = { otherProps.dateLocale }
             />      
         ) :
         (
@@ -74,8 +75,9 @@ function withState(
         const endInput =  useDatePicker ? 
         (
             <DateTimePicker 
-                value    = { end } 
-                setValue = { setEnd } 
+                value      = { end } 
+                setValue   = { setEnd } 
+                dateLocale = { otherProps.dateLocale }
             />      
         ) :
         (
@@ -119,7 +121,7 @@ function withState(
 
 function withOverlay(WrappedComponent) {
     
-    return function(props) {
+    return function(props, somethingElse) {
     
         return (
             <div style = {{

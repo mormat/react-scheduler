@@ -124,7 +124,7 @@ Feature: Examples
         And I should see "'interview' event deleted"
 
     @i18n
-    Scenario: i18n in scheduler header
+    Scenario: i18n in scheduler
         When I open "examples" page
         And I click on "i18n"
         Then the scheduler header should contains:
@@ -144,18 +144,24 @@ Feature: Examples
         And I should see "lun. mar. mer. jeu. ven. sam. dim."
         
     @i18n
-    Scenario: i18n in scheduler form
+    Scenario: i18n of buttons for creating and editing events
         When I open "examples" page
         And I click on "i18n"
-        And I click on "Add event"
+        Then I should a see "Ajouter un evenement" tooltip
+
+    @i18n
+    Scenario: i18n in create/edit form
+        When I open "examples" page
+        And I click on "i18n"
+        And I click on "Ajouter un evenement"
         Then I should see :
             | Nom de l'evenement   |
             | A partir de          |
             | Jusqu'a              |
             | Couleur              |
             | Confirmer            |
-        # And the value in "A partir de" should countains "Avril"
-        # And the value in "Jusqu'a" should countains "Avril"
+        And I should see "octobre" in field "A partir de"
+        And I should see "octobre" in field "Jusqu'a"
 
     @i18n
     Scenario: i18n in ok/cancel dialog
