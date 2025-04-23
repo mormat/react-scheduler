@@ -32,6 +32,9 @@ function Scheduler( { translations = {}, ...schedulerProps } ) {
         setSchedulerLabel( scheduler.getLabel() );
         instances.set(element, scheduler );
         
+        if (Array.isArray(events)) {
+            scheduler.setOptions({ events });
+        }
         loadEvents(events);
         
         return function() {
@@ -82,8 +85,6 @@ function Scheduler( { translations = {}, ...schedulerProps } ) {
             };
             events({ dateRange, setEvents });
             
-        } else if (events) {
-            scheduler.setOptions({ events });
         }
         
     }

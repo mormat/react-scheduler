@@ -52,3 +52,31 @@ Feature: Demo page
         And I click on "Ok"
         Then the "interview" event should not be displayed
 
+    @form @create
+    Scenario: Created event should persist when switching to another view
+        When I open "index" page
+        And I click on "Add event"
+        And I fill the values below:
+            | Label | conference       |
+        And I click on "OK"
+        And I click on "month" 
+        Then I should see "conference"
+
+    @form @edit
+    Scenario: Updated event should persist when switching to another view
+        When I open "index" page
+        And I click on the "interview" event
+        And I fill the values below:
+            | Label | updated interview |
+        And I click on "OK"
+        And I click on "month" 
+        Then I should see "updated interview"
+
+    @form @delete
+    Scenario: Deleted event should persist when switching to another view
+        When I open "index" page
+        And I click on the "interview" event
+        And I click on "Delete"
+        And I click on "Ok"
+        And I click on "month" 
+        Then I should not see "interview"
