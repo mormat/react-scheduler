@@ -8,9 +8,9 @@ function App() {
         { "label": "fixed height", "start": "2024-10-10 09:00", "end": "2024-10-10 12:00" },
     ]
 
-    const handleResize = function(schedulerEvent, valuesBefore) {
+    const handleResize = function(schedulerEvent, { revert }) {
         if (schedulerEvent.label.includes("fixed height")) {
-            schedulerEvent.update(valuesBefore);
+            revert();
         }
     }
 

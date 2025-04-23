@@ -9,18 +9,21 @@ function withEventForm(WrappedComponent, EventForm) {
     return function(props) {
         
         const [schedulerEvent, setSchedulerEvent] = useState();
+        const [rawScheduler,   setRawScheduler]   = useState();
         const [isEventAdd, setEventAdd] = useState(false);
         const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     
         const scheduler = useMemo(() => {
 
-            const handleEventAdd = function(schedulerEvent) {
+            const handleEventAdd = function(schedulerEvent, rawScheduler) {
                 setSchedulerEvent(schedulerEvent);
+                setRawScheduler(rawScheduler);
                 setEventAdd(true);
             }
             
-            const handleEventEdit = function(schedulerEvent) {
+            const handleEventEdit = function(schedulerEvent, rawScheduler) {
                 setSchedulerEvent(schedulerEvent);
+                setRawScheduler(rawScheduler);
                 setEventAdd(false);
             }
 
@@ -40,15 +43,23 @@ function withEventForm(WrappedComponent, EventForm) {
                 <EventForm 
                     values = { isEventAdd ? {} : schedulerEvent.values}
                     onConfirm = { (values) => {
-                        schedulerEvent.update(values);
-                        setSchedulerEvent(null);
-                        if (isEventAdd && props.onEventCreate) {
-                            props.onEventCreate(schedulerEvent.values);
+                        if (isEventAdd) {
+                            rawScheduler.pushEvent(values);
+                        } else {
+                            rawScheduler.replaceEvent(
+                                values, 
+                                i => schedulerEvent.values.id === i.id
+                            );
                         }
                         
-                        if (!isEventAdd && props.onEventUpdate) {
-                            props.onEventUpdate(schedulerEvent.values);
+                        if (isEventAdd && props.onEventCreate) {
+                            props.onEventCreate(values);
                         }
+                        if (!isEventAdd && props.onEventUpdate) {
+                            props.onEventUpdate(values);
+                        }
+                        
+                        setSchedulerEvent(null);
                     }}
                     onCancel = { () => {
                         setSchedulerEvent(null);
@@ -69,7 +80,9 @@ function withEventForm(WrappedComponent, EventForm) {
                         ).replace('$event_label', schedulerEvent.label)
                     }
                     onConfirm = { () => {
-                        schedulerEvent.delete();
+                        rawScheduler.removeEvent(
+                            i => schedulerEvent.values.id === i.id
+                        )
                         setSchedulerEvent(null);
                         if (props.onEventDelete) {
                             props.onEventDelete(schedulerEvent.values);

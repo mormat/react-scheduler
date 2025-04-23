@@ -1,17 +1,27 @@
+import { useRef } from 'react';
+
+import { instances } from './Scheduler';
 
 function withEventEdit( WrappedComponent ) {
     
     return function( { onEventEdit, ...otherProps } ) {
         
+        const refParent = useRef();
+        
         const onEventClick = (schedulerEvent) => {
-            onEventEdit( schedulerEvent );
+            const scheduler = instances.get(
+                refParent.current.querySelector('[data-scheduler]')
+            );
+            onEventEdit( schedulerEvent, scheduler );
         }
         
         return (
-            <WrappedComponent { ...otherProps } 
-                onEventClick = { onEventClick }
-                eventClickable = { true }
-            />
+            <div ref = { refParent }>
+                <WrappedComponent { ...otherProps } 
+                    onEventClick = { onEventClick }
+                    eventClickable = { true }
+                />
+            </div>
         );
         
     }

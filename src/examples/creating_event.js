@@ -8,6 +8,7 @@ import {
 const SchedulerWithEventForm = withEventForm(Scheduler, DefaultEventForm);
 
 const handleEventCreate = function(values) {
+    console.log('values', values);
     document.getElementById('comments').innerHTML = `'${values.label}' event created`;
 }
 

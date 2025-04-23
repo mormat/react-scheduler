@@ -26,6 +26,34 @@ function Scheduler( { translations = {}, ...schedulerProps } ) {
             { 
                 ...defaultSchedulerProps, 
                 ...otherSchedulerProps,
+                eventsDraggable:  typeof schedulerProps.onEventDrop   === 'function',
+                eventsResizeable: typeof schedulerProps.onEventResize === 'function',
+                eventsClickable:  typeof schedulerProps.onEventClick  === 'function',
+                // @todo refactor onEventDrop with onEventResize
+                onEventDrop: function(values, valuesBefore) {
+                    if (schedulerProps.onEventDrop) {
+                        const revert = () => scheduler.replaceEvent(
+                            valuesBefore,
+                            i => i.id === values.id
+                        );
+                        schedulerProps.onEventDrop(
+                            values,
+                            { valuesBefore, revert }
+                        );
+                    }
+                },
+                onEventResize: function(values, valuesBefore) {
+                    if (schedulerProps.onEventResize) {
+                        const revert = () => scheduler.replaceEvent(
+                            valuesBefore,
+                            i => i.id === values.id
+                        );
+                        schedulerProps.onEventResize(
+                            values,
+                            { valuesBefore, revert }
+                        );
+                    }
+                },
                 styles: {position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }
             }
         );

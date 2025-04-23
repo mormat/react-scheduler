@@ -14,8 +14,8 @@ function withEventAdd( WrappedComponent ) {
             const scheduler = instances.get(
                 refParent.current.querySelector('[data-scheduler]')
             );
-    
-            onEventAdd( scheduler.createEvent() );
+            const newEvent = {}
+            onEventAdd( newEvent, scheduler );
         }
         
         return (
