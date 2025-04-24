@@ -61,6 +61,7 @@
   "scripts": {
     "start": "webpack serve --mode=development",
     "prepare": "webpack --mode=production",
-    "cucumber": "cucumber-js"
+    "cucumber": "cucumber-js",
+    "build": "npm pack --pack-destination=./build"
   }
 }
