@@ -94,3 +94,12 @@ Then('I should a see {string} tooltip', async function (string) {
     await this.getElement(`[title="${string}"]`);
 });
 
+Then(
+    'I should not see {string} \\(case insensitive)', 
+    async function (expectedText) {
+        const pageText = await this.getPageText();
+        expect(pageText.toLowerCase()).not.toContain(expectedText.toLowerCase());
+    }
+);
+
+

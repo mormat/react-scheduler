@@ -40,13 +40,11 @@ function withState(
                 onCancel();
             }
         }
-
-        const handleDelete = (e) => {
+        
+        const handleDelete = onDelete ? (e) => {
             e.preventDefault();
-            if (onDelete) {
-                onDelete();
-            }
-        }
+            onDelete();
+        } : null;
         
         const labelInput = (
             <Input 

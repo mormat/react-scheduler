@@ -88,6 +88,13 @@ Feature: Examples
         Then the 'meeting' event should be displayed at "Mon, Oct 7" from '14:00' to '17:00'
         And I should see "'meeting' event created"
 
+    @form @todo
+    Scenario: Delete button not visible when creating event
+        When I open "examples" page
+        And I click on "Creating event"
+        And I click on "Add event"
+        Then I should not see "delete" (case insensitive)
+
     @form
     Scenario: Default form values when editing an event
         When I open "examples" page

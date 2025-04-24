@@ -52,11 +52,16 @@ function withEventForm(WrappedComponent, EventForm) {
                             );
                         }
                         
+                        const options = {
+                            valuesBefore: schedulerEvent.values,
+                            scheduler: rawScheduler
+                        }
+                        
                         if (isEventAdd && props.onEventCreate) {
-                            props.onEventCreate(values);
+                            props.onEventCreate(values, options);
                         }
                         if (!isEventAdd && props.onEventUpdate) {
-                            props.onEventUpdate(values);
+                            props.onEventUpdate(values, options);
                         }
                         
                         setSchedulerEvent(null);
@@ -64,9 +69,11 @@ function withEventForm(WrappedComponent, EventForm) {
                     onCancel = { () => {
                         setSchedulerEvent(null);
                     }}
-                    onDelete = { () => {
-                        setShowDeleteConfirm(true);
-                    }}
+                    onDelete = { 
+                        isEventAdd ?
+                        null :
+                        function() { setShowDeleteConfirm(true) }
+                    }
                     translations = { props.translations }
                     dateLocale = { props.dateLocale }
                 />

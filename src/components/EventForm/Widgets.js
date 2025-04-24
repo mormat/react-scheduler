@@ -61,7 +61,7 @@ function ColorPicker( { value, setValue })
                         onMouseDown = { e => e.preventDefault() }
                 >
                     <span style = { { backgroundColor: v } }>
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     </span>
                     <input  
                         type       = "radio" 

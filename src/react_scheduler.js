@@ -7,6 +7,8 @@ import {
     OkCancelDialog 
 } from './components/EventForm';
 
+import { utils } from '@mormat/jscheduler_ui';
+
 import './react_scheduler.scss';
 import '@mormat/jscheduler_ui/dist/jscheduler_ui.css';
 
@@ -18,5 +20,6 @@ export {
     Scheduler, 
     withEventForm,
     DefaultEventForm, 
-    OkCancelDialog 
+    OkCancelDialog,
+    utils
 }

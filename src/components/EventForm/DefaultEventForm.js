@@ -57,9 +57,11 @@ function DefaultEventForm({
             </p>
 
             <p>
-                <Button onClick={ handleDelete } variant="danger">
-                    { translations['delete_btn'] || 'delete' }
-                </Button>
+                { handleDelete && (
+                    <Button onClick={ handleDelete } variant="danger">
+                        { translations['delete_btn'] || 'delete' }
+                    </Button>
+                ) }
                 &nbsp;
 
                 <Button type="submit" variant="primary">
