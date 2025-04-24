@@ -77,7 +77,7 @@ function withEventForm(WrappedComponent, EventForm) {
                         ( 
                             (props.translations || {})['delete_event_confirm_msg'] ||
                             "Delete the '$event_label' event ?"
-                        ).replace('$event_label', schedulerEvent.label)
+                        ).replace('%event_label%', schedulerEvent.label)
                     }
                     onConfirm = { () => {
                         rawScheduler.removeEvent(

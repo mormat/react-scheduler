@@ -24,7 +24,7 @@ createRoot( document.getElementById('scheduler' ) ).render(
             "delete_btn":          "Supprimer",
             "add_event_btn":       "Ajouter un evenement",
             "edit_event_btn":      "Editer un evenement",
-            'delete_event_confirm_msg': "Supprimer l'evenement '$event_label' ?"
+            'delete_event_confirm_msg': "Supprimer l'evenement '%event_label%' ?"
         }}
         events = { 
             [ { "label": "interview",  "start": "2024-10-08 10:00" }, ]
