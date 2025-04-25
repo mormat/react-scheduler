@@ -90,10 +90,6 @@ Then('the form should contains', async function (dataTable) {
     
 });
 
-Then('I should a see {string} tooltip', async function (string) {
-    await this.getElement(`[title="${string}"]`);
-});
-
 Then(
     'I should not see {string} \\(case insensitive)', 
     async function (expectedText) {

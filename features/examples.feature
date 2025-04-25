@@ -105,7 +105,7 @@ Feature: Examples
     Scenario: Default form values when editing an event
         When I open "examples" page
         And I click on "Editing event"
-        And I click on the "interview" event
+        And I edit the "interview" event
         Then the form should contains
             | Description | interview            |
             | From        | 10:00 8 October 2024 |
@@ -116,7 +116,7 @@ Feature: Examples
     Scenario: Editing event
         When I open "examples" page
         And I click on "Editing event"
-        And I click on the "interview" event
+        And I edit the "interview" event
         And I fill the values below:
             | Description | meeting |
         And I fill the dates below:
@@ -130,7 +130,7 @@ Feature: Examples
     Scenario: Deleting event
         When I open "examples" page
         And I click on "Deleting event"
-        And I click on the "interview" event
+        And I edit the "interview" event
         And I click on "delete"
         And I click on "Ok"
         Then the "interview" event should not be displayed
@@ -160,7 +160,8 @@ Feature: Examples
     Scenario: i18n of buttons for creating and editing events
         When I open "examples" page
         And I click on "i18n"
-        Then I should a see "Ajouter un evenement" tooltip
+        Then I should see a "Ajouter un evenement" tooltip
+        And  I should see a "Modifier l'evenement" tooltip
 
     @i18n
     Scenario: i18n in create/edit form
@@ -180,7 +181,7 @@ Feature: Examples
     Scenario: i18n in ok/cancel dialog
         When I open "examples" page
         And I click on "i18n"
-        And I click on the "interview" event
+        And I edit the "interview" event
         And I click on "Supprimer"
         Then I should see :
             | Confirmer                           |

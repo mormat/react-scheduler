@@ -8,7 +8,7 @@ function withEventEdit( WrappedComponent ) {
         
         const refParent = useRef();
         
-        const onEventClick = (schedulerEvent) => {
+        const handleEventEdit = (schedulerEvent) => {
             const scheduler = instances.get(
                 refParent.current.querySelector('[data-scheduler]')
             );
@@ -18,8 +18,8 @@ function withEventEdit( WrappedComponent ) {
         return (
             <div ref = { refParent }>
                 <WrappedComponent { ...otherProps } 
-                    onEventClick = { onEventClick }
-                    eventClickable = { true }
+                    onEventEdit = { handleEventEdit }
+                    eventsEditable = { true }
                 />
             </div>
         );

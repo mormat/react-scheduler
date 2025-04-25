@@ -26,9 +26,10 @@ function Scheduler( { translations = {}, ...schedulerProps } ) {
             { 
                 ...defaultSchedulerProps, 
                 ...otherSchedulerProps,
+                translations,
                 eventsDraggable:  typeof schedulerProps.onEventDrop   === 'function',
                 eventsResizeable: typeof schedulerProps.onEventResize === 'function',
-                eventsClickable:  typeof schedulerProps.onEventClick  === 'function',
+                eventsEditable:  typeof schedulerProps.onEventEdit  === 'function',
                 // @todo refactor onEventDrop with onEventResize
                 onEventDrop: function(values, valuesBefore) {
                     if (schedulerProps.onEventDrop) {

@@ -36,7 +36,7 @@ Feature: Demo page
     @form 
     Scenario: User can edit event
         When I open "index" page
-        And I click on the "interview" event
+        And I edit the "interview" event
         And I fill the values below:
             | Label | conference       |
             | Start | 14/10/2024 14:00 |
@@ -47,7 +47,7 @@ Feature: Demo page
     @form @delete
     Scenario: User can delete event
         When I open "index" page
-        And I click on the "interview" event
+        And I edit the "interview" event
         And I click on "Delete"
         And I click on "Ok"
         Then the "interview" event should not be displayed
@@ -65,7 +65,7 @@ Feature: Demo page
     @form @edit
     Scenario: Updated event should persist when switching to another view
         When I open "index" page
-        And I click on the "interview" event
+        And I edit the "interview" event
         And I fill the values below:
             | Label | updated interview |
         And I click on "OK"
@@ -75,7 +75,7 @@ Feature: Demo page
     @form @delete
     Scenario: Deleted event should persist when switching to another view
         When I open "index" page
-        And I click on the "interview" event
+        And I edit the "interview" event
         And I click on "Delete"
         And I click on "Ok"
         And I click on "month" 

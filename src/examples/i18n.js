@@ -23,7 +23,7 @@ createRoot( document.getElementById('scheduler' ) ).render(
             "cancel_btn":          "Annuler",
             "delete_btn":          "Supprimer",
             "add_event_btn":       "Ajouter un evenement",
-            "edit_event_btn":      "Editer un evenement",
+            "edit_event_btn":      "Modifier l'evenement",
             'delete_event_confirm_msg': "Supprimer l'evenement '%event_label%' ?"
         }}
         events = { 
