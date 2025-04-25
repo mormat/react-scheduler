@@ -89,6 +89,12 @@ Feature: Examples
         And I should see "'meeting' event created"
 
     @form @todo
+    # Scenario: Description required when creating event (also check i18 error message)
+
+    @form @todo
+    # Scenario: Date range should be valid when creating event (also check i18 error message)
+
+    @form
     Scenario: Delete button not visible when creating event
         When I open "examples" page
         And I click on "Creating event"

@@ -109,6 +109,7 @@ function withState(
                 handleSubmit,
                 handleCancel,
                 handleDelete,
+                values: { label, start, end, bgColor },
                 ...otherProps
             } } />
         )

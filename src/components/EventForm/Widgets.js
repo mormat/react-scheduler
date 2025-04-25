@@ -33,6 +33,18 @@ function Button( { children, variant, ...otherProps } ) {
     
 }
 
+function Message( { children, variant, ...otherProps } ) {
+    return (
+        <span
+            className="mormat-scheduler-Message"
+            data-variant = { variant }
+            { ...otherProps }
+        >
+            { children }
+        </span>
+    )
+}
+
 function ColorPicker( { value, setValue })
 {
     const colors = [
@@ -222,6 +234,7 @@ function buildDateTimeOptions({ minutesStep = 5, dateLocale = 'en' } = {}) {
 export {
     Input,
     Button,
+    Message,
     ColorPicker,
     DateTimePicker
 }

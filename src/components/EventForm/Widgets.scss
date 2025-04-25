@@ -16,10 +16,22 @@
     }
     
     &[data-variant=danger] {
-        color: white;
-        background-color: #B22222; /* FireBrick */
+        color: #721c24;
+        background-color: white;
+        
+        &:hover {
+            color: white;
+            background-color: #721c24; /* FireBrick */
+        }
     }
 
+}
+
+.mormat-scheduler-Message {
+    
+    &[data-variant=danger] {
+        color: #721c24;
+    }
 }
 
 .mormat-scheduler-ColorPicker {
