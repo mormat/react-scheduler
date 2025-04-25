@@ -6,15 +6,16 @@ const Header = ({ children }) => (
     <div className="mormat-scheduler-Header" 
          style={{ overflow: 'visible', padding: '1px' }} 
     >
-        <div style={{ width: '33.33%', float: 'left', textAlign: 'left' }}>
+        <div style={{ float: 'left', textAlign: 'left' }}>
             { children[0] }
         </div>
-        <div style={{ width: '33.33%', float: 'left', textAlign: 'center' }}>
-            { children[1] }
-        </div>
-        <div style={{ width: '33.33%', float: 'right', textAlign: 'right' }}>
+        <div style={{float: 'right', textAlign: 'right' }}>
             { children[2] }
         </div>
+        <div style={{ textAlign: 'center' }}>
+            { children[1] }
+        </div>
+        
     </div>                
 );
 
