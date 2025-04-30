@@ -14,6 +14,8 @@ import '@mormat/jscheduler_ui/dist/jscheduler_ui.css';
 
 const Scheduler = withRootElement( BaseScheduler );
 
+const SchedulerWithEventForm = withEventForm(Scheduler, DefaultEventForm);
+
 export default Scheduler;
     
 export { 
@@ -21,5 +23,6 @@ export {
     withEventForm,
     DefaultEventForm, 
     OkCancelDialog,
+    SchedulerWithEventForm,
     utils
 }

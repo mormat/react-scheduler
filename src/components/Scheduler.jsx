@@ -1,6 +1,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import jscheduler_ui from '@mormat/jscheduler_ui';
+import { utils } from '@mormat/jscheduler_ui';
 
 import Header from './Header';
 import Layout from './Layout';
@@ -18,7 +19,12 @@ function Scheduler( { translations = {}, ...schedulerProps } ) {
     
     useEffect(() => {
         
-        const { events, ...otherSchedulerProps } = schedulerProps;
+        const { 
+            events, 
+            onEventDrop,
+            onEventResize,
+            ...otherSchedulerProps 
+        } = schedulerProps;
         
         const element  = divRef.current;     
         const scheduler = jscheduler_ui.render(
@@ -27,34 +33,15 @@ function Scheduler( { translations = {}, ...schedulerProps } ) {
                 ...defaultSchedulerProps, 
                 ...otherSchedulerProps,
                 translations,
-                eventsDraggable:  typeof schedulerProps.onEventDrop   === 'function',
-                eventsResizeable: typeof schedulerProps.onEventResize === 'function',
-                eventsEditable:  typeof schedulerProps.onEventEdit  === 'function',
-                // @todo refactor onEventDrop with onEventResize
-                onEventDrop: function(values, valuesBefore) {
-                    if (schedulerProps.onEventDrop) {
-                        const revert = () => scheduler.replaceEvent(
-                            valuesBefore,
-                            i => i.id === values.id
-                        );
-                        schedulerProps.onEventDrop(
-                            values,
-                            { valuesBefore, revert }
-                        );
-                    }
-                },
-                onEventResize: function(values, valuesBefore) {
-                    if (schedulerProps.onEventResize) {
-                        const revert = () => scheduler.replaceEvent(
-                            valuesBefore,
-                            i => i.id === values.id
-                        );
-                        schedulerProps.onEventResize(
-                            values,
-                            { valuesBefore, revert }
-                        );
-                    }
-                },
+                eventsDraggable:  typeof onEventDrop   === 'function',
+                eventsResizeable: typeof onEventResize === 'function',
+                eventsEditable:   typeof schedulerProps.onEventEdit   === 'function',
+                onEventDrop:   (...params) => handleDragAndDrop(
+                    scheduler, onEventDrop, ...params
+                ),
+                onEventResize: (...params) => handleDragAndDrop(
+                    scheduler, onEventResize, ...params
+                ),
                 styles: {position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }
             }
         );
@@ -180,7 +167,35 @@ const defaultSchedulerProps = {
     }
 }
 
+const handleDragAndDrop = (scheduler, eventFn, values, valuesBefore) => {
+
+    if (typeof eventFn !== 'function') {
+        return null;
+    }
+
+    const revert = () => scheduler.replaceEvent(
+        valuesBefore,
+        i => i.id === values.id
+    );
+
+    const cleanedValues = { ...values }
+    for (const k of ['start', 'end']) {
+        cleanedValues[k] = utils.format_date(
+            'yyyy-mm-dd hh:ii',
+            cleanedValues[k]
+        );
+    }
+
+    eventFn(
+        cleanedValues,
+        { valuesBefore, revert }
+    );
+
+}
 
 export default Scheduler;
     
-export { instances }
+export { 
+    Scheduler,
+    instances 
+}
