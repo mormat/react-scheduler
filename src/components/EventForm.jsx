@@ -2,6 +2,8 @@ import DefaultEventForm   from './EventForm/DefaultEventForm';
 import BootstrapEventForm from './EventForm/BootstrapEventForm';
 import OkCancelDialog     from './EventForm/OkCancelDialog';
 
+import { utils } from '@mormat/jscheduler_ui';
+
 import { useState, useMemo } from 'react';
 
 function withEventForm(WrappedComponent, EventForm) {
@@ -58,10 +60,28 @@ function withEventForm(WrappedComponent, EventForm) {
                         }
                         
                         if (isEventAdd && props.onEventCreate) {
-                            props.onEventCreate(values, options);
+                            const setValues = function(newValues) {
+                                rawScheduler.replaceEvent(
+                                    newValues, 
+                                    i => values.id === i.id
+                                )
+                            }
+                            props.onEventCreate(
+                                values, 
+                                { ...options, setValues }
+                            );
                         }
                         if (!isEventAdd && props.onEventUpdate) {
-                            props.onEventUpdate(values, options);
+                            const setValues = function(newValues) {
+                                rawScheduler.replaceEvent(
+                                    newValues, 
+                                    i => options.valuesBefore.id === i.id
+                                )
+                            }
+                            props.onEventUpdate(
+                                { ...schedulerEvent.values, ...values }, 
+                                { setValues, ...options }
+                            );
                         }
                         
                         setSchedulerEvent(null);
@@ -92,7 +112,20 @@ function withEventForm(WrappedComponent, EventForm) {
                         )
                         setSchedulerEvent(null);
                         if (props.onEventDelete) {
-                            props.onEventDelete(schedulerEvent.values);
+                            
+                            const cleanedValues = { ...schedulerEvent.values }
+                            for (const k of ['start', 'end']) {
+                                cleanedValues[k] = utils.format_date(
+                                    'yyyy-mm-dd hh:ii',
+                                    cleanedValues[k]
+                                );
+                            }
+                            
+                            const undoDelete = function() {
+                                rawScheduler.pushEvent( cleanedValues );
+                            }
+                            
+                            props.onEventDelete(cleanedValues, { undoDelete });
                         }
                         setShowDeleteConfirm(false);
                     }}

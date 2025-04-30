@@ -8,15 +8,16 @@ const scriptsSources = __EXAMPLES_SOURCES__;
 const webpack_mode = __WEBPACK_MODE__;
 
 const scripts = {
-    'create_empty_scheduler': 'Create empty scheduler',
-    'loading_static_events':  'Loading static events',
-    'loading_ajax_events':    'Loading ajax events',
-    'drag_and_drop_event':    'Drag and drop event',
-    'resize_event':           'Resize event',    
-    'creating_event':         'Creating event',
-    'editing_event':          'Editing event',
-    'deleting_event':         'Deleting event',
-    'i18n':                   'i18n',
+    'create_empty_scheduler':  'Create empty scheduler',
+    'loading_static_events':   'Loading static events',
+    'loading_ajax_events':      'Loading ajax events',
+    'drag_and_drop_event':     'Drag and drop event',
+    'resize_event':            'Resize event',    
+    'using_events_form':       'Managing events',
+    'listening_events_change': 'Listening events change',
+    'setting_new_event_id':    'Setting id for new event',
+    'reverting_events_change': 'Reverting events change',
+    'i18n':                    'i18n',
 }
 
 const url = new URL(window.location.href);

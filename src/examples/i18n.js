@@ -1,11 +1,5 @@
 import { createRoot } from 'react-dom/client';
-import { 
-    Scheduler, 
-    DefaultEventForm, 
-    withEventForm 
-} from '@mormat/react_scheduler';
-
-const SchedulerWithEventForm = withEventForm(Scheduler, DefaultEventForm);
+import { SchedulerWithEventForm } from '@mormat/react_scheduler';
 
 createRoot( document.getElementById('scheduler' ) ).render(
     <SchedulerWithEventForm 
