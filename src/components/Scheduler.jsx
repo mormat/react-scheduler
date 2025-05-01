@@ -1,7 +1,8 @@
 
 import { useEffect, useRef, useState } from 'react';
 import jscheduler_ui from '@mormat/jscheduler_ui';
-import { utils } from '@mormat/jscheduler_ui';
+
+import { cleanEventValues } from '../helpers/events';
 
 import Header from './Header';
 import Layout from './Layout';
@@ -173,22 +174,9 @@ const handleDragAndDrop = (scheduler, eventFn, values, valuesBefore) => {
         return null;
     }
 
-    const revert = () => scheduler.replaceEvent(
-        valuesBefore,
-        i => i.id === values.id
-    );
-
-    const cleanedValues = { ...values }
-    for (const k of ['start', 'end']) {
-        cleanedValues[k] = utils.format_date(
-            'yyyy-mm-dd hh:ii',
-            cleanedValues[k]
-        );
-    }
-
     eventFn(
-        cleanedValues,
-        { valuesBefore, revert }
+        cleanEventValues(values),
+        { valuesBefore }
     );
 
 }
