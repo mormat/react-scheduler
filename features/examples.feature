@@ -295,6 +295,13 @@ Feature: Examples
             Then the "updated task" event should not be displayed
             And the 'fixed task' event should be displayed at "Tue, Oct 8" from '10:00' to '12:00'
 
+        @form @delete
+        Example: Reverting deleted event
+            When I edit the "fixed task" event
+            And I click on "delete"
+            And I click on "Ok"
+            Then the 'fixed task' event should be displayed at "Tue, Oct 8" from '10:00' to '12:00'
+
         @drag_and_drop
         Example: Reverting dragged event
             When I drag the "fixed task" event to "Mon, Oct 7" at "10:00"
