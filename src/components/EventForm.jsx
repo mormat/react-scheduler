@@ -121,7 +121,11 @@ function withEventForm(WrappedComponent, EventForm) {
                                 );
                             }
                             
-                            props.onEventDelete(cleanedValues);
+                            const undoDelete = function() {
+                                rawScheduler.pushEvent( cleanedValues );
+                            }
+                            
+                            props.onEventDelete(cleanedValues, { undoDelete });
                         }
                         setShowDeleteConfirm(false);
                     }}

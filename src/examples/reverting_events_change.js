@@ -5,8 +5,8 @@ const handleEventUpdate = function(values, { setValues, valuesBefore }) {
     setValues(valuesBefore);
 }
 
-const handleEventDelete = function(values, { setValues, valuesBefore }) {
-    setValues(valuesBefore);
+const handleEventDelete = function(values, { undoDelete }) {
+     undoDelete();
 }
 
 const handleEventDrop = function(values, { setValues, valuesBefore }) {
@@ -21,6 +21,7 @@ const root = createRoot( document.getElementById('scheduler' ) );
 root.render( 
     <SchedulerWithEventForm 
         onEventUpdate = { handleEventUpdate }
+        onEventDelete = { handleEventDelete }
         events = { [
            { 
                "some_id": 1234,
