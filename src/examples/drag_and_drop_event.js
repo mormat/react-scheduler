@@ -8,17 +8,11 @@ function App() {
         { "label": "fixed position", "start": "2024-10-10 09:00", "end": "2024-10-10 12:00" },
     ]
 
-    const handleDrop = function(schedulerEvent, { revert }) {
-        if (schedulerEvent.label.includes("fixed position")) {
-            revert();
-        }
-    }
-
     return ( 
         <Scheduler 
             currentDate = "2024-10-08"
             events = { events } 
-            onEventDrop = { handleDrop } 
+            onEventDrop = { () => {} } 
         /> 
     );
     
