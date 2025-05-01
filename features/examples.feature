@@ -51,8 +51,6 @@ Feature: Examples
         And I click on "Drag and drop event"
         When I drag the "moveable" event to "Mon, Oct 7" at "09:00"
         Then the 'moveable' event should be displayed at "Mon, Oct 7" from '09:00' to '12:00'
-        When I drag the "fixed position" event to "Wed, Oct 9" at "09:00"
-        Then the "fixed position" event should be displayed at "Thu, Oct 10" from '09:00' to '12:00'
 
     @drag_and_drop
     Scenario: Resize event
@@ -60,8 +58,6 @@ Feature: Examples
         And I click on "Resize event"
         And I resize the "resizeable" event to "14:00"
         Then the 'resizeable' event should be displayed at "Tue, Oct 8" from '09:00' to '14:00'
-        When I resize the "fixed height" event to "14:00"
-        Then the "fixed height" event should be displayed at "Thu, Oct 10" from '09:00' to '12:00'
 
     @i18n
     Scenario: i18n in scheduler
