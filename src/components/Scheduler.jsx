@@ -173,10 +173,17 @@ const handleDragAndDrop = (scheduler, eventFn, values, valuesBefore) => {
     if (typeof eventFn !== 'function') {
         return null;
     }
+    
+    const setValues = (newValues) => {
+        scheduler.replaceEvent(
+            newValues,
+            e => valuesBefore.id === e.id
+        )
+    }
 
     eventFn(
         cleanEventValues(values),
-        { valuesBefore }
+        { valuesBefore, setValues }
     );
 
 }

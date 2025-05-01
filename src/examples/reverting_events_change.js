@@ -22,6 +22,8 @@ root.render(
     <SchedulerWithEventForm 
         onEventUpdate = { handleEventUpdate }
         onEventDelete = { handleEventDelete }
+        onEventDrop   = { handleEventDrop }
+        onEventResize = { handleEventResize }
         events = { [
            { 
                "some_id": 1234,
