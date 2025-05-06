@@ -98,4 +98,11 @@ Then(
     }
 );
 
+Then('{string} should be checked', function (label) {
+    
+    this.getElement(
+        `label:contains("${label}") input[type=radio][checked]`
+    );
+    
+});
 

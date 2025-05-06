@@ -39,7 +39,7 @@
     "@babel/preset-react": "^7.18.6",
     "@codemirror/lang-javascript": "^6.2.2",
     "@cucumber/cucumber": "^9.1.0",
-    "@mormat/jscheduler_ui": "^0.9.4",
+    "@mormat/jscheduler_ui": "^0.9.5",
     "babel-loader": "^9.1.2",
     "chromedriver": "133.0.0",
     "codemirror": "^6.0.1",

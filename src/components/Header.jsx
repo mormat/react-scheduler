@@ -49,9 +49,7 @@ Header.ToggleGroup = ({ items, value, onChange }) => {
                         { ... { value, name } }  
 
                     />
-                    &nbsp;
-                    { label }
-                    &nbsp;
+                    { ' ' + label + ' ' }
                 </label>
             ) ) }
         </div>

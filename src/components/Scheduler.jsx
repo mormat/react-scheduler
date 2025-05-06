@@ -12,7 +12,7 @@ const instances = new Map();
 function Scheduler( { translations = {}, ...schedulerProps } ) {
         
     const divRef = useRef();
-    const [viewMode,       setViewMode]       = useState('week');
+    const [viewMode,       setViewMode]       = useState(schedulerProps.viewMode || 'week');
     const [currentDate,    setCurrentDate]    = useState();
     const [schedulerLabel, setSchedulerLabel] = useState('');
     
@@ -24,9 +24,10 @@ function Scheduler( { translations = {}, ...schedulerProps } ) {
             events, 
             onEventDrop,
             onEventResize,
+            initialDate,
             ...otherSchedulerProps 
         } = schedulerProps;
-        
+
         const element  = divRef.current;     
         const scheduler = jscheduler_ui.render(
             element, 
@@ -34,6 +35,7 @@ function Scheduler( { translations = {}, ...schedulerProps } ) {
                 ...defaultSchedulerProps, 
                 ...otherSchedulerProps,
                 translations,
+                currentDate: initialDate,
                 eventsDraggable:  typeof onEventDrop   === 'function',
                 eventsResizeable: typeof onEventResize === 'function',
                 eventsEditable:   typeof schedulerProps.onEventEdit   === 'function',
@@ -132,6 +134,10 @@ function Scheduler( { translations = {}, ...schedulerProps } ) {
                     { 
                         label: translations['header.month'] || 'month', 
                         value: 'month'
+                    },
+                    { 
+                        label: translations['header.year'] || 'year', 
+                        value: 'year'
                     }
                 ]} 
                 onChange = { (e) => setViewMode(e.target.value)} 

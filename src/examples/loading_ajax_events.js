@@ -2,7 +2,7 @@ import { createRoot } from 'react-dom/client';
 import Scheduler from '@mormat/react_scheduler';
 
 const props = {
-    currentDate: "2024-10-08",
+    initialDate: "2024-10-08",
     events: function( { dateRange, setEvents }) {
         const { start, end } = dateRange;
         const url = './examples.json?start=' + start.getTime() + '&end=' + end.getTime();

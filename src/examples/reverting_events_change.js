@@ -31,6 +31,6 @@ root.render(
                "start": "2024-10-08 10:00" 
            } 
         ] }
-        currentDate = "2024-10-08"
+        initialDate = "2024-10-08"
     /> 
 )

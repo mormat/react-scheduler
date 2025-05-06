@@ -9,7 +9,7 @@ function App() {
 
     return ( 
         <Scheduler 
-            currentDate = "2024-10-08"
+            initialDate = "2024-10-08"
             events = { events } 
             onEventDrop = { () => {} } 
         /> 

@@ -44,6 +44,8 @@ Feature: Examples
         Then "./examples.json" should be loaded from "2024-10-07 00:00:00.000" to "2024-10-07 23:59:59.999"
         When I click on "month"
         Then "./examples.json" should be loaded from "2024-09-30 00:00:00.000" to "2024-11-03 23:59:59.999"
+        When I click on "year"
+        Then "./examples.json" should be loaded from "2024-01-01 00:00:00.000" to "2024-12-31 23:59:59.999"
 
     @drag_and_drop
     Scenario: Drag and drop event
@@ -237,6 +239,18 @@ Feature: Examples
         Then I should see :
             | {"some_id":1234,"label":"interview","start":"2024-10-08 10:00","end":"2024-10-08 16:00","bgColor":"#0288d1"} resized |
         
+    Scenario: Custom default view
+        Given I open "examples" page 
+        And I click on "Custom default view"
+        Then "month" should be checked
+        And I should see "October 2024"
+
+    @wip
+    Scenario: Custom default view
+        Given I open "examples" page 
+        And I click on "Custom initial date"
+        Then I should see "Jan 5, 2020"
+
     @create
     Rule: When setting an new id to a freshly created event, this id should be persisted in the lifecycle of the event
         Background:
@@ -306,3 +320,5 @@ Feature: Examples
         Example: Resizing dragged event
             When I resize the "fixed task" event to "18:00"
             Then the 'fixed task' event should be displayed at "Tue, Oct 8" from '10:00' to '12:00'
+
+

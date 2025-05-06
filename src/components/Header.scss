@@ -3,7 +3,8 @@ $primary-color: #0288d1;
 $header-height: 40px;
 
 .mormat-scheduler-Header {
-    
+    position: relative;
+    min-height: $header-height * 2;
     font: caption;
     height: $header-height;
     margin-bottom: 20px;
@@ -13,6 +14,11 @@ $header-height: 40px;
         height: $header-height;
     
         h4 {
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            
             line-height: $header-height - 2px;
             font-size: 20px;
             padding: 0;

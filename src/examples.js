@@ -18,6 +18,8 @@ const scripts = {
     'setting_new_event_id':    'Setting id for new event',
     'reverting_events_change': 'Reverting events change',
     'i18n':                    'i18n',
+    'custom_default_view':     'Custom default view',
+    'custom_initial_date':     'Custom initial date',
 }
 
 const url = new URL(window.location.href);

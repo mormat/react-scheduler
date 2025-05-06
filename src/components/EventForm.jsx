@@ -45,12 +45,16 @@ function withEventForm(WrappedComponent, EventForm) {
                 <EventForm 
                     values = { isEventAdd ? {} : schedulerEvent.values}
                     onConfirm = { (values) => {
+                        let eventId;
+                        
                         if (isEventAdd) {
-                            rawScheduler.pushEvent(values);
+                            const { id } = rawScheduler.pushEvent(values);
+                            eventId = id;
                         } else {
+                            eventId = schedulerEvent.values.id; 
                             rawScheduler.replaceEvent(
                                 values, 
-                                i => schedulerEvent.values.id === i.id
+                                i => eventId === i.id
                             );
                         }
                         
@@ -63,7 +67,7 @@ function withEventForm(WrappedComponent, EventForm) {
                             const setValues = function(newValues) {
                                 rawScheduler.replaceEvent(
                                     newValues, 
-                                    i => values.id === i.id
+                                    i => eventId === i.id
                                 )
                             }
                             props.onEventCreate(
@@ -75,7 +79,7 @@ function withEventForm(WrappedComponent, EventForm) {
                             const setValues = function(newValues) {
                                 rawScheduler.replaceEvent(
                                     newValues, 
-                                    i => options.valuesBefore.id === i.id
+                                    i => eventId === i.id
                                 )
                             }
                             props.onEventUpdate(
