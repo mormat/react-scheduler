@@ -25,23 +25,19 @@ Feature: Demo page
     @form
     Scenario: User can add event
         When I open "index" page
-        And I click on "Add event"
-        And I fill the values below:
+        And I create an event with:
             | Label | conference       |
             | Start | 14/10/2024 14:00 |
             | End   | 14/10/2024 17:00 |
-        And I click on "OK"
         And the 'conference' event should be displayed at "Mon, Oct 14" from '14:00' to '17:00'
 
     @form 
     Scenario: User can edit event
         When I open "index" page
-        And I edit the "interview" event
-        And I fill the values below:
+        And I update the "interview" event with:
             | Label | conference       |
             | Start | 14/10/2024 14:00 |
             | End   | 14/10/2024 17:00 |
-        And I click on "OK"
         And the 'conference' event should be displayed at "Mon, Oct 14" from '14:00' to '17:00'
 
     @form @delete
@@ -55,20 +51,16 @@ Feature: Demo page
     @form @create
     Scenario: Created event should persist when switching to another view
         When I open "index" page
-        And I click on "Add event"
-        And I fill the values below:
+        And I create an event with:
             | Label | conference       |
-        And I click on "OK"
         And I click on "month" 
         Then I should see "conference"
 
     @form @edit
     Scenario: Updated event should persist when switching to another view
         When I open "index" page
-        And I edit the "interview" event
-        And I fill the values below:
+        And I update the "interview" event with:
             | Label | updated interview |
-        And I click on "OK"
         And I click on "month" 
         Then I should see "updated interview"
 

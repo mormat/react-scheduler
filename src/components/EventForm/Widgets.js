@@ -19,11 +19,17 @@ function Input({ value, setValue, ...otherProps }) {
     
 }
 
-function Button( { children, variant, type = 'button', ...otherProps } ) {
+function Button( { 
+    children, 
+    variant, 
+    type = 'button', 
+    className = "",
+    ...otherProps 
+} ) {
     
     return (
         <button 
-            className="mormat-scheduler-Button"
+            className= { `mormat-scheduler-Button ` + className }
             data-variant = { variant } 
             type = { type }
             { ...otherProps } 

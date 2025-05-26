@@ -31,7 +31,11 @@ function OkCancelDialog({
                     { translations['cancel_btn'] || 'Cancel' }
                 </Button>
                 &nbsp;
-                <Button onClick = { handleConfirm } variant="primary">
+                <Button 
+                    onClick = { handleConfirm } 
+                    variant="primary"
+                    className="mormat-scheduler-btnConfirmDialog"
+                >
                     { translations['ok_btn'] || 'Ok' }
                 </Button>
             </p>

@@ -27,7 +27,10 @@ function withEventAdd( WrappedComponent ) {
                         
                 { onEventAdd && (
                     <a onClick = { handleEventAdd }
-                       title={ translations['add_event_btn'] || "Add event" }>
+                       title={ translations['add_event_btn'] || "Add event" }
+                       className="mormat-scheduler-btnAddEvent"
+                    >
+                       
                         { plusIcon }
                     </a>
                 ) }

@@ -78,7 +78,9 @@ function DefaultEventForm({
 
             <p>
                 <label>
+                    <span>
                     { translations['event_start_label'] || 'From' }
+                    </span>
                     <br/>
                     { render_error('event_start') }
                     { startInput }
@@ -87,7 +89,9 @@ function DefaultEventForm({
 
             <p>
                 <label>
+                    <span>
                     { translations['event_end_label'] || 'To' }
+                    </span>
                     <br/>
                     { endInput }
                 </label>
@@ -103,13 +107,21 @@ function DefaultEventForm({
 
             <p>
                 { handleDelete && (
-                    <Button onClick={ handleDelete } variant="danger">
+                    <Button 
+                        onClick={ handleDelete } 
+                        variant="danger"
+                        className="mormat-scheduler-btnDeleteEvent"
+                    >
                         { translations['delete_btn'] || 'delete' }
                     </Button>
                 ) }
                 &nbsp;
 
-                <Button type="submit" variant="primary">
+                <Button 
+                    type="submit" 
+                    variant="primary"
+                    className="mormat-scheduler-btnConfirmEvent"
+                >
                     { translations['ok_btn'] || 'ok' }
                 </Button>
 

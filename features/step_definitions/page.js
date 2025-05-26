@@ -17,6 +17,62 @@ When('I open {string} page', async function (pageName) {
     
 });
 
+When('I open the {string} example', async function (exampleName) {
+    
+    const url = `http://localhost:9000/examples.html?` + urlParams;
+    
+    await this.driver.get( url );
+    
+    await this.clickOn(`a:contains("${exampleName}"")`);
+    
+});
+
+When('I click on {string}', async function (clickableText) {
+    
+    await this.page.clickOn(clickableText);
+    
+});
+
+When('I wait until I see {string}', async function (expectedText) {
+
+    const selector = `:contains("${expectedText}")`;
+    
+    await this.waitForText(expectedText);
+    
+});
+
+Then('I should see {string}', async function (expectedText) {
+    
+    const pageText = await this.getPageText();
+    
+    expect(pageText).toContain(expectedText);
+    
+});
+
+Then('I should see :', async function (dataTable) {
+        
+    const pageText = await this.getPageText();
+
+    for (const [expectedText] of dataTable.raw()) {
+        expect(pageText).toContain(expectedText);
+    }
+
+});
+
+Then('I should see a {string} tooltip', async function (string) {
+    
+    await this.getElement(`[title="${string}"]`);
+    
+});
+
+Then('I should not see {string}', async function (expectedText) {
+        
+    const pageText = await this.getPageText();
+    
+    expect(pageText).not.toContain(expectedText);
+    
+});
+
 Then(
     '{string} should be loaded from {string} to {string}', 
     async function (url, startDate, endDate) {
@@ -32,63 +88,6 @@ Then(
 
     }
 );
-
-Then('the scheduler header should contains:', async function (dataTable) {
-    
-    const pageText = await this.getPageText('.mormat-scheduler-Header');
-
-    for (const [expectedText] of dataTable.raw()) {
-        expect(pageText).toContain(expectedText);
-    }
-    
-});
-
-Then(
-    'I should see {string} in field {string}', 
-    async function (expectedText, fieldLabel) {
-        const pageText = await this.getPageText(
-            `label:contains("${fieldLabel}")`
-        );
-
-        expect(pageText).toContain(expectedText);
-    }
-);
-
-Then('the form should contains', async function (dataTable) {
-    
-    const values = dataTable.rowsHash();
-    
-    for (const [description, expectedValue] of Object.entries(values)) {   
-        
-        const label = await this.getElement(`label:contains("${description}")`);
-        
-        const fields = await this.findElements(
-            [
-                'input[type=text]',
-                'select option:checked',
-                'input[type=radio]:checked',
-            ].join(','),
-            label
-        );
-        
-        const actualValues = [];
-        for (const field of fields) {       
-            const tagName = await field.getTagName();
-            if (tagName === 'input') {
-                actualValues.push(await field.getAttribute('value'));
-            }
-            
-            if (tagName === 'option') {
-                actualValues.push(await field.getText());
-            }
-        }
-        
-        const actualValue = actualValues.join(' ');
-        expect(expectedValue).toBe(actualValue);
-        
-    };
-    
-});
 
 Then(
     'I should not see {string} \\(case insensitive)', 

@@ -59,7 +59,10 @@ function BootstrapEventForm( {
                     <div className="col-4">
                         <div className="vstack gap-3 h-100 position-relative">
                             
-                            <Button variant="primary" type="submit">
+                            <Button variant="primary" 
+                                    type="submit"
+                                    className="mormat-scheduler-btnConfirmEvent"
+                            >
                                 OK
                             </Button>
                             
