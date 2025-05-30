@@ -108,6 +108,7 @@ class EventsFormHelper {
         const fields = await world.findElements(
             [
                 'input[type=text]',
+                'input[type=color]',
                 'select option:checked',
                 'input[type=radio]:checked',
             ].join(','),

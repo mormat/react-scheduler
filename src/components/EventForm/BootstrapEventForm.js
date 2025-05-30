@@ -89,7 +89,7 @@ function BootstrapEventForm( {
     
 }
 
-function FormRow( { label, input }) {
+function FormRow( { label, input, children }) {
     
     const uniqueId = useUniqueId();
     
@@ -105,6 +105,7 @@ function FormRow( { label, input }) {
                     { label }
                 </label>
                 { input }
+                { children }
             </div>
         </InputPropsContext.Provider>
     )

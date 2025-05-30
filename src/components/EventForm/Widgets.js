@@ -52,50 +52,34 @@ function Message( { children, variant, ...otherProps } ) {
     )
 }
 
-function ColorPicker( { value, setValue })
-{
-    const colors = [
-        '#0288d1', 
-        '#9575cd', 
-        '#0fc4a7', 
-        '#721c24', 
-        '#856404', 
-        '#383d41'
-    ];
+function ColorPresets({ 
+    onSelect = () => {},
+    colors = [
+        '#0288d1', '#9575cd', '#0fc4a7', '#721c24', '#856404', '#383d41',
+        '#DE3163', '#6495ED'
+    ]
+}) {
     
-    useEffect(() => {
-        if (!colors.includes(value)) {
-            setValue(colors[0]);
-        }
-    }, []);
-
+    const handleSelect = (e, color) => {
+        e.preventDefault();
+        onSelect(color);
+    }
+    
     return (
-        <span className="mormat-scheduler-ColorPicker">
-             { colors.map((v) => (
-                <label  key = { v } 
-                        data-label = { v }
-                        style = { { 
-                            borderColor: v === value ? v : 'transparent'
-                        } }
-                        onMouseDown = { e => e.preventDefault() }
-                >
-                    <span style = { { backgroundColor: v } }>
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    </span>
-                    <input  
-                        type       = "radio" 
-                        value      = { v } 
-                        checked    = { value === v }
-                        onChange   = { e => setValue(e.target.value) }
-                    />
-                    <span style = {{ display: 'none'}}>
-                        { v }
-                    </span>
-                </label>
-                
-            )) }
+        <span className="mormat-scheduler-ColorPresets">
+            <small>presets
+                { colors.map((color) => (
+                    <a href="#"    
+                       style={{ color, backgroundColor: color }}
+                       onClick = { (e) => handleSelect(e, color) }
+                    >
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    </a>
+                )) }
+            </small>
         </span>
     )
+    
 }
 
 function DateTimePicker( { value, setValue, dateLocale = 'en', ...otherProps }) {
@@ -242,7 +226,7 @@ export {
     Input,
     Button,
     Message,
-    ColorPicker,
+    ColorPresets,
     DateTimePicker
 }
 

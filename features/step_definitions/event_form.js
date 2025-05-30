@@ -34,8 +34,6 @@ Then('the event form should contains:', async function (dataTable) {
     
     const values = dataTable.rowsHash();
     
-    
-    
     for (const [labelText, expectedValue] of Object.entries(values)) {   
     
         const actualValue = await this.eventsForm.getFormValue(labelText);

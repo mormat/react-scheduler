@@ -232,7 +232,7 @@ Feature: Examples
                 | From        | 14:00 7 October 2024 |
                 | To          | 17:00 7 October 2024 |
 
-        @form @edit @wtf
+        @form @edit
         Example: Updating the freshly created event
             When I edit the "new task" event
             And I click on "ok"

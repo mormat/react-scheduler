@@ -1,7 +1,11 @@
 import { useState, useCallback, useMemo  } from 'react';
 import { utils } from '@mormat/jscheduler_ui';
 
-import { Input, ColorPicker, DateTimePicker } from './Widgets';
+import { 
+    Input, 
+    ColorPresets, 
+    DateTimePicker 
+} from './Widgets';
 
 function withState(
     WrappedComponent, 
@@ -25,7 +29,7 @@ function withState(
             utils.format_date('yyyy-mm-dd hh:ii', values.end):
             utils.format_date('yyyy-mm-dd hh:ii', Date.now() + HOUR_LENGTH )
         );
-        const [bgColor, setBgColor] = useState(values.bgColor || 'lightgray');
+        const [bgColor, setBgColor] = useState(values.bgColor || '#0288d1');
 
         const handleSubmit = (e) => {
             e.preventDefault();
@@ -88,10 +92,14 @@ function withState(
 
         const bgColorInput = useColorPicker ?
         (
-            <ColorPicker 
-                value    = { bgColor } 
-                setValue = { setBgColor } 
-            />
+            <>
+                <Input 
+                    value    = { bgColor } 
+                    setValue = { setBgColor } 
+                    type     = "color"
+                />
+                <ColorPresets onSelect = { setBgColor } />
+            </>
         ) : (
             <Input 
                 value    = { bgColor } 

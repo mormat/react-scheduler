@@ -65,7 +65,6 @@ function withEventForm(WrappedComponent, EventForm) {
                         
                         if (isEventAdd && props.onEventCreate) {
                             const setValues = function(newValues) {
-                                console.log({newValues, eventId});
                                 rawScheduler.replaceEvent(
                                     newValues, 
                                     i => eventId === i._uuid

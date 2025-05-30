@@ -6,4 +6,14 @@
         float: right;
     }
     
+    & > p > label {
+        width: 100%;
+    }
+    
+    input[type=color] {
+        display: block;
+        width: 100%;
+        margin-bottom: 5px;
+    }
+    
 }
